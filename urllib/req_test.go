@@ -10,26 +10,34 @@ import (
 )
 
 func Test_r_trip(t *testing.T) {
-	gone.Prepare(tracer.Load).Test(func(in struct {
-		tracer tracer.Tracer `gone:"*"`
-	}) {
-		controller := gomock.NewController(t)
-		defer controller.Finish()
+	gone.
+		Prepare(tracer.Load).
+		Test(func(in struct {
+			tracer      tracer.Tracer `gone:"*"`
+			tracerIdKey string        `gone:"config,urllib.req.x-trace-id-key=X-Trace-Id"`
+		}) {
+			controller := gomock.NewController(t)
+			defer controller.Finish()
 
-		tripper := NewMockRoundTripper(controller)
+			tripper := NewMockRoundTripper(controller)
 
-		in.tracer.SetTraceId("xxxx", func() {
-			tripper.EXPECT().RoundTrip(gomock.Any()).Do(func(req *req.Request) {
-				traceId := req.Headers.Get(TraceIdHeaderKey)
-				assert.Equal(t, "xxxx", traceId)
-			}).Return(nil, nil)
+			in.tracer.SetTraceId("xxxx", func() {
+				tripper.
+					EXPECT().
+					RoundTrip(gomock.Any()).
+					Do(func(req *req.Request) {
+						traceId := req.Headers.Get(in.tracerIdKey)
+						assert.Equal(t, "xxxx", traceId)
+					}).
+					Return(nil, nil)
 
-			g := r{
-				Tracer: in.tracer,
-			}
-			trip := g.trip(tripper)
-			_, err := trip(&req.Request{})
-			assert.Nil(t, err)
+				g := r{
+					Tracer:      in.tracer,
+					tracerIdKey: in.tracerIdKey,
+				}
+				trip := g.trip(tripper)
+				_, err := trip(&req.Request{})
+				assert.Nil(t, err)
+			})
 		})
-	})
 }

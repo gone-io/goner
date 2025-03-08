@@ -58,6 +58,7 @@ type SysMiddleware struct {
 	limit        rate.Limit `gone:"config,server.req.limit,default=100"`
 	burst        int        `gone:"config,server.req.limit-burst,default=300"`
 	requestIdKey string     `gone:"config,server.req.x-request-id-key=X-Request-Id"`
+	tracerIdKey  string     `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
 
 	limiter *rate.Limiter
 }
@@ -94,7 +95,7 @@ func (m *SysMiddleware) Process(context *gin.Context) {
 	}
 
 	if m.useTracer {
-		traceId := context.GetHeader(m.requestIdKey)
+		traceId := context.GetHeader(m.tracerIdKey)
 		m.tracer.SetTraceId(traceId, func() {
 			m.process(context)
 		})

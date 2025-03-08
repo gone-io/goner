@@ -31,8 +31,8 @@ type r struct {
 	*req.Client
 	tracer.Tracer `gone:"*"`
 
-	requestIdKey string `gone:"config,server.req.x-request-id-key=X-Request-Id"`
-	tracerIdKey  string `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
+	requestIdKey string `gone:"config,urllib.req.x-request-id-key=X-Request-Id"`
+	tracerIdKey  string `gone:"config,urllib.req.x-trace-id-key=X-Trace-Id"`
 }
 
 func (r *r) trip(rt req.RoundTripper) req.RoundTripFunc {

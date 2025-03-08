@@ -9,38 +9,46 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
+	"strings"
 	"testing"
 )
 
 func (s *clientRegister) Infof(format string, args ...any) {}
 func TestClientRegister_traceInterceptor(t *testing.T) {
-	gone.Prepare(tracer.Load).Test(func(in struct {
-		tracer tracer.Tracer `gone:"gone-tracer"`
-	}) {
+	gone.
+		Prepare(tracer.Load).
+		Test(func(in struct {
+			tracer      tracer.Tracer `gone:"gone-tracer"`
+			tracerIdKey string        `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
+		}) {
 
-		var req, reply any
+			var req, reply any
 
-		register := clientRegister{
-			tracer: in.tracer,
-		}
-		tracer.SetTraceId("xxxx", func() {
-			err := register.traceInterceptor(
-				context.Background(),
-				"test",
-				req, reply,
-				nil,
-				func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, opts ...grpc.CallOption) error {
-					md, b := metadata.FromOutgoingContext(ctx)
-					assert.True(t, b)
-					list := md[XTraceId]
+			register := clientRegister{
+				tracer:      in.tracer,
+				tracerIdKey: in.tracerIdKey,
+			}
 
-					assert.Equal(t, "xxxx", list[0])
-					return nil
-				},
-			)
-			assert.Nil(t, err)
+			tracer.SetTraceId("xxxx", func() {
+				err := register.traceInterceptor(
+					context.Background(),
+					"test",
+					req, reply,
+					nil,
+					func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, opts ...grpc.CallOption) error {
+						md, b := metadata.FromOutgoingContext(ctx)
+						assert.True(t, b)
+						list := md[strings.ToLower(in.tracerIdKey)]
+
+						assert.Equal(t, 1, len(list))
+
+						assert.Equal(t, "xxxx", list[0])
+						return nil
+					},
+				)
+				assert.Nil(t, err)
+			})
 		})
-	})
 }
 
 func Test_clientRegister_register(t *testing.T) {

@@ -2,6 +2,7 @@ package redis
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/tracer"
 	"reflect"
 )
 

@@ -3,6 +3,7 @@ package gone_grpc
 import (
 	"context"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/tracer"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
@@ -15,6 +16,9 @@ type clientRegister struct {
 	clients     []Client      `gone:"*"`
 	tracer      tracer.Tracer `gone:"*"`
 	connections map[string]*grpc.ClientConn
+
+	requestIdKey string `gone:"config,server.grpc.x-request-id-key=X-Request-Id"`
+	tracerIdKey  string `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
 }
 
 //go:gone
@@ -30,7 +34,7 @@ func (s *clientRegister) traceInterceptor(
 	invoker grpc.UnaryInvoker,
 	_ ...grpc.CallOption,
 ) error {
-	ctx = metadata.AppendToOutgoingContext(ctx, XTraceId, s.tracer.GetTraceId())
+	ctx = metadata.AppendToOutgoingContext(ctx, s.tracerIdKey, s.tracer.GetTraceId())
 	return invoker(ctx, method, req, reply, cc)
 }
 

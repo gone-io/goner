@@ -14,7 +14,7 @@ import (
 	"reflect"
 )
 
-const XTraceId = "x-trace-id"
+//const XTraceId = "x-trace-id"
 
 func createListener(s *server) (err error) {
 	s.listener, err = net.Listen("tcp", s.address)
@@ -28,8 +28,10 @@ type server struct {
 	grpcServices []Service        `gone:"*"`
 	keeper       gone.GonerKeeper `gone:"*"`
 
-	port int    `gone:"config,server.grpc.port,default=9090"`
-	host string `gone:"config,server.grpc.host,default=0.0.0.0"`
+	port         int    `gone:"config,server.grpc.port,default=9090"`
+	host         string `gone:"config,server.grpc.host,default=0.0.0.0"`
+	requestIdKey string `gone:"config,server.grpc.x-request-id-key=X-Request-Id"`
+	tracerIdKey  string `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
 
 	grpcServer     *grpc.Server
 	listener       net.Listener
@@ -44,7 +46,7 @@ func (s *server) GonerName() string {
 func (s *server) initListener() error {
 	goner := s.keeper.GetGonerByName(gonecmux.Name)
 	if goner != nil {
-		if muxServer, ok := goner.(gone.CMuxServer); ok {
+		if muxServer, ok := goner.(gonecmux.CMuxServer); ok {
 			s.listener = muxServer.MatchWithWriters(
 				cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
 			)
@@ -105,7 +107,7 @@ func (s *server) traceInterceptor(
 	handler grpc.UnaryHandler,
 ) (resp interface{}, err error) {
 	var traceId string
-	traceIdV := metadata.ValueFromIncomingContext(ctx, XTraceId)
+	traceIdV := metadata.ValueFromIncomingContext(ctx, s.tracerIdKey)
 	if len(traceIdV) > 0 {
 		traceId = traceIdV[0]
 	}

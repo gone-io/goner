@@ -156,18 +156,20 @@ func Test_server_traceInterceptor(t *testing.T) {
 	ctx := context.Background()
 	traceId := "trace"
 
-	ctx = metadata.NewIncomingContext(ctx, metadata.MD{
-		XTraceId: []string{traceId},
-	})
-
 	gone.
 		Prepare(tracer.Load).
 		Test(func(in struct {
-			tracer tracer.Tracer `gone:"gone-tracer"`
+			tracer      tracer.Tracer `gone:"gone-tracer"`
+			tracerIdKey string        `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
 		}) {
 			s := server{
-				tracer: in.tracer,
+				tracer:      in.tracer,
+				tracerIdKey: in.tracerIdKey,
 			}
+
+			ctx = metadata.NewIncomingContext(ctx, metadata.MD{
+				in.tracerIdKey: []string{traceId},
+			})
 
 			var req any
 			_, err := s.traceInterceptor(ctx, req, nil, func(ctx context.Context, req any) (any, error) {
