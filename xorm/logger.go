@@ -1,6 +1,7 @@
 package xorm
 
 import (
+	"fmt"
 	"github.com/gone-io/gone/v2"
 	"xorm.io/xorm/log"
 )
@@ -27,4 +28,17 @@ func (l *dbLogger) ShowSQL(show ...bool) {
 }
 func (l *dbLogger) IsShowSQL() bool {
 	return l.showSql
+}
+
+func (l *dbLogger) Debug(v ...interface{}) {
+	l.Logger.Debugf("%s", fmt.Sprintln(v...))
+}
+func (l *dbLogger) Error(v ...interface{}) {
+	l.Logger.Errorf("%s", fmt.Sprintln(v...))
+}
+func (l *dbLogger) Info(v ...interface{}) {
+	l.Logger.Infof("%s", fmt.Sprintln(v...))
+}
+func (l *dbLogger) Warn(v ...interface{}) {
+	l.Logger.Warnf("%s", fmt.Sprintln(v...))
 }

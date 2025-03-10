@@ -192,6 +192,9 @@ func getDefault(v reflect.Value, defaultVale string) error {
 	switch v.Kind() {
 	default:
 		var defaultValeMap any
+		if defaultVale == "" {
+			return nil
+		}
 		err := json.Unmarshal([]byte(defaultVale), &defaultValeMap)
 		if err != nil {
 			return gone.ToError(err)

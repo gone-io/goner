@@ -5,10 +5,6 @@ import (
 )
 
 var load = gone.OnceLoad(func(loader gone.Loader) error {
-	if err := loader.Load(&proxy{}); err != nil {
-		return gone.ToError(err)
-	}
-
 	if err := loader.Load(
 		&router{},
 		gone.IsDefault(
@@ -22,14 +18,19 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 	if err := loader.Load(&SysMiddleware{}); err != nil {
 		return gone.ToError(err)
 	}
-	if err := loader.Load(NewGinResponser()); err != nil {
+
+	if err := loader.Load(&proxy{}); err != nil {
 		return gone.ToError(err)
 	}
-	if err := loader.Load(NewGinServer()); err != nil {
+
+	if err := loader.Load(NewGinResponser()); err != nil {
 		return gone.ToError(err)
 	}
 
 	if err := loader.Load(&httpInjector{}); err != nil {
+		return gone.ToError(err)
+	}
+	if err := loader.Load(NewGinServer()); err != nil {
 		return gone.ToError(err)
 	}
 	return nil
