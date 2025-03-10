@@ -1,4 +1,4 @@
-package gone
+package goner
 
 import (
 	"github.com/gone-io/gone/v2"
