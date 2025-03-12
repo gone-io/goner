@@ -11,10 +11,15 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 	if err != nil {
 		return gone.ToError(err)
 	}
-	return loader.Load(
-		&r{},
-		gone.IsDefault(new(Client)),
-	)
+	err = loader.Load(&r{}, gone.IsDefault(new(Client)))
+	if err != nil {
+		return gone.ToError(err)
+	}
+	err = loader.Load(&requestProvider{})
+	if err != nil {
+		return gone.ToError(err)
+	}
+	return loader.Load(&clientProvider{})
 })
 
 func Load(loader gone.Loader) error {
@@ -29,7 +34,7 @@ func Priest(loader gone.Loader) error {
 type r struct {
 	gone.Flag
 	*req.Client
-	tracer.Tracer `gone:"*"`
+	tracer tracer.Tracer `gone:"*"`
 
 	requestIdKey string `gone:"config,urllib.req.x-request-id-key=X-Request-Id"`
 	tracerIdKey  string `gone:"config,urllib.req.x-trace-id-key=X-Trace-Id"`
@@ -37,7 +42,7 @@ type r struct {
 
 func (r *r) trip(rt req.RoundTripper) req.RoundTripFunc {
 	return func(req *req.Request) (resp *req.Response, err error) {
-		tracerId := r.GetTraceId()
+		tracerId := r.tracer.GetTraceId()
 		//传递traceId
 		req.SetHeader(r.tracerIdKey, tracerId)
 		resp, err = rt.RoundTrip(req)

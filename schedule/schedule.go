@@ -3,13 +3,16 @@ package schedule
 import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/redis"
 	"github.com/gone-io/goner/tracer"
 	"github.com/robfig/cron/v3"
 	"time"
 )
 
 var load = gone.OnceLoad(func(loader gone.Loader) error {
+	err := tracer.Load(loader)
+	if err != nil {
+		return gone.ToError(err)
+	}
 	return loader.Load(&schedule{})
 })
 
@@ -24,14 +27,18 @@ func Priest(loader gone.Loader) error {
 
 type schedule struct {
 	gone.Flag
-	cronTab     *cron.Cron
-	gone.Logger `gone:"gone-logger"`
-	tracer      tracer.Tracer `gone:"gone-tracer"`
-	locker      redis.Locker  `gone:"*"`
-	schedulers  []Scheduler   `gone:"*"`
 
+	log        gone.Logger      `gone:"gone-logger"`
+	tracer     tracer.Tracer    `gone:"gone-tracer"`
+	schedulers []Scheduler      `gone:"*"`
+	gKeeper    gone.GonerKeeper `gone:"*"`
+
+	isCluster   bool          `gone:"config,schedule.in-cluster=true"`
 	lockTime    time.Duration `gone:"config,schedule.lockTime,default=10s"`
 	checkPeriod time.Duration `gone:"config,schedule.checkPeriod,default=2s"`
+
+	cronTab *cron.Cron
+	locker  DoLocker
 }
 
 func (s *schedule) Init() {
@@ -40,17 +47,32 @@ func (s *schedule) Init() {
 
 func (s *schedule) Start() error {
 	if len(s.schedulers) == 0 {
-		s.Warnf("no scheduler found")
+		s.log.Warnf("no scheduler found")
 	}
+
+	if s.isCluster {
+		locker := s.gKeeper.GetGonerByType(gone.GetInterfaceType(new(DoLocker)))
+		if locker == nil {
+			return gone.ToError("in cluster mod, must load a `DoLocker`. you can use `goner/redis`.")
+		}
+		s.locker = locker.(DoLocker)
+	} else {
+		s.log.Warnf("`schedule` is running in single instance mod.")
+	}
+
 	for _, o := range s.schedulers {
 		o.Cron(func(spec string, jobName JobName, fn func()) {
-			lockKey := fmt.Sprintf("lock-job:%s", jobName)
 
 			_, err := s.cronTab.AddFunc(spec, func() {
 				s.tracer.RecoverSetTraceId("", func() {
-					err := s.locker.LockAndDo(lockKey, fn, s.lockTime, s.checkPeriod)
-					if err != nil {
-						s.Warnf("cron get lock err:%v", err)
+					if s.locker != nil {
+						lockKey := fmt.Sprintf("lock-job:%s", jobName)
+						err := s.locker.LockAndDo(lockKey, fn, s.lockTime, s.checkPeriod)
+						if err != nil {
+							s.log.Warnf("cron get lock err:%v", err)
+						}
+					} else {
+						fn()
 					}
 				})
 			})
@@ -58,7 +80,7 @@ func (s *schedule) Start() error {
 			if err != nil {
 				panic("cron.AddFunc for " + string(jobName) + " err:" + err.Error())
 			}
-			s.Infof("Add cron item: %s => %s : %s", spec, jobName, gone.GetFuncName(fn))
+			s.log.Infof("Add cron item: %s => %s : %s", spec, jobName, gone.GetFuncName(fn))
 		})
 	}
 	s.cronTab.Start()

@@ -1,5 +1,7 @@
 package schedule
 
+import "time"
+
 type JobName string
 
 // RunFuncOnceAt 定时跑
@@ -30,4 +32,8 @@ type Scheduler interface {
 type Schedule interface {
 	Start() error
 	Stop() error
+}
+
+type DoLocker interface {
+	LockAndDo(key string, fn func(), lockTime, checkPeriod time.Duration) (err error)
 }

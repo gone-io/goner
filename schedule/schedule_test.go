@@ -43,10 +43,10 @@ func Test_schedule_Start(t *testing.T) {
 		NewApp(tracer.Priest, Load, redis.Load, gone_viper.Load, func(loader gone.Loader) error {
 			return loader.Load(scheduler)
 		}).
-		Test(func(in struct {
-			s *schedule `gone:"*"`
-		}) {
+		Test(func(s *schedule) {
+			assert.True(t, s.isCluster)
 			time.Sleep(2 * time.Second)
+
 		})
 
 	mu.Lock()
