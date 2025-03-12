@@ -59,7 +59,7 @@ type dbProvider struct {
 
 	MaxIdle         int            `gone:"config,gorm.pool.max-idle"`
 	MaxOpen         int            `gone:"config,gorm.pool.max-open"`
-	ConnMaxLifetime *time.Duration `gone:"config,gorm.pool.conn-max-lifetime"`
+	ConnMaxLifetime *time.Duration `gone:"config,gorm.pool.conn-max-lifetime=20s"`
 
 	gInstance *gorm.DB
 }

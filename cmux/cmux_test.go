@@ -43,20 +43,22 @@ func TestServer_Init_Error(t *testing.T) {
 }
 
 func Test_server_Start_Stop(t *testing.T) {
-	gone.Prepare(Load).Test(func(s *server) {
-		s.processStartError(errors.New("test error"))
-		s.processStartError(nil)
-		s.stopFlag = true
-		s.processStartError(errors.New("test error"))
+	gone.
+		NewApp(Load).
+		Test(func(s *server) {
+			s.processStartError(errors.New("test error"))
+			s.processStartError(nil)
+			s.stopFlag = true
+			s.processStartError(errors.New("test error"))
 
-		httpL := s.Match(cmux.HTTP1Fast())
-		assert.NotNil(t, httpL)
-		grpcL := s.MatchWithWriters(
-			cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
-		)
-		assert.NotNil(t, grpcL)
-		address := s.GetAddress()
-		assert.Equal(t, ":8080", address)
-		assert.Equal(t, s.GonerName(), Name)
-	})
+			httpL := s.Match(cmux.HTTP1Fast())
+			assert.NotNil(t, httpL)
+			grpcL := s.MatchWithWriters(
+				cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
+			)
+			assert.NotNil(t, grpcL)
+			address := s.GetAddress()
+			assert.Equal(t, ":8080", address)
+			assert.Equal(t, s.GonerName(), Name)
+		})
 }

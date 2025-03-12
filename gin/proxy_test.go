@@ -20,7 +20,7 @@ func Test_proxy_Proxy(t *testing.T) {
 	responser.EXPECT().ProcessResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.All()).AnyTimes()
 
 	gone.
-		Prepare(tracer.Priest, func(cemetery gone.Loader) error {
+		NewApp(tracer.Priest, func(cemetery gone.Loader) error {
 			if err := cemetery.Load(gin.NewGinProxy()); err != nil {
 				return err
 			}

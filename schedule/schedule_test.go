@@ -40,7 +40,7 @@ func Test_schedule_Start(t *testing.T) {
 		})
 
 	gone.
-		Prepare(tracer.Priest, Load, redis.Load, gone_viper.Load, func(loader gone.Loader) error {
+		NewApp(tracer.Priest, Load, redis.Load, gone_viper.Load, func(loader gone.Loader) error {
 			return loader.Load(scheduler)
 		}).
 		Test(func(in struct {

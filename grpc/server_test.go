@@ -33,7 +33,7 @@ func Test_server_initListener(t *testing.T) {
 		cMuxServer.EXPECT().MatchWithWriters(gomock.Any()).Return(listener)
 		cMuxServer.EXPECT().GetAddress().Return("")
 		gone.
-			Prepare(tracer.Load, func(loader gone.Loader) error {
+			NewApp(tracer.Load, func(loader gone.Loader) error {
 				return loader.Load(cMuxServer, gone.Name(gonecmux.Name))
 			}).
 			Test(func(keeper gone.GonerKeeper) {
@@ -89,7 +89,7 @@ func Test_server_initListener(t *testing.T) {
 //func Test_server_Start(t *testing.T) {
 //	t.Run("no gRPC service found, gRPC server will not start", func(t *testing.T) {
 //		gone.
-//			Prepare(tracer.Load).
+//			NewApp(tracer.Load).
 //			Test(func(keeper gone.GonerKeeper, logger gone.Logger, tracer tracer.Tracer) {
 //				controller := gomock.NewController(t)
 //				defer controller.Finish()
@@ -132,7 +132,7 @@ func Test_server_server(t *testing.T) {
 		listener.EXPECT().Close().Return(nil)
 
 		gone.
-			Prepare().
+			NewApp().
 			Test(func(logger gone.Logger) {
 				s := server{
 					grpcServer: grpc.NewServer(),
@@ -157,7 +157,7 @@ func Test_server_traceInterceptor(t *testing.T) {
 	traceId := "trace"
 
 	gone.
-		Prepare(tracer.Load).
+		NewApp(tracer.Load).
 		Test(func(in struct {
 			tracer      tracer.Tracer `gone:"gone-tracer"`
 			tracerIdKey string        `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
@@ -183,7 +183,7 @@ func Test_server_traceInterceptor(t *testing.T) {
 
 func Test_server_recoveryInterceptor(t *testing.T) {
 	gone.
-		Prepare(tracer.Load).
+		NewApp(tracer.Load).
 		Test(func(tracer tracer.Tracer, logger gone.Logger) {
 			s := server{
 				tracer: tracer,

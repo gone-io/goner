@@ -14,7 +14,7 @@ import (
 
 func TestCache(t *testing.T) {
 	gone.
-		Prepare(Load, gone_viper.Load).
+		NewApp(Load, gone_viper.Load).
 		Test(func(c *cache) {
 			type Point struct {
 				X int
@@ -54,7 +54,7 @@ func TestCache(t *testing.T) {
 
 func Test_cache_Keys(t *testing.T) {
 	gone.
-		Prepare(Load, gone_viper.Load).
+		NewApp(Load, gone_viper.Load).
 		Test(func(c *cache) {
 			n := 10
 			f := rand.Intn(100)
@@ -95,7 +95,7 @@ type useKey struct {
 
 func TestKey(t *testing.T) {
 	gone.
-		Prepare(Load, gone_viper.Load, func(loader gone.Loader) error {
+		NewApp(Load, gone_viper.Load, func(loader gone.Loader) error {
 			return loader.Load(&useKey{})
 		}).
 		Test(func(u *useKey) {

@@ -11,7 +11,7 @@ import (
 
 func Test_r_trip(t *testing.T) {
 	gone.
-		Prepare(tracer.Load).
+		NewApp(tracer.Load).
 		Test(func(in struct {
 			tracer      tracer.Tracer `gone:"*"`
 			tracerIdKey string        `gone:"config,urllib.req.x-trace-id-key=X-Trace-Id"`

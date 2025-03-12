@@ -28,10 +28,10 @@ func createListener(s *server) (err error) {
 
 type server struct {
 	gone.Flag
-	httpServer    *http.Server
-	gone.Logger   `gone:"gone-logger"`
-	http.Handler  `gone:"gone-gin-router"`
-	tracer.Tracer `gone:"*"`
+	httpServer   *http.Server
+	gone.Logger  `gone:"gone-logger"`
+	http.Handler `gone:"gone-gin-router"`
+	tracer       tracer.Tracer `gone:"*"`
 
 	controllers []Controller     `gone:"*"`
 	keeper      gone.GonerKeeper `gone:"*"`
@@ -68,7 +68,7 @@ func (s *server) Start() error {
 	}
 
 	s.Infof("Server Listen At http://%s", s.address)
-	s.Go(s.serve)
+	s.tracer.Go(s.serve)
 	return nil
 }
 

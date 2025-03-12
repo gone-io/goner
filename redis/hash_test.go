@@ -18,7 +18,7 @@ type RedisUser struct {
 
 func TestHash(t *testing.T) {
 	gone.
-		Prepare(Load, gone_viper.Load, func(loader gone.Loader) error {
+		NewApp(Load, gone_viper.Load, func(loader gone.Loader) error {
 			return loader.Load(&RedisUser{})
 		}).
 		Test(func(u *RedisUser) {

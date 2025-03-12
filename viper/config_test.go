@@ -12,7 +12,7 @@ import (
 
 func Test_configure_Get(t *testing.T) {
 	gone.
-		Prepare(Priest).
+		NewApp(Priest).
 		Test(func(conf gone.Configure) {
 			var str string
 

@@ -16,7 +16,7 @@ import (
 func (s *clientRegister) Infof(format string, args ...any) {}
 func TestClientRegister_traceInterceptor(t *testing.T) {
 	gone.
-		Prepare(tracer.Load).
+		NewApp(tracer.Load).
 		Test(func(in struct {
 			tracer      tracer.Tracer `gone:"gone-tracer"`
 			tracerIdKey string        `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
