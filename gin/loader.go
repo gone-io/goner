@@ -2,6 +2,7 @@ package gin
 
 import (
 	"github.com/gone-io/gone/v2"
+	"net/http"
 )
 
 var load = gone.OnceLoad(func(loader gone.Loader) error {
@@ -10,6 +11,7 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 		gone.IsDefault(
 			new(RouteGroup),
 			new(IRouter),
+			new(http.Handler),
 		),
 	); err != nil {
 		return gone.ToError(err)
@@ -19,7 +21,7 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 		return gone.ToError(err)
 	}
 
-	if err := loader.Load(&proxy{}); err != nil {
+	if err := loader.Load(&proxy{}, gone.IsDefault(new(HandleProxyToGin))); err != nil {
 		return gone.ToError(err)
 	}
 

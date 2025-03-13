@@ -262,3 +262,5 @@ server.return.wrapped-data=true      # 是否包装响应数据，默认true
    - 适当配置日志级别
    - 使用连接池管理资源
 
+
+## [性能测试报告](benchmark_test.md)

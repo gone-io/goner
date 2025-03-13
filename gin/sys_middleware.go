@@ -22,6 +22,8 @@ type SysMiddleware struct {
 	tracer     tracer.Tracer `gone:"*"`
 	resHandler Responser     `gone:"*"`
 
+	disable bool `gone:"config,server.sys-middleware.disable,default=false"`
+
 	// healthCheckUrl 健康检查路劲
 	// 对应配置项为: `server.health-check`
 	// 默认为空，不开启；
@@ -54,11 +56,11 @@ type SysMiddleware struct {
 
 	isAfterProxy bool `gone:"config,server.is-after-proxy,default=false"`
 
-	enableLimit  bool       `gone:"config,server.req.enable-limit,default=false"`
-	limit        rate.Limit `gone:"config,server.req.limit,default=100"`
-	burst        int        `gone:"config,server.req.limit-burst,default=300"`
-	requestIdKey string     `gone:"config,server.req.x-request-id-key=X-Request-Id"`
-	tracerIdKey  string     `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
+	enableLimit  bool    `gone:"config,server.req.enable-limit,default=false"`
+	limit        float64 `gone:"config,server.req.limit,default=100"`
+	burst        int     `gone:"config,server.req.limit-burst,default=300"`
+	requestIdKey string  `gone:"config,server.req.x-request-id-key=X-Request-Id"`
+	tracerIdKey  string  `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
 
 	limiter *rate.Limiter
 }
@@ -69,7 +71,7 @@ func (m *SysMiddleware) GonerName() string {
 
 func (m *SysMiddleware) Init() error {
 	if m.enableLimit {
-		m.limiter = rate.NewLimiter(m.limit, m.burst)
+		m.limiter = rate.NewLimiter(rate.Limit(m.limit), m.burst)
 	}
 	return nil
 }
@@ -84,6 +86,11 @@ func (m *SysMiddleware) allow() bool {
 const TooManyRequests = "Too Many Requests"
 
 func (m *SysMiddleware) Process(context *gin.Context) {
+	if m.disable {
+		context.Next()
+		return
+	}
+
 	if m.healthCheckUrl != "" && context.Request.URL.Path == m.healthCheckUrl {
 		context.AbortWithStatus(200)
 		return

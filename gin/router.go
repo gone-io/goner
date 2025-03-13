@@ -18,7 +18,7 @@ type router struct {
 	htmlTpl string `gone:"config,server.html-tpl-pattern"`
 	mode    string `gone:"config,server.mode,default=release"`
 
-	gone.Logger      `gone:"*"`
+	log              gone.Logger `gone:"*"`
 	HandleProxyToGin `gone:"gone-gin-proxy"`
 	middlewares      []Middleware `gone:"*"`
 }
@@ -57,13 +57,13 @@ func (r *router) Init() error {
 
 	gin.DefaultWriter = logWriter{
 		write: func(p []byte) (n int, err error) {
-			r.Debugf("%s", p)
+			r.log.Debugf("%s", p)
 			return len(p), nil
 		},
 	}
 	gin.DefaultErrorWriter = logWriter{
 		write: func(p []byte) (n int, err error) {
-			r.Errorf("%s", p)
+			r.log.Errorf("%s", p)
 			return len(p), nil
 		},
 	}
