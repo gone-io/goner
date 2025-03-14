@@ -1,3 +1,11 @@
+
+[![license](https://img.shields.io/badge/license-GPL%20V3-blue)](LICENSE)
+[![GoDoc](https://pkg.go.dev/badge/github.com/gone-io/goner.jsonvalue?utm_source=godoc)](http://godoc.org/github.com/gone-io/goner)
+[![Go Report Card](https://goreportcard.com/badge/github.com/gone-io/goner)](https://goreportcard.com/report/github.com/gone-io/goner)
+[![codecov](https://codecov.io/gh/gone-io/goner/graph/badge.svg?token=H3CROTTDZ1)](https://codecov.io/gh/gone-io/goner)
+[![Build and Test](https://github.com/gone-io/goner/actions/workflows/go.yml/badge.svg)](https://github.com/gone-io/goner/actions/workflows/go.yml)
+[![Release](https://img.shields.io/github/release/gone-io/goner.svg?style=flat-square)](https://github.com/gone-io/goner/releases)
+
 # Goner
 
 `goner` 是 [Gone](https://github.com/gone-io/gone) 框架的官方组件库，提供了一系列可即插即用的组件，帮助开发者快速构建高质量的 Go 应用程序。
