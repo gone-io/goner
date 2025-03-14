@@ -19,9 +19,6 @@
 # 日志级别，可选值：debug、info、warn、error、panic、fatal，默认为 info
 log.level=info
 
-# 是否启用追踪 ID，默认为 true
-log.enable-trace-id=true
-
 # 是否禁用堆栈跟踪，默认为 false
 log.disable-stacktrace=false
 

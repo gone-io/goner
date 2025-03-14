@@ -92,7 +92,6 @@ type zapLoggerProvider struct {
 	gone.Flag
 
 	level             string `gone:"config,log.level,default=info"`
-	enableTraceId     bool   `gone:"config,log.enable-trace-id,default=true"`
 	disableStacktrace bool   `gone:"config,log.disable-stacktrace,default=false"`
 	stackTraceLevel   string `gone:"config,log.stacktrace-level,default=error"`
 
@@ -110,8 +109,8 @@ type zapLoggerProvider struct {
 	rotationLocalTime   bool   `gone:"config,log.rotation.local-time,default=true"`
 	rotationCompress    bool   `gone:"config,log.rotation.compress,default=false"`
 
-	before      gone.BeforeStop `gone:"*"`
-	tracer      tracer.Tracer   `gone:"*"`
+	beforeStop  gone.BeforeStop `gone:"*"`
+	tracer      []tracer.Tracer `gone:"*"`
 	zapLogger   *zap.Logger
 	atomicLevel zap.AtomicLevel
 }
@@ -134,7 +133,7 @@ func (s *zapLoggerProvider) Init() error {
 			return gone.ToError(err)
 		}
 		s.zapLogger = logger
-		s.before(func() {
+		s.beforeStop(func() {
 			err := s.zapLogger.Sync()
 			if err != nil {
 				gone.GetDefaultLogger().Errorf("failed to sync logger:%v", err)
@@ -143,6 +142,7 @@ func (s *zapLoggerProvider) Init() error {
 	}
 	return nil
 }
+
 func (s *zapLoggerProvider) SetLevel(level zapcore.Level) {
 	s.atomicLevel.SetLevel(level)
 }
@@ -199,8 +199,8 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
 	}
 
-	if s.enableTraceId {
-		encoder = NewTraceEncoder(encoder, s.tracer)
+	if len(s.tracer) > 0 {
+		encoder = NewTraceEncoder(encoder, s.tracer[0])
 	}
 
 	s.atomicLevel = zap.NewAtomicLevel()

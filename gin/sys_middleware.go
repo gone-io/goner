@@ -2,11 +2,13 @@ package gin
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/internal/json"
 	"github.com/gone-io/goner/tracer"
+	"github.com/google/uuid"
 	"golang.org/x/time/rate"
 	"io"
 	"net/http"
@@ -19,10 +21,9 @@ import (
 type SysMiddleware struct {
 	gone.Flag
 
-	logger      gone.Logger      `gone:"*"`
-	resHandler  Responser        `gone:"*"`
-	beforeStart gone.BeforeStart `gone:"*"`
-	gKeeper     gone.GonerKeeper `gone:"*"`
+	logger     gone.Logger      `gone:"*"`
+	resHandler Responser        `gone:"*"`
+	gKeeper    gone.GonerKeeper `gone:"*"`
 
 	disable bool `gone:"config,server.sys-middleware.disable,default=false"`
 
@@ -60,7 +61,6 @@ type SysMiddleware struct {
 	limit       float64 `gone:"config,server.req.limit,default=100"`
 	burst       int     `gone:"config,server.req.limit-burst,default=300"`
 
-	useTracer    bool   `gone:"config,server.use-tracer,default=true"`
 	requestIdKey string `gone:"config,server.req.x-request-id-key=X-Request-Id"`
 	tracerIdKey  string `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
 
@@ -76,20 +76,16 @@ func (m *SysMiddleware) Init() error {
 	if m.enableLimit {
 		m.limiter = rate.NewLimiter(rate.Limit(m.limit), m.burst)
 	}
-
-	if m.useTracer {
-		m.beforeStart(m.doBeforeStart)
-	}
+	m.setTracer()
 
 	return nil
 }
 
-func (m *SysMiddleware) doBeforeStart() {
+func (m *SysMiddleware) setTracer() {
 	tr := m.gKeeper.GetGonerByType(reflect.TypeOf(new(tracer.Tracer)))
-	if tr == nil {
-		panic(gone.NewInnerError("cannot found tracer.Tracer，use `tracer.Load` first or set config server.use-tracer=false ", http.StatusInternalServerError))
+	if tr != nil {
+		m.tracer = tr.(tracer.Tracer)
 	}
-	m.tracer = tr.(tracer.Tracer)
 }
 
 func (m *SysMiddleware) allow() bool {
@@ -101,29 +97,35 @@ func (m *SysMiddleware) allow() bool {
 
 const TooManyRequests = "Too Many Requests"
 
-func (m *SysMiddleware) Process(context *gin.Context) {
+func (m *SysMiddleware) Process(ginCtx *gin.Context) {
 	if m.disable {
-		context.Next()
+		ginCtx.Next()
 		return
 	}
 
-	if m.healthCheckUrl != "" && context.Request.URL.Path == m.healthCheckUrl {
-		context.AbortWithStatus(200)
+	if m.healthCheckUrl != "" && ginCtx.Request.URL.Path == m.healthCheckUrl {
+		ginCtx.AbortWithStatus(200)
 		return
 	}
 
 	if !m.allow() {
-		m.resHandler.Failed(context, gone.NewError(http.StatusTooManyRequests, TooManyRequests, http.StatusTooManyRequests))
+		m.resHandler.Failed(ginCtx, gone.NewError(http.StatusTooManyRequests, TooManyRequests, http.StatusTooManyRequests))
 		return
 	}
+	traceId := ginCtx.GetHeader(m.tracerIdKey)
+	if traceId == "" {
+		traceId = uuid.New().String()
+	}
 
-	if m.useTracer {
-		traceId := context.GetHeader(m.tracerIdKey)
+	ctx := context.WithValue(ginCtx.Request.Context(), m.tracerIdKey, traceId)
+	ginCtx.Request = ginCtx.Request.WithContext(ctx)
+
+	if m.tracer != nil {
 		m.tracer.SetTraceId(traceId, func() {
-			m.process(context)
+			m.process(ginCtx)
 		})
 	} else {
-		m.process(context)
+		m.process(ginCtx)
 	}
 }
 

@@ -30,7 +30,7 @@ func createListener(s *server) (err error) {
 type server struct {
 	gone.Flag
 	httpServer   *http.Server
-	gone.Logger  `gone:"gone-logger"`
+	logger       gone.Logger `gone:"gone-logger"`
 	http.Handler `gone:"gone-gin-router"`
 	gKeeper      gone.GonerKeeper `gone:"*"`
 
@@ -69,7 +69,7 @@ func (s *server) Start() error {
 	}
 
 	tr := s.gKeeper.GetGonerByType(reflect.TypeOf(new(tracer.Tracer)))
-	s.Infof("Server Listen At http://%s", s.address)
+	s.logger.Infof("Server Listen At http://%s", s.address)
 	if tr == nil {
 		go s.serve()
 	} else {
@@ -100,16 +100,16 @@ func (s *server) serve() {
 func (s *server) processServeError(err error) {
 	s.lock.Lock()
 	if !s.stopFlag {
-		s.Errorf("http server error: %v", err)
+		s.logger.Errorf("http server error: %v", err)
 		panic(err)
 	} else {
-		s.Warnf("http server error: %v", err)
+		s.logger.Warnf("http server error: %v", err)
 	}
 	s.lock.Unlock()
 }
 
 func (s *server) Stop() (err error) {
-	s.Warnf("gin server stopping!!")
+	s.logger.Warnf("gin server stopping!!")
 	if nil == s.httpServer {
 		return nil
 	}
@@ -128,20 +128,20 @@ func (s *server) stop() {
 
 	// 关闭服务器
 	if err := s.httpServer.Shutdown(ctx); err != nil {
-		s.Errorf("Server forced to shutdown: %v\n", err)
+		s.logger.Errorf("Server forced to shutdown: %v\n", err)
 	}
 }
 
 // 挂载路由
 func (s *server) mount() error {
 	if len(s.controllers) == 0 {
-		s.Warnf("There is no controller working")
+		s.logger.Warnf("There is no controller working")
 	}
 
 	for _, c := range s.controllers {
 		err := c.Mount()
 		if err != nil {
-			s.Errorf("controller mount err:%v", err)
+			s.logger.Errorf("controller mount err:%v", err)
 			return err
 		}
 	}

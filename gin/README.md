@@ -1,6 +1,7 @@
 # Gone Gin 组件
 
-`gone-gin` 是一个基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，为 Gone 框架提供 HTTP 服务支持。它提供了路由管理、中间件处理、HTTP 注入、SSE（Server-Sent Events）等功能，使得在 Gone 框架中开发 Web 应用更加便捷。
+`gone-gin` 是一个基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，为 Gone 框架提供 HTTP
+服务支持。它提供了路由管理、中间件处理、HTTP 注入、SSE（Server-Sent Events）等功能，使得在 Gone 框架中开发 Web 应用更加便捷。
 
 ## 功能特性
 
@@ -28,31 +29,31 @@ go get github.com/gone-io/goner/gin
 package main
 
 import (
-   "github.com/gone-io/gone/v2"
-   "github.com/gone-io/goner"
-   "github.com/gone-io/goner/gin"
+	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner"
+	"github.com/gone-io/goner/gin"
 )
 
 type HelloController struct {
-   gone.Flag
-   gin.IRouter `gone:"*"` // 注入路由器
+	gone.Flag
+	gin.IRouter `gone:"*"` // 注入路由器
 }
 
 // Mount 实现 gin.Controller 接口
 func (h *HelloController) Mount() gin.MountError {
-   h.GET("/hello", h.hello) // 注册路由
-   return nil
+	h.GET("/hello", h.hello) // 注册路由
+	return nil
 }
 
 func (h *HelloController) hello() (string, error) {
-   return "Hello, Gone!", nil
+	return "Hello, Gone!", nil
 }
 
 func main() {
-   gone.
-      Load(&HelloController{}).
-      Loads(goner.GinLoad).
-      Serve()
+	gone.
+		Load(&HelloController{}).
+		Loads(goner.GinLoad).
+		Serve()
 }
 ```
 
@@ -62,27 +63,27 @@ func main() {
 
 ```go
 type UserRequest struct {
-    ID        int64  `http:"param=id"` // 路径参数
-    Name      string `http:"query=name"` // 查询参数
-    Token     string `http:"header=token"` // 请求头
-    SessionID string `http:"cookie=session-id"` // Cookie
-    Data      User   `http:"body"` // 请求体
+ID        int64  `http:"param=id"`   // 路径参数
+Name      string `http:"query=name"` // 查询参数
+Token     string `http:"header=token"`      // 请求头
+SessionID string `http:"cookie=session-id"` // Cookie
+Data      User   `http:"body"`              // 请求体
 }
 
 type UserController struct {
-    gone.Flag
-    gin.IRouter `gone:"*"`
-    http.HttInjector `gone:"http"`
+gone.Flag
+gin.IRouter `gone:"*"`
+http.HttInjector `gone:"http"`
 }
 
 func (u *UserController) Mount() gin.MountError {
-    u.POST("/users/:id", u.createUser)
-    return nil
+u.POST("/users/:id", u.createUser)
+return nil
 }
 
 func (u *UserController) createUser(req UserRequest) error {
-    // req 中的字段会自动从 HTTP 请求中注入
-    return nil
+// req 中的字段会自动从 HTTP 请求中注入
+return nil
 }
 ```
 
@@ -103,17 +104,15 @@ func (u *UserController) createUser(req UserRequest) error {
 
 ```go
 type CustomMiddleware struct {
-    gone.Flag
+gone.Flag
 }
 
 func (m *CustomMiddleware) Process(ctx *gin.Context) {
-    // 前置处理
-    ctx.Next()
-    // 后置处理
+// 前置处理
+ctx.Next()
+// 后置处理
 }
 ```
-
-
 
 ## SSE（Server-Sent Events）
 
@@ -122,52 +121,52 @@ func (m *CustomMiddleware) Process(ctx *gin.Context) {
 ```go
 // SSEController 是一个示例控制器，展示如何使用channel返回SSE流
 type SSEController struct {
-	gone.Flag
-	gone.Logger `gone:"gone-logger"`
-	router gin.IRouter `gone:"*"`
+gone.Flag
+gone.Logger `gone:"gone-logger"`
+router gin.IRouter `gone:"*"`
 }
 
 // Mount 实现Controller接口，挂载路由
 func (c *SSEController) Mount() gin.GinMountError {
-	// 注册路由
-	c.router.GET("/api/sse/events", c.streamEvents)
+// 注册路由
+c.router.GET("/api/sse/events", c.streamEvents)
 
-	return nil
+return nil
 }
 
 // streamEvents 返回一个channel，系统会自动将其转换为SSE流
 func (c *SSEController) streamEvents() (<-chan any, error) {
-	// 创建一个channel用于发送事件
-	ch := make(chan any)
+// 创建一个channel用于发送事件
+ch := make(chan any)
 
-	// 启动一个goroutine来发送事件
-	go func() {
-		defer close(ch) // 确保在函数结束时关闭channel
+// 启动一个goroutine来发送事件
+go func() {
+defer close(ch) // 确保在函数结束时关闭channel
 
-		// 发送10个事件
-		for i := 1; i <= 10; i++ {
-			// 创建事件数据
-			eventData := map[string]any{
-				"id":      i,
-				"message": fmt.Sprintf("这是第%d个事件", i),
-				"time":    time.Now().Format(time.RFC3339),
-			}
+// 发送10个事件
+for i := 1; i <= 10; i++ {
+// 创建事件数据
+eventData := map[string]any{
+"id":      i,
+"message": fmt.Sprintf("这是第%d个事件", i),
+"time":    time.Now().Format(time.RFC3339),
+}
 
-			// 发送事件到channel
-			ch <- eventData
+// 发送事件到channel
+ch <- eventData
 
-			// 每秒发送一个事件
-			time.Sleep(1 * time.Second)
-		}
+// 每秒发送一个事件
+time.Sleep(1 * time.Second)
+}
 
-		// 发送一个错误事件示例
-		ch <- gone.NewParameterError("这是一个错误事件示例")
+// 发送一个错误事件示例
+ch <- gone.NewParameterError("这是一个错误事件示例")
 
-		// 等待一秒后结束
-		time.Sleep(1 * time.Second)
-	}()
+// 等待一秒后结束
+time.Sleep(1 * time.Second)
+}()
 
-	return ch, nil
+return ch, nil
 }
 ```
 
@@ -225,9 +224,7 @@ server.req.x-trace-id-key=X-Trace-Id      # 追踪ID的Header键名
 # 健康检查
 server.health-check=/health          # 健康检查路径，默认为/health
 
-# 追踪配置
-server.use-tracer=true               # 是否使用追踪，默认true
-server.is-after-proxy=false          # 是否在代理后面，默认false
+server.is-after-proxy=false          # 是否在代理后面，默认false；如果存在反向代理，比如Nginx，则需要设置为true
 ```
 
 ### 代理与响应配置
@@ -243,24 +240,23 @@ server.return.wrapped-data=true      # 是否包装响应数据，默认true
 ## 最佳实践
 
 1. 路由管理
-   - 按业务模块划分控制器
-   - 使用路由分组管理相关接口
-   - 合理使用 HTTP 方法（GET、POST、PUT、DELETE 等）
+    - 按业务模块划分控制器
+    - 使用路由分组管理相关接口
+    - 合理使用 HTTP 方法（GET、POST、PUT、DELETE 等）
 
 2. 参数注入
-   - 合理使用 HTTP 注入标签（param、query、header、cookie、body）
-   - 一个请求只能注入一次 body
-   - 为注入的参数添加验证规则
+    - 合理使用 HTTP 注入标签（param、query、header、cookie、body）
+    - 一个请求只能注入一次 body
+    - 为注入的参数添加验证规则
 
 3. 错误处理
-   - 使用 `gone.Error` 统一处理错误
-   - 在中间件中统一处理异常
-   - 为不同类型的错误定义清晰的错误码
+    - 使用 `gone.Error` 统一处理错误
+    - 在中间件中统一处理异常
+    - 为不同类型的错误定义清晰的错误码
 
 4. 性能优化
-   - 合理配置限流参数
-   - 适当配置日志级别
-   - 使用连接池管理资源
-
+    - 合理配置限流参数
+    - 适当配置日志级别
+    - 使用连接池管理资源
 
 ## [性能测试报告](benchmark_test.md)
