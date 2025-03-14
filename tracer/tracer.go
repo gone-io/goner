@@ -40,7 +40,7 @@ func Priest(loader gone.Loader) error {
 
 type tracer struct {
 	gone.Flag
-	gone.Logger `gone:"*"`
+	logger gone.Logger `gone:"*"`
 }
 
 var xMap sync.Map
@@ -50,7 +50,7 @@ func (t *tracer) GonerName() string {
 }
 
 func (t *tracer) SetTraceId(traceId string, cb func()) {
-	SetTraceId(traceId, cb, t.Warnf)
+	SetTraceId(traceId, cb, t.logger.Warnf)
 }
 
 func (t *tracer) GetTraceId() (traceId string) {
