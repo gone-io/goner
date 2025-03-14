@@ -10,6 +10,7 @@ import (
 	"golang.org/x/time/rate"
 	"io"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -18,9 +19,10 @@ import (
 type SysMiddleware struct {
 	gone.Flag
 
-	logger     gone.Logger   `gone:"*"`
-	tracer     tracer.Tracer `gone:"*"`
-	resHandler Responser     `gone:"*"`
+	logger      gone.Logger      `gone:"*"`
+	resHandler  Responser        `gone:"*"`
+	beforeStart gone.BeforeStart `gone:"*"`
+	gKeeper     gone.GonerKeeper `gone:"*"`
 
 	disable bool `gone:"config,server.sys-middleware.disable,default=false"`
 
@@ -52,17 +54,18 @@ type SysMiddleware struct {
 
 	responseBodyLogContentTypes string `gone:"config,server.log.show-response-body-for-content-types,default=application/json;application/xml;application/x-www-form-urlencoded"`
 
-	useTracer bool `gone:"config,server.use-tracer,default=true"`
-
 	isAfterProxy bool `gone:"config,server.is-after-proxy,default=false"`
 
-	enableLimit  bool    `gone:"config,server.req.enable-limit,default=false"`
-	limit        float64 `gone:"config,server.req.limit,default=100"`
-	burst        int     `gone:"config,server.req.limit-burst,default=300"`
-	requestIdKey string  `gone:"config,server.req.x-request-id-key=X-Request-Id"`
-	tracerIdKey  string  `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
+	enableLimit bool    `gone:"config,server.req.enable-limit,default=false"`
+	limit       float64 `gone:"config,server.req.limit,default=100"`
+	burst       int     `gone:"config,server.req.limit-burst,default=300"`
+
+	useTracer    bool   `gone:"config,server.use-tracer,default=true"`
+	requestIdKey string `gone:"config,server.req.x-request-id-key=X-Request-Id"`
+	tracerIdKey  string `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
 
 	limiter *rate.Limiter
+	tracer  tracer.Tracer
 }
 
 func (m *SysMiddleware) GonerName() string {
@@ -73,7 +76,20 @@ func (m *SysMiddleware) Init() error {
 	if m.enableLimit {
 		m.limiter = rate.NewLimiter(rate.Limit(m.limit), m.burst)
 	}
+
+	if m.useTracer {
+		m.beforeStart(m.doBeforeStart)
+	}
+
 	return nil
+}
+
+func (m *SysMiddleware) doBeforeStart() {
+	tr := m.gKeeper.GetGonerByType(reflect.TypeOf(new(tracer.Tracer)))
+	if tr == nil {
+		panic(gone.NewInnerError("cannot found tracer.Tracer，use `tracer.Load` first or set config server.use-tracer=false ", http.StatusInternalServerError))
+	}
+	m.tracer = tr.(tracer.Tracer)
 }
 
 func (m *SysMiddleware) allow() bool {

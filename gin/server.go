@@ -10,6 +10,7 @@ import (
 	Cmux "github.com/soheilhy/cmux"
 	"net"
 	"net/http"
+	"reflect"
 	"sync"
 	"time"
 )
@@ -31,7 +32,7 @@ type server struct {
 	httpServer   *http.Server
 	gone.Logger  `gone:"gone-logger"`
 	http.Handler `gone:"gone-gin-router"`
-	tracer       tracer.Tracer `gone:"*"`
+	gKeeper      gone.GonerKeeper `gone:"*"`
 
 	controllers []Controller     `gone:"*"`
 	keeper      gone.GonerKeeper `gone:"*"`
@@ -67,8 +68,13 @@ func (s *server) Start() error {
 		Handler: s,
 	}
 
+	tr := s.gKeeper.GetGonerByType(reflect.TypeOf(new(tracer.Tracer)))
 	s.Infof("Server Listen At http://%s", s.address)
-	s.tracer.Go(s.serve)
+	if tr == nil {
+		go s.serve()
+	} else {
+		tr.(tracer.Tracer).Go(s.serve)
+	}
 	return nil
 }
 

@@ -32,7 +32,7 @@ func Test_r_trip(t *testing.T) {
 					Return(nil, nil)
 
 				g := r{
-					Tracer:      in.tracer,
+					tracer:      in.tracer,
 					tracerIdKey: in.tracerIdKey,
 				}
 				trip := g.trip(tripper)

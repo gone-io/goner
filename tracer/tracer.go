@@ -1,7 +1,6 @@
 package tracer
 
 import (
-	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/google/uuid"
 	"github.com/jtolds/gls"
@@ -20,14 +19,6 @@ type Tracer interface {
 
 	//Go Start a new goroutine instead of `go func`, which can pass the traceId to the new goroutine.
 	Go(fn func())
-
-	//Recover use for catch panic in goroutine
-	Recover()
-
-	RecoverAndSetError(errPointer *error)
-
-	//RecoverSetTraceId SetTraceId and Recover
-	RecoverSetTraceId(traceId string, fn func())
 }
 
 var load = gone.OnceLoad(func(loader gone.Loader) error {
@@ -75,27 +66,6 @@ func (t *tracer) Go(cb func()) {
 			t.SetTraceId(traceId, cb)
 		}()
 	}
-}
-
-func (t *tracer) Recover() {
-	if err := recover(); err != nil {
-		e := gone.NewInnerErrorSkip(fmt.Sprintf("panic: %v", err), gone.PanicError, 3)
-		t.Errorf("%v", e)
-	}
-}
-
-func (t *tracer) RecoverAndSetError(errPointer *error) {
-	if err := recover(); err != nil {
-		*errPointer = gone.NewInnerErrorSkip(fmt.Sprintf("panic: %v", err), gone.PanicError, 3)
-		t.Errorf("%v", *errPointer)
-	}
-}
-
-func (t *tracer) RecoverSetTraceId(traceId string, fn func()) {
-	t.SetTraceId(traceId, func() {
-		defer t.Recover()
-		fn()
-	})
 }
 
 func GetTraceId() (traceId string) {

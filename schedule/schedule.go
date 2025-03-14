@@ -41,13 +41,10 @@ type schedule struct {
 	locker  DoLocker
 }
 
-func (s *schedule) Init() {
-	s.cronTab = cron.New(cron.WithSeconds())
-}
-
 func (s *schedule) Start() error {
 	if len(s.schedulers) == 0 {
 		s.log.Warnf("no scheduler found")
+		return nil
 	}
 
 	if s.isCluster {
@@ -60,11 +57,18 @@ func (s *schedule) Start() error {
 		s.log.Warnf("`schedule` is running in single instance mod.")
 	}
 
+	s.cronTab = cron.New(cron.WithSeconds())
+
 	for _, o := range s.schedulers {
 		o.Cron(func(spec string, jobName JobName, fn func()) {
-
-			_, err := s.cronTab.AddFunc(spec, func() {
-				s.tracer.RecoverSetTraceId("", func() {
+			fnWrap := func() {
+				s.tracer.SetTraceId("", func() {
+					defer func() {
+						if err := recover(); err != nil {
+							e := gone.NewInnerErrorSkip(fmt.Sprintf("panic: %v", err), gone.PanicError, 3)
+							s.log.Errorf("%v", e)
+						}
+					}()
 					if s.locker != nil {
 						lockKey := fmt.Sprintf("lock-job:%s", jobName)
 						err := s.locker.LockAndDo(lockKey, fn, s.lockTime, s.checkPeriod)
@@ -75,7 +79,8 @@ func (s *schedule) Start() error {
 						fn()
 					}
 				})
-			})
+			}
+			_, err := s.cronTab.AddFunc(spec, fnWrap)
 
 			if err != nil {
 				panic("cron.AddFunc for " + string(jobName) + " err:" + err.Error())

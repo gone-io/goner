@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
 	"reflect"
 	"time"
 )
@@ -15,10 +14,9 @@ func NewGinProxy() gone.Goner {
 
 type proxy struct {
 	gone.Flag
-	gone.Logger  `gone:"*"`
+	log          gone.Logger       `gone:"*"`
 	funcInjector gone.FuncInjector `gone:"*"`
 	responser    Responser         `gone:"*"`
-	tracer       tracer.Tracer     `gone:"*"`
 	injector     HttInjector       `gone:"*"`
 	stat         bool              `gone:"config,server.proxy.stat,default=false"`
 }
@@ -154,7 +152,7 @@ func (p *proxy) buildProxyFn(x HandlerFunc, funcName string, last bool) gin.Hand
 	fv := reflect.ValueOf(x)
 	return func(context *gin.Context) {
 		if p.stat {
-			defer TimeStat(funcName+"-inject-proxy", time.Now(), p.Infof)
+			defer TimeStat(funcName+"-inject-proxy", time.Now(), p.log.Infof)
 		}
 
 		parameters := make([]reflect.Value, 0, len(args))

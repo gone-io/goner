@@ -124,6 +124,11 @@ func (s *server) recoveryInterceptor(
 	_ *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler,
 ) (resp interface{}, err error) {
-	defer s.tracer.RecoverAndSetError(&err)
+	defer func() {
+		if e := recover(); e != nil {
+			err = gone.NewInnerErrorSkip(fmt.Sprintf("panic: %v", e), gone.PanicError, 3)
+			s.logger.Errorf("%v", err)
+		}
+	}()
 	return handler(ctx, req)
 }
