@@ -3,7 +3,7 @@ package gone_viper
 import (
 	"errors"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/viper/internal/json"
+	"github.com/gone-io/goner/internal/json"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 	"reflect"
