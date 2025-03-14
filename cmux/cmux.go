@@ -35,10 +35,10 @@ func Priest(loader gone.Loader) error {
 
 type server struct {
 	gone.Flag
-	once          sync.Once
-	cMux          cmux.CMux
-	gone.Logger   `gone:"*"`
-	tracer.Tracer `gone:"*"`
+	once        sync.Once
+	cMux        cmux.CMux
+	gone.Logger `gone:"*"`
+	tracer      []tracer.Tracer `gone:"*"`
 
 	stopFlag bool
 	lock     sync.Mutex
@@ -89,12 +89,19 @@ func (s *server) Start() error {
 	s.stopFlag = false
 	var err error
 	var mutex sync.Mutex
-	s.Go(func() {
+
+	fn := func() {
 		mutex.Lock()
 		defer mutex.Unlock()
 		err = s.cMux.Serve()
 		s.processStartError(err)
-	})
+	}
+
+	if len(s.tracer) > 0 {
+		s.tracer[0].Go(fn)
+	} else {
+		go fn()
+	}
 	<-time.After(20 * time.Millisecond)
 	return err
 }
