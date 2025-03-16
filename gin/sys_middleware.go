@@ -12,7 +12,6 @@ import (
 	"golang.org/x/time/rate"
 	"io"
 	"net/http"
-	"reflect"
 	"strings"
 	"time"
 )
@@ -65,7 +64,7 @@ type SysMiddleware struct {
 	tracerIdKey  string `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
 
 	limiter *rate.Limiter
-	tracer  tracer.Tracer
+	tracer  tracer.Tracer `gone:"*" option:"allowNil"`
 }
 
 func (m *SysMiddleware) GonerName() string {
@@ -76,16 +75,8 @@ func (m *SysMiddleware) Init() error {
 	if m.enableLimit {
 		m.limiter = rate.NewLimiter(rate.Limit(m.limit), m.burst)
 	}
-	m.setTracer()
 
 	return nil
-}
-
-func (m *SysMiddleware) setTracer() {
-	tr := m.gKeeper.GetGonerByType(reflect.TypeOf(new(tracer.Tracer)))
-	if tr != nil {
-		m.tracer = tr.(tracer.Tracer)
-	}
 }
 
 func (m *SysMiddleware) allow() bool {

@@ -7,7 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/goccy/go-json v0.10.5
 	github.com/gomodule/redigo v1.9.2
-	github.com/gone-io/gone/v2 v2.0.2
+	github.com/gone-io/gone/v2 v2.0.3
 	github.com/google/uuid v1.6.0
 	github.com/imroc/req/v3 v3.50.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -80,6 +80,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.23.0 // indirect
 	github.com/paulmach/orb v0.11.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
+	github.com/petermattis/goid v0.0.0-20250303134427-723919f7f203 // indirect
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect

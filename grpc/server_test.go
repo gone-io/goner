@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/gone-io/gone/v2"
-	gonecmux "github.com/gone-io/goner/cmux"
 	"github.com/gone-io/goner/tracer"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
@@ -32,18 +31,13 @@ func Test_server_initListener(t *testing.T) {
 		listener := NewMockListener(controller)
 		cMuxServer.EXPECT().MatchWithWriters(gomock.Any()).Return(listener)
 		cMuxServer.EXPECT().GetAddress().Return("")
-		gone.
-			NewApp(tracer.Load, func(loader gone.Loader) error {
-				return loader.Load(cMuxServer, gone.Name(gonecmux.Name))
-			}).
-			Test(func(keeper gone.GonerKeeper) {
-				s := server{
-					keeper: keeper,
-				}
-				err := s.initListener()
-				assert.Nil(t, err)
-				assert.NotNil(t, s.listener)
-			})
+
+		s := server{
+			cMuxServer: cMuxServer,
+		}
+		err := s.initListener()
+		assert.Nil(t, err)
+		assert.NotNil(t, s.listener)
 	})
 
 	t.Run("use tcpListener", func(t *testing.T) {
@@ -51,67 +45,32 @@ func Test_server_initListener(t *testing.T) {
 		defer controller.Finish()
 		listener := NewMockListener(controller)
 
-		gone.
-			Test(func(keeper gone.GonerKeeper) {
-
-				s := server{
-					createListener: func(s *server) error {
-						s.listener = listener
-						return nil
-					},
-					keeper: keeper,
-				}
-				err := s.initListener()
-				assert.Nil(t, err)
-			})
+		s := server{
+			createListener: func(s *server) error {
+				s.listener = listener
+				return nil
+			},
+		}
+		err := s.initListener()
+		assert.Nil(t, err)
+		assert.NotNil(t, s.listener)
 	})
 
 	t.Run("use tcpListener error", func(t *testing.T) {
-		gone.
-			Test(func(keeper gone.GonerKeeper) {
-				controller := gomock.NewController(t)
-				defer controller.Finish()
-				listener := NewMockListener(controller)
+		controller := gomock.NewController(t)
+		defer controller.Finish()
+		listener := NewMockListener(controller)
 
-				s := server{
-					keeper: keeper,
-					createListener: func(s *server) error {
-						s.listener = listener
-						return errors.New("error")
-					},
-				}
-				err := s.initListener()
-				assert.Error(t, err)
-			})
+		s := server{
+			createListener: func(s *server) error {
+				s.listener = listener
+				return errors.New("error")
+			},
+		}
+		err := s.initListener()
+		assert.Error(t, err)
 	})
 }
-
-//func Test_server_Start(t *testing.T) {
-//	t.Run("no gRPC service found, gRPC server will not start", func(t *testing.T) {
-//		gone.
-//			NewApp(tracer.Load).
-//			Test(func(keeper gone.GonerKeeper, logger gone.Logger, tracer tracer.Tracer) {
-//				controller := gomock.NewController(t)
-//				defer controller.Finish()
-//				listener := NewMockListener(controller)
-//
-//				s := server{
-//					logger: logger,
-//					tracer: tracer,
-//					keeper: keeper,
-//					createListener: func(s *server) error {
-//						s.listener = listener
-//						return nil
-//					},
-//				}
-//				err := s.initListener()
-//				assert.Nil(t, err)
-//				err = s.Start()
-//				assert.Nil(t, err)
-//			})
-//
-//	})
-//}
 
 type addr struct{}
 

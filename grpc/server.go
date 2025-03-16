@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	gonecmux "github.com/gone-io/goner/cmux"
+	"github.com/gone-io/goner/cmux"
 	"github.com/gone-io/goner/tracer"
-	"github.com/soheilhy/cmux"
+	Cmux "github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net"
@@ -23,10 +23,10 @@ func createListener(s *server) (err error) {
 
 type server struct {
 	gone.Flag
-	logger       gone.Logger      `gone:"*"`
-	tracer       tracer.Tracer    `gone:"*"`
-	grpcServices []Service        `gone:"*"`
-	keeper       gone.GonerKeeper `gone:"*"`
+	logger       gone.Logger     `gone:"*"`
+	grpcServices []Service       `gone:"*"`
+	cMuxServer   cmux.CMuxServer `gone:"*" option:"allowNil"`
+	tracer       tracer.Tracer   `gone:"*" option:"allowNil"`
 
 	port         int    `gone:"config,server.grpc.port,default=9090"`
 	host         string `gone:"config,server.grpc.host,default=0.0.0.0"`
@@ -44,16 +44,14 @@ func (s *server) GonerName() string {
 }
 
 func (s *server) initListener() error {
-	goner := s.keeper.GetGonerByName(gonecmux.Name)
-	if goner != nil {
-		if muxServer, ok := goner.(gonecmux.CMuxServer); ok {
-			s.listener = muxServer.MatchWithWriters(
-				cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
-			)
-			s.address = muxServer.GetAddress()
-			return nil
-		}
+	if s.cMuxServer != nil {
+		s.listener = s.cMuxServer.MatchWithWriters(
+			Cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
+		)
+		s.address = s.cMuxServer.GetAddress()
+		return nil
 	}
+
 	s.address = fmt.Sprintf("%s:%d", s.host, s.port)
 	return s.createListener(s)
 }
@@ -84,7 +82,11 @@ func (s *server) register() {
 
 func (s *server) Start() error {
 	s.register()
-	s.tracer.Go(s.server)
+	if s.tracer == nil {
+		go s.server()
+	} else {
+		s.tracer.Go(s.server)
+	}
 	return nil
 }
 
@@ -112,9 +114,13 @@ func (s *server) traceInterceptor(
 		traceId = traceIdV[0]
 	}
 
-	s.tracer.SetTraceId(traceId, func() {
-		resp, err = handler(ctx, req)
-	})
+	if s.tracer == nil {
+		return handler(ctx, req)
+	} else {
+		s.tracer.SetTraceId(traceId, func() {
+			resp, err = handler(ctx, req)
+		})
+	}
 	return
 }
 

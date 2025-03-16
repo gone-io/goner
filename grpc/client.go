@@ -12,9 +12,9 @@ import (
 
 type clientRegister struct {
 	gone.Flag
-	gone.Logger `gone:"*"`
+	logger      gone.Logger   `gone:"*"`
 	clients     []Client      `gone:"*"`
-	tracer      tracer.Tracer `gone:"*"`
+	tracer      tracer.Tracer `gone:"*" option:"allowNil"`
 	connections map[string]*grpc.ClientConn
 
 	requestIdKey string `gone:"config,server.grpc.x-request-id-key=X-Request-Id"`
@@ -34,24 +34,25 @@ func (s *clientRegister) traceInterceptor(
 	invoker grpc.UnaryInvoker,
 	_ ...grpc.CallOption,
 ) error {
-	ctx = metadata.AppendToOutgoingContext(ctx, s.tracerIdKey, s.tracer.GetTraceId())
+	tracerId, _ := ctx.Value(s.tracerIdKey).(string)
+	if s.tracer != nil {
+		tracerId = s.tracer.GetTraceId()
+	}
+	ctx = metadata.AppendToOutgoingContext(ctx, s.tracerIdKey, tracerId)
 	return invoker(ctx, method, req, reply, cc)
 }
 
-func (s *clientRegister) register(client Client) error {
+func (s *clientRegister) register(client Client) (err error) {
 	conn, ok := s.connections[client.Address()]
 	if !ok {
-		c, err := grpc.Dial(
+		if conn, err = grpc.NewClient(
 			client.Address(),
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 			grpc.WithChainUnaryInterceptor(s.traceInterceptor),
-		)
-		if err != nil {
-			return err
+		); err != nil {
+			return gone.ToError(err)
 		}
-
-		s.connections[client.Address()] = c
-		conn = c
+		s.connections[client.Address()] = conn
 	}
 
 	client.Stub(conn)
@@ -60,7 +61,7 @@ func (s *clientRegister) register(client Client) error {
 
 func (s *clientRegister) Start() error {
 	for _, c := range s.clients {
-		s.Infof("register gRPC client %v on address %v\n", reflect.ValueOf(c).Type().String(), c.Address())
+		s.logger.Infof("register gRPC client %v on address %v\n", reflect.ValueOf(c).Type().String(), c.Address())
 		if err := s.register(c); err != nil {
 			return err
 		}

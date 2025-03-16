@@ -10,7 +10,6 @@ import (
 	Cmux "github.com/soheilhy/cmux"
 	"net"
 	"net/http"
-	"reflect"
 	"sync"
 	"time"
 )
@@ -29,13 +28,13 @@ func createListener(s *server) (err error) {
 
 type server struct {
 	gone.Flag
-	httpServer   *http.Server
-	logger       gone.Logger `gone:"gone-logger"`
-	http.Handler `gone:"gone-gin-router"`
-	gKeeper      gone.GonerKeeper `gone:"*"`
+	httpServer  *http.Server
+	logger      gone.Logger     `gone:"gone-logger"`
+	httpHandler http.Handler    `gone:"gone-gin-router"`
+	cMuxServer  cmux.CMuxServer `gone:"*" option:"allowNil"`
+	tracer      tracer.Tracer   `gone:"*" option:"allowNil"`
 
-	controllers []Controller     `gone:"*"`
-	keeper      gone.GonerKeeper `gone:"*"`
+	controllers []Controller `gone:"*"`
 
 	address  string
 	stopFlag bool
@@ -65,28 +64,25 @@ func (s *server) Start() error {
 
 	s.stopFlag = false
 	s.httpServer = &http.Server{
-		Handler: s,
+		Handler: s.httpHandler,
 	}
 
-	tr := s.gKeeper.GetGonerByType(reflect.TypeOf(new(tracer.Tracer)))
 	s.logger.Infof("Server Listen At http://%s", s.address)
-	if tr == nil {
+	if s.tracer == nil {
 		go s.serve()
 	} else {
-		tr.(tracer.Tracer).Go(s.serve)
+		s.tracer.Go(s.serve)
 	}
 	return nil
 }
 
 func (s *server) initListener() error {
-	goner := s.keeper.GetGonerByName(cmux.Name)
-	if goner != nil {
-		if muxServer, ok := goner.(cmux.CMuxServer); ok {
-			s.listener = muxServer.Match(Cmux.HTTP1Fast(http.MethodPatch))
-			s.address = muxServer.GetAddress()
-			return nil
-		}
+	if s.cMuxServer != nil {
+		s.listener = s.cMuxServer.Match(Cmux.HTTP1Fast(http.MethodPatch))
+		s.address = s.cMuxServer.GetAddress()
+		return nil
 	}
+
 	s.address = fmt.Sprintf("%s:%d", s.host, s.port)
 	return s.createListener(s)
 }

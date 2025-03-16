@@ -62,6 +62,7 @@ func Test_clientRegister_register(t *testing.T) {
 	register := clientRegister{
 		connections: make(map[string]*grpc.ClientConn),
 		clients:     []Client{client},
+		logger:      gone.GetDefaultLogger(),
 	}
 
 	err := register.Start()

@@ -34,7 +34,7 @@ func Priest(loader gone.Loader) error {
 type r struct {
 	gone.Flag
 	*req.Client
-	tracer tracer.Tracer `gone:"*"`
+	tracer tracer.Tracer `gone:"*" option:"allowNil"`
 
 	requestIdKey string `gone:"config,urllib.req.x-request-id-key=X-Request-Id"`
 	tracerIdKey  string `gone:"config,urllib.req.x-trace-id-key=X-Trace-Id"`
@@ -42,7 +42,11 @@ type r struct {
 
 func (r *r) trip(rt req.RoundTripper) req.RoundTripFunc {
 	return func(req *req.Request) (resp *req.Response, err error) {
-		tracerId := r.tracer.GetTraceId()
+		tracerId, _ := req.Context().Value(r.tracerIdKey).(string)
+		if r.tracer != nil {
+			tracerId = r.tracer.GetTraceId()
+		}
+
 		//传递traceId
 		req.SetHeader(r.tracerIdKey, tracerId)
 		resp, err = rt.RoundTrip(req)
