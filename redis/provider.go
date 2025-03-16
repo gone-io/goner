@@ -9,7 +9,7 @@ import (
 type provider struct {
 	gone.Flag
 	inner     *inner         `gone:"gone-redis-inner"`
-	tracer    tracer.Tracer  `gone:"gone-tracer"`
+	tracer    tracer.Tracer  `gone:"*" option:"allowNil"`
 	configure gone.Configure `gone:"configure"`
 }
 

@@ -110,7 +110,7 @@ type zapLoggerProvider struct {
 	rotationCompress    bool   `gone:"config,log.rotation.compress,default=false"`
 
 	beforeStop  gone.BeforeStop `gone:"*"`
-	tracer      []tracer.Tracer `gone:"*"`
+	tracer      tracer.Tracer   `gone:"*" option:"allowNil"`
 	zapLogger   *zap.Logger
 	atomicLevel zap.AtomicLevel
 }
@@ -199,8 +199,8 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
 	}
 
-	if len(s.tracer) > 0 {
-		encoder = NewTraceEncoder(encoder, s.tracer[0])
+	if s.tracer != nil {
+		encoder = NewTraceEncoder(encoder, s.tracer)
 	}
 
 	s.atomicLevel = zap.NewAtomicLevel()

@@ -21,7 +21,7 @@ var ErrorLockFailed = errors.New("not lock success")
 //}
 
 type locker struct {
-	tracer tracer.Tracer `gone:"gone-tracer"`
+	tracer tracer.Tracer `gone:"*" option:"allowNil"`
 	*inner `gone:"gone-redis-inner"`
 	k      Key `gone:"*"`
 }
@@ -74,8 +74,7 @@ func (r *locker) LockAndDo(key string, fn func(), lockTime, checkPeriod time.Dur
 	cancelCtx, stopWatch := context.WithCancel(context.Background())
 	defer stopWatch()
 
-	//监听任务完成，给锁续期
-	r.tracer.Go(func() {
+	renewal := func() {
 		for {
 			select {
 			case <-cancelCtx.Done():
@@ -89,7 +88,14 @@ func (r *locker) LockAndDo(key string, fn func(), lockTime, checkPeriod time.Dur
 				}
 			}
 		}
-	})
+	}
+
+	//监听任务完成，给锁续期
+	if r.tracer != nil {
+		r.tracer.Go(renewal)
+	} else {
+		go renewal()
+	}
 
 	fn()
 	return nil
