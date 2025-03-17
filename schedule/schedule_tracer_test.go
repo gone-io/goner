@@ -17,10 +17,13 @@ type mockTracer struct {
 	gone.Flag
 	tracer.Tracer
 	called bool
+	once   sync.Once
 }
 
 func (m *mockTracer) SetTraceId(traceId string, fn func()) {
-	m.called = true
+	m.once.Do(func() {
+		m.called = true
+	})
 	fn()
 }
 

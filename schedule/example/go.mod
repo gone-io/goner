@@ -3,13 +3,11 @@ module example
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.2
+	github.com/gone-io/gone/v2 v2.0.3
 	github.com/gone-io/goner v0.0.4
 )
 
-replace (
-	github.com/gone-io/goner v0.0.4 => ../..
-)
+replace github.com/gone-io/goner v0.0.4 => ../..
 
 require (
 	github.com/bytedance/sonic v1.12.10 // indirect

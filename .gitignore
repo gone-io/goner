@@ -1,0 +1,7 @@
+.DS_Store
+
+test-app
+coverage.txt
+
+demo
+*.log

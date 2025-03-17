@@ -3,13 +3,11 @@ module urllib_example
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.2
+	github.com/gone-io/gone/v2 v2.0.3
 	github.com/gone-io/goner v0.0.4
 )
 
-replace (
-	github.com/gone-io/goner v0.0.4 => ../..
-)
+replace github.com/gone-io/goner v0.0.4 => ../..
 
 require (
 	github.com/andybalholm/brotli v1.1.1 // indirect

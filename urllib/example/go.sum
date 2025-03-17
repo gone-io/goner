@@ -10,6 +10,7 @@ github.com/go-task/slim-sprig/v3 v3.0.0 h1:sUs3vkvUymDpBKi3qH1YSqBQk9+9D/8M2mN1v
 github.com/go-task/slim-sprig/v3 v3.0.0/go.mod h1:W848ghGpv3Qj3dhTPRyJypKRiqCdHZiAzKg9hl15HA8=
 github.com/gone-io/gone/v2 v2.0.2 h1:F++2H6NSmPyGHkRZEVpvj1U5mjPrOD0w5RzwiSnsK4k=
 github.com/gone-io/gone/v2 v2.0.2/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
+github.com/gone-io/gone/v2 v2.0.3/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
 github.com/gone-io/goner v0.0.4 h1:KIKAXTPbq/NV4NVMPwpUdDPTHW+lJkn795sKW2uWGn8=
 github.com/gone-io/goner v0.0.4/go.mod h1:fKz23Y7AdpjsSw9iYE0TJEgH1etq/wPmyGOaii64Qx4=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
