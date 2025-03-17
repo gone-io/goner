@@ -9,21 +9,15 @@ import (
 
 type tracerOverGid struct {
 	gone.Flag
-	logger gone.Logger `gone:"*"`
 }
 
 var gidTraceIdMap sync.Map
 
 func (s *tracerOverGid) SetTraceId(traceId string, fn func()) {
-	gid := goid.Get()
-	if gid == 0 {
-		s.logger.Warnf("can not get goid, tracer cannot work.")
-		fn()
-		return
-	}
 	if traceId == "" {
 		traceId = uuid.New().String()
 	}
+	gid := goid.Get()
 	gidTraceIdMap.Store(gid, traceId)
 	defer func() {
 		gidTraceIdMap.Delete(gid)
@@ -33,10 +27,6 @@ func (s *tracerOverGid) SetTraceId(traceId string, fn func()) {
 
 func (s *tracerOverGid) GetTraceId() string {
 	gid := goid.Get()
-	if gid == 0 {
-		s.logger.Warnf("can not get goid, tracer cannot work.")
-		return ""
-	}
 	value, ok := gidTraceIdMap.Load(gid)
 	if !ok {
 		return ""
@@ -46,11 +36,7 @@ func (s *tracerOverGid) GetTraceId() string {
 
 func (s *tracerOverGid) Go(fn func()) {
 	traceId := s.GetTraceId()
-	if traceId == "" {
-		go fn()
-	} else {
-		go func() {
-			s.SetTraceId(traceId, fn)
-		}()
-	}
+	go func() {
+		s.SetTraceId(traceId, fn)
+	}()
 }

@@ -18,7 +18,7 @@ func TestClientRegister_traceInterceptor(t *testing.T) {
 	gone.
 		NewApp(tracer.Load).
 		Test(func(in struct {
-			tracer      tracer.Tracer `gone:"gone-tracer"`
+			tracer      tracer.Tracer `gone:"*"`
 			tracerIdKey string        `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
 		}) {
 
@@ -29,7 +29,7 @@ func TestClientRegister_traceInterceptor(t *testing.T) {
 				tracerIdKey: in.tracerIdKey,
 			}
 
-			tracer.SetTraceId("xxxx", func() {
+			in.tracer.SetTraceId("xxxx", func() {
 				err := register.traceInterceptor(
 					context.Background(),
 					"test",
