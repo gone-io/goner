@@ -39,6 +39,7 @@ apollo.namespace: application     # 命名空间，默认为 application
 apollo.secret: YourSecretKey      # 访问密钥（如果启用了访问密钥验证）
 apollo.isBackupConfig: true       # 是否开启备份配置
 apollo.watch: true                # 是否监听配置变更
+apollo.useLocalConfIfKeyNotExist: true  # 如果 Apollo 配置中不存在某个 key，是否使用本地配置文件中的值
 ```
 
 ### 3. 使用配置
@@ -94,8 +95,10 @@ type YourComponent struct {
 | apollo.ip | Apollo 配置中心地址 | - |
 | apollo.namespace | 命名空间 | application |
 | apollo.secret | 访问密钥，用于验证客户端身份 | - |
-| apollo.isBackupConfig | 是否开启备份配置，开启后会将配置保存到本地 | false |
+| apollo.isBackupConfig | 是否开启备份配置，开启后会将配置保存到本地 | true |
 | apollo.watch | 是否监听配置变更，开启后配置变更时会自动更新 | false |
+|apollo.useLocalConfIfKeyNotExist|如果 Apollo 配置中不存在某个 key，是否使用本地配置文件中的值|true|
+
 
 
 ## 高级用法

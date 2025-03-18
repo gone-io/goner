@@ -32,6 +32,8 @@ func Load(loader gone.Loader) error {
 type changeListener struct {
 	gone.Flag
 	keyMap map[string]any
+
+	//lazy fill，resolve circular dependency
 	logger gone.Logger `gone:"*" option:"lazy"`
 }
 
@@ -62,8 +64,12 @@ type apolloClient struct {
 	apolloClient   agollo.Client
 
 	changeListener *changeListener `gone:"*"`
-	testFlag       gone.TestFlag   `gone:"*" option:"allowNil"`
-	logger         gone.Logger     `gone:"*" option:"lazy"`
+
+	// testFlag only for test environment
+	testFlag gone.TestFlag `gone:"*" option:"allowNil"`
+
+	//lazy fill，resolve circular dependency
+	logger gone.Logger `gone:"*" option:"lazy"`
 
 	appId                     string //`gone:"config,apollo.appId"`
 	cluster                   string //`gone:"config,apollo.cluster"`
