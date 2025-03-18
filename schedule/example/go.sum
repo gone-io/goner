@@ -35,6 +35,7 @@ github.com/gomodule/redigo v1.9.2/go.mod h1:KsU3hiK/Ay8U42qpaJk+kuNa3C+spxapWpM+
 github.com/gone-io/gone/v2 v2.0.2 h1:F++2H6NSmPyGHkRZEVpvj1U5mjPrOD0w5RzwiSnsK4k=
 github.com/gone-io/gone/v2 v2.0.2/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
 github.com/gone-io/gone/v2 v2.0.3/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
+github.com/gone-io/gone/v2 v2.0.4/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
 github.com/gone-io/goner v0.0.4 h1:KIKAXTPbq/NV4NVMPwpUdDPTHW+lJkn795sKW2uWGn8=
 github.com/gone-io/goner v0.0.4/go.mod h1:fKz23Y7AdpjsSw9iYE0TJEgH1etq/wPmyGOaii64Qx4=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=

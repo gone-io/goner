@@ -223,9 +223,7 @@ func (m *SysMiddleware) recover(context *gin.Context) {
 			r,
 			gone.PanicTrace(2, 1),
 		)
-
-		err := gone.ToError(r)
-		m.resHandler.Failed(context, err)
+		m.resHandler.Failed(context, gone.ToError(r))
 		context.Abort()
 	}
 }

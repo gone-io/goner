@@ -6,7 +6,6 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 	return loader.Load(
 		&tracer{},
 		gone.IsDefault(new(Tracer)),
-		gone.LazyFill(),
 	)
 })
 
@@ -18,7 +17,6 @@ var gidTracerLoad = gone.OnceLoad(func(loader gone.Loader) error {
 	return loader.Load(
 		&tracerOverGid{},
 		gone.IsDefault(new(Tracer)),
-		gone.LazyFill(),
 	)
 })
 

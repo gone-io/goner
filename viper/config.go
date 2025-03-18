@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+func New(testFlag gone.TestFlag) gone.Configure {
+	return &configure{testFlag: testFlag}
+}
+
 var load = gone.OnceLoad(func(loader gone.Loader) error {
 	return loader.Load(
 		&configure{},
@@ -32,8 +36,8 @@ func Priest(loader gone.Loader) error {
 
 type configure struct {
 	gone.Flag
-	test []gone.TestFlag `gone:"*"`
-	conf *viper.Viper
+	testFlag gone.TestFlag `gone:"*" option:"allowNil"`
+	conf     *viper.Viper
 }
 
 func (c *configure) Get(key string, v any, defaultVal string) error {
@@ -48,7 +52,7 @@ func (c *configure) Get(key string, v any, defaultVal string) error {
 }
 
 func (c *configure) isInTestKit() bool {
-	return len(c.test) > 0
+	return c.testFlag != nil
 }
 
 func (c *configure) readConfig() (err error) {

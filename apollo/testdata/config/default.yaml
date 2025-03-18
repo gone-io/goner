@@ -1,0 +1,8 @@
+apollo:
+  appId: SampleApp
+  cluster: default
+  ip: http://127.0.0.1:8080
+  namespace: application,test.yml
+  secret: c946bca94cc041a08354233a1ef9f94a
+  isBackupConfig: false
+  watch: true

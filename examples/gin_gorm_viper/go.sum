@@ -38,6 +38,7 @@ github.com/goccy/go-json v0.10.5/go.mod h1:oq7eo15ShAhp70Anwd5lgX2pLfOS3QCiwU/PU
 github.com/gone-io/gone/v2 v2.0.2 h1:F++2H6NSmPyGHkRZEVpvj1U5mjPrOD0w5RzwiSnsK4k=
 github.com/gone-io/gone/v2 v2.0.2/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
 github.com/gone-io/gone/v2 v2.0.3/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
+github.com/gone-io/gone/v2 v2.0.4/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
