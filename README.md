@@ -18,13 +18,22 @@
 
 ### 数据库
 - [gorm](./gorm) - 基于 [GORM](https://gorm.io/) 的 ORM 组件，支持 MySQL、PostgreSQL、SQLite、SQL Server 和 ClickHouse 等多种数据库
-- [xorm](./xorm) - 基于 [XORM](https://xorm.io/) 的 ORM 组件，提供简单高效的数据库操作
+- [xorm](./xorm) - 基于 [XORM](https://xorm.io/) 的 ORM 组件，提供简单高效的数据库操作，支持多种数据库 
 
 ### 缓存与消息
 - [redis](./redis) - Redis 客户端封装，提供缓存、分布式锁等功能
 
 ### 微服务
+#### 配置中心
+- [apollo](./apollo) - 基于 [Apollo](https://www.apolloconfig.com/) 的配置中心组件，提供动态配置管理功能
+- [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能【开发中...】
+
+### 注册中心
+- [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能【开发中...】
+
+#### RPC
 - [grpc](./grpc) - gRPC 客户端和服务端封装，简化微服务开发
+- [urllib](./urllib) - HTTP 客户端封装
 
 ### 工具组件
 - [viper](./viper) - 配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper)
