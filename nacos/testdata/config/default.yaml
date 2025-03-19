@@ -1,0 +1,16 @@
+nacos:
+  client:
+    namespaceId: public
+  server:
+    ipAddr: "127.0.0.1"
+    contextPath: "/nacos"
+    port: 8848
+    scheme: "http"
+  dataId: "user-center"
+  watch: true
+  useLocalConfIfKeyNotExist: true
+  groups:
+    - group: "DEFAULT_GROUP"
+      format: properties # support: "json", "toml", "yaml", "yml", "properties", "props", "prop", "hcl", "tfvars", "dotenv", "env", "ini"
+    - group: database
+      format: yaml
