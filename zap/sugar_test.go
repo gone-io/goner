@@ -11,7 +11,7 @@ func TestNewSugar(t *testing.T) {
 
 	os.Setenv("GONE_LOG_LEVEL", "debug")
 	gone.
-		NewApp(Priest).
+		NewApp(Priest, tracer.Load).
 		Test(func(log gone.Logger, tracer tracer.Tracer, in struct {
 			level string `gone:"config,log.level"`
 		}) {

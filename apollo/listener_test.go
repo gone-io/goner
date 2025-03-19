@@ -20,7 +20,7 @@ func TestChangeListener_Init(t *testing.T) {
 	assert.Empty(t, listener.keyMap, "keyMap应该为空")
 }
 
-func TestChangeListener_Put(t *testing.T) {
+func TestChangeListener_add(t *testing.T) {
 	// 创建changeListener实例
 	listener := &changeListener{}
 	listener.Init()
@@ -29,12 +29,11 @@ func TestChangeListener_Put(t *testing.T) {
 	key := "test.key"
 	var value string
 
-	// 执行Put操作
-	listener.Put(key, &value)
+	listener.add(key, &value)
 
 	// 验证key-value是否正确存储
 	assert.Contains(t, listener.keyMap, key, "keyMap应该包含指定的key")
-	assert.Equal(t, &value, listener.keyMap[key], "keyMap中存储的值应该是正确的引用")
+	assert.Equal(t, &value, listener.keyMap[key][0], "keyMap中存储的值应该是正确的引用")
 }
 
 func TestChangeListener_OnChange(t *testing.T) {
@@ -53,7 +52,7 @@ func TestChangeListener_OnChange(t *testing.T) {
 	// 测试数据
 	key := "test.key"
 	var value string
-	listener.Put(key, &value)
+	listener.add(key, &value)
 
 	// 创建配置变更事件
 	changeEvent := &storage.ChangeEvent{
@@ -91,7 +90,7 @@ func TestChangeListener_OnChange_Error(t *testing.T) {
 	// 测试数据 - 使用int类型，但新值为字符串，应该导致错误
 	key := "test.key"
 	var value int
-	listener.Put(key, &value)
+	listener.add(key, &value)
 
 	// 创建配置变更事件 - 新值为非数字字符串，无法转换为int
 	changeEvent := &storage.ChangeEvent{
@@ -119,7 +118,7 @@ func TestChangeListener_OnChange_NotModified(t *testing.T) {
 	// 测试数据
 	key := "test.key"
 	var value string = "original"
-	listener.Put(key, &value)
+	listener.add(key, &value)
 
 	// 创建配置变更事件 - 使用非MODIFIED类型
 	changeEvent := &storage.ChangeEvent{

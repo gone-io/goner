@@ -9,33 +9,6 @@ import (
 	"strings"
 )
 
-// Load load zap logger
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	err := tracer.Load(loader)
-	if err != nil {
-		return err
-	}
-
-	err = loader.Load(&zapLoggerProvider{})
-	if err != nil {
-		return err
-	}
-	err = loader.Load(&sugarProvider{})
-	if err != nil {
-		return err
-	}
-	return loader.Load(&sugar{}, gone.IsDefault(new(gone.Logger)), gone.ForceReplace())
-})
-
-func Load(loader gone.Loader) error {
-	return load(loader)
-}
-
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
-}
-
 type wrappedLogger struct {
 	*zap.Logger
 }
@@ -69,38 +42,15 @@ func (l *wrappedLogger) Sugar() gone.Logger {
 	}
 }
 
-func parseLevel(level string) zapcore.Level {
-	switch level {
-	default:
-		return zap.InfoLevel
-	case "debug", "trace":
-		return zap.DebugLevel
-	case "info":
-		return zap.InfoLevel
-	case "warn":
-		return zap.WarnLevel
-	case "error":
-		return zap.ErrorLevel
-	case "panic":
-		return zap.PanicLevel
-	case "fatal":
-		return zap.FatalLevel
-	}
-}
-
 type zapLoggerProvider struct {
 	gone.Flag
 
-	level             string `gone:"config,log.level,default=info"`
-	disableStacktrace bool   `gone:"config,log.disable-stacktrace,default=false"`
-	stackTraceLevel   string `gone:"config,log.stacktrace-level,default=error"`
-
-	reportCaller bool   `gone:"config,log.report-caller,default=true"`
-	encoder      string `gone:"config,log.encoder,default=console"`
-
-	output    string `gone:"config,log.output,default=stdout"`
-	errOutput string `gone:"config,log.error-output"`
-
+	disableStacktrace   bool   `gone:"config,log.disable-stacktrace,default=false"`
+	stackTraceLevel     string `gone:"config,log.stacktrace-level,default=error"`
+	reportCaller        bool   `gone:"config,log.report-caller,default=true"`
+	encoder             string `gone:"config,log.encoder,default=console"`
+	output              string `gone:"config,log.output,default=stdout"`
+	errOutput           string `gone:"config,log.error-output"`
 	rotationOutput      string `gone:"config,log.rotation.output"`
 	rotationErrorOutput string `gone:"config,log.rotation.error-output"`
 	rotationMaxSize     int    `gone:"config,log.rotation.max-size,default=100"`
@@ -111,8 +61,9 @@ type zapLoggerProvider struct {
 
 	beforeStop  gone.BeforeStop `gone:"*"`
 	tracer      tracer.Tracer   `gone:"*" option:"allowNil"`
-	zapLogger   *zap.Logger
-	atomicLevel zap.AtomicLevel
+	atomicLevel *atomicLevel    `gone:"*"`
+
+	zapLogger *zap.Logger
 }
 
 func (s *zapLoggerProvider) Provide(tagConf string) (*zap.Logger, error) {
@@ -203,9 +154,6 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		encoder = NewTraceEncoder(encoder, s.tracer)
 	}
 
-	s.atomicLevel = zap.NewAtomicLevel()
-	s.atomicLevel.SetLevel(parseLevel(s.level))
-
 	core := zapcore.NewCore(
 		encoder,
 		sink,
@@ -215,7 +163,11 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 	if errSink != nil {
 		core = zapcore.NewTee(
 			core,
-			zapcore.NewCore(encoder, errSink, zap.NewAtomicLevelAt(zap.ErrorLevel)),
+			zapcore.NewCore(
+				encoder,
+				errSink,
+				s.atomicLevel,
+			),
 		)
 	}
 

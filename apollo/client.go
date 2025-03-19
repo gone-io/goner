@@ -83,7 +83,7 @@ func (s *apolloClient) Init() {
 
 func (s *apolloClient) Get(key string, v any, defaultVal string) error {
 	if s.watch {
-		s.changeListener.Put(key, v)
+		s.changeListener.add(key, v)
 	}
 
 	if s.apolloClient == nil {
