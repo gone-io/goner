@@ -3,11 +3,13 @@ module grpc_demo
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.2
+	github.com/gone-io/gone/v2 v2.0.5
 	github.com/gone-io/goner v0.0.4
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.5
 )
+
+replace github.com/gone-io/goner v0.0.4 => ../../
 
 require (
 	github.com/bytedance/sonic v1.12.10 // indirect
@@ -34,6 +36,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
+	github.com/petermattis/goid v0.0.0-20250303134427-723919f7f203 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/soheilhy/cmux v0.1.5 // indirect

@@ -12,9 +12,11 @@ import (
 
 type clientRegister struct {
 	gone.Flag
-	logger      gone.Logger   `gone:"*"`
-	clients     []Client      `gone:"*"`
-	tracer      tracer.Tracer `gone:"*" option:"allowNil"`
+	logger    gone.Logger    `gone:"*"`
+	clients   []Client       `gone:"*"`
+	tracer    tracer.Tracer  `gone:"*" option:"allowNil"`
+	configure gone.Configure `gone:"configure"`
+
 	connections map[string]*grpc.ClientConn
 
 	requestIdKey string `gone:"config,server.grpc.x-request-id-key=X-Request-Id"`
@@ -42,21 +44,43 @@ func (s *clientRegister) traceInterceptor(
 	return invoker(ctx, method, req, reply, cc)
 }
 
-func (s *clientRegister) register(client Client) (err error) {
-	conn, ok := s.connections[client.Address()]
-	if !ok {
+func (s *clientRegister) getConn(address string) (conn *grpc.ClientConn, err error) {
+	conn = s.connections[address]
+	if conn == nil {
 		if conn, err = grpc.NewClient(
-			client.Address(),
+			address,
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 			grpc.WithChainUnaryInterceptor(s.traceInterceptor),
 		); err != nil {
-			return gone.ToError(err)
+			return nil, gone.ToError(err)
 		}
-		s.connections[client.Address()] = conn
+		s.connections[address] = conn
 	}
+	return
+}
 
+func (s *clientRegister) register(client Client) error {
+	conn, err := s.getConn(client.Address())
+	if err != nil {
+		return err
+	}
 	client.Stub(conn)
 	return nil
+}
+
+func (s *clientRegister) Provide(tagConf string) (*grpc.ClientConn, error) {
+	m, _ := gone.TagStringParse(tagConf)
+	address := m["address"]
+	if configKey, ok := m["config"]; ok {
+		err := s.configure.Get(configKey, &address, address)
+		if err != nil {
+			return nil, gone.ToError(err)
+		}
+	}
+	if address == "" {
+		return nil, gone.ToError("address is empty")
+	}
+	return s.getConn(address)
 }
 
 func (s *clientRegister) Start() error {

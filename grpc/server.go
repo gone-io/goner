@@ -2,7 +2,6 @@ package gone_grpc
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/cmux"
@@ -56,24 +55,25 @@ func (s *server) initListener() error {
 	return s.createListener(s)
 }
 func (s *server) Init() error {
-	if len(s.grpcServices) == 0 {
-		return errors.New("no gRPC service found, gRPC server will not start")
-	}
 	err := s.initListener()
 	if err != nil {
 		return gone.ToError(err)
 	}
 
-	return nil
-}
-
-func (s *server) register() {
 	s.grpcServer = grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			s.traceInterceptor,
 			s.recoveryInterceptor,
 		),
 	)
+	return nil
+}
+
+func (s *server) Provide() (*grpc.Server, error) {
+	return s.grpcServer, nil
+}
+
+func (s *server) register() {
 	for _, grpcService := range s.grpcServices {
 		s.logger.Infof("Register gRPC service %v", reflect.ValueOf(grpcService).Type().String())
 		grpcService.RegisterGrpcServer(s.grpcServer)
