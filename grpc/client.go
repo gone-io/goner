@@ -44,6 +44,7 @@ func (s *clientRegister) traceInterceptor(
 	return invoker(ctx, method, req, reply, cc)
 }
 
+// getConn 根据不同的地址创建 grpc.ClientConn
 func (s *clientRegister) getConn(address string) (conn *grpc.ClientConn, err error) {
 	conn = s.connections[address]
 	if conn == nil {
@@ -68,6 +69,7 @@ func (s *clientRegister) register(client Client) error {
 	return nil
 }
 
+// Provide 根据不同的配置创建 grpc.ClientConn
 func (s *clientRegister) Provide(tagConf string) (*grpc.ClientConn, error) {
 	m, _ := gone.TagStringParse(tagConf)
 	address := m["address"]
