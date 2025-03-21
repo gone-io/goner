@@ -170,9 +170,15 @@ func (s *configure) Get(key string, v any, defaultVal string) error {
 		return s.localConfigure.Get(key, v, defaultVal)
 	}
 
-	err := gone.SetValue(reflect.ValueOf(v), v, s.viper.GetString(key))
+	value := s.viper.GetString(key)
+	if value == "" && s.useLocalConfIfKeyNotExist {
+		return s.localConfigure.Get(key, v, defaultVal)
+	}
+	err := gone.SetValue(reflect.ValueOf(v), v, value)
 	if err != nil {
 		s.logger.Warnf("try to set `%s` value err:%v\n", key, err)
+	} else {
+		return nil
 	}
 	if s.useLocalConfIfKeyNotExist {
 		return s.localConfigure.Get(key, v, defaultVal)

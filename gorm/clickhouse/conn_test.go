@@ -1,4 +1,4 @@
-package postgres
+package clickhouse
 
 import (
 	"github.com/gone-io/gone/v2"
