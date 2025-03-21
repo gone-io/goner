@@ -4,8 +4,8 @@ import (
 	"github.com/apolloconfig/agollo/v4"
 	"github.com/apolloconfig/agollo/v4/env/config"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/internal/json"
-	viper "github.com/gone-io/goner/viper"
+	"github.com/gone-io/goner/apollo/internal/json"
+	"github.com/gone-io/goner/viper"
 	"reflect"
 	"strings"
 )

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/internal/json"
+	"github.com/gone-io/goner/gin/internal/json"
 	"github.com/gone-io/goner/tracer"
 	"github.com/google/uuid"
 	"golang.org/x/time/rate"

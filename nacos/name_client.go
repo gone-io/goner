@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/interfaces/svc"
-	"github.com/gone-io/goner/internal/json"
+	"github.com/gone-io/goner/nacos/internal/json"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
