@@ -1,20 +1,23 @@
-package gone_viper
+package viper
 
 import (
 	"flag"
 	"github.com/gone-io/gone/v2"
+	"github.com/sagikazarmark/locafero"
+	"github.com/spf13/afero"
 	"os"
 	"path"
 	"path/filepath"
 )
 
+const testDataDir = "testdata"
 const defaultEnv = "local"
+
 const EEnv = "ENV"
 const EConf = "CONF"
 const ConPath = "config"
 
 const TestSuffix = "_test"
-
 const DefaultConf = "default"
 
 var envFlag = flag.String("env", "", "environment")
@@ -59,12 +62,6 @@ func MustGetWorkDir() string {
 	return workDir
 }
 
-// ConfSetting config settings, include config file dir path and config file name(do not include file extension)
-type ConfSetting struct {
-	ConfigPath string
-	ConfigName string
-}
-
 func lookForModDir(workDir string) string {
 	if workDir == "/" {
 		return ""
@@ -76,57 +73,63 @@ func lookForModDir(workDir string) string {
 	return workDir
 }
 
-// GetConfSettings get config settings
-func GetConfSettings(isInTestKit bool) (configs []ConfSetting) {
-	var configPaths []string
+var SupportedExts = []string{"json", "toml", "yaml", "yml", "properties"}
 
-	executableConfDir := MustGetExecutableConfDir()
-
-	configPaths = append(configPaths, executableConfDir)
-	workDir := MustGetWorkDir()
-
-	configPaths = append(configPaths, path.Join(MustGetWorkDir(), ConPath))
-
-	if isInTestKit {
-		dir := lookForModDir(workDir)
-		if dir != "" {
-			dir = path.Join(dir, ConPath)
-			configPaths = append(configPaths, dir)
-		}
-
-		testDataConfig := path.Join(workDir, "testdata", ConPath)
-		if testDataConfig != dir {
-			configPaths = append(configPaths, testDataConfig)
-		}
+func getConfigPaths(isInTestKit bool) []string {
+	configPaths := []string{
+		MustGetExecutableConfDir(),
+		path.Join(MustGetExecutableConfDir(), ConPath),
+		MustGetWorkDir(),
+		path.Join(MustGetWorkDir(), ConPath),
 	}
-
+	if isInTestKit {
+		modDir := lookForModDir(MustGetWorkDir())
+		if modDir != "" {
+			configPaths = append(configPaths, path.Join(modDir, ConPath))
+		}
+		configPaths = append(configPaths,
+			path.Join(MustGetWorkDir(), testDataDir),
+			path.Join(MustGetWorkDir(), testDataDir, ConPath),
+		)
+	}
 	settingConfPath := GetConfDir()
 	if settingConfPath != "" {
 		configPaths = append(configPaths, settingConfPath)
 	}
+	return configPaths
+}
 
-	envConf := GetEnv()
+func findConfigFiles(env string, isInTestKit bool, paths []string, fsys afero.Fs) ([]string, error) {
+	filenames := locafero.NameWithExtensions(DefaultConf, SupportedExts...)
+	if isInTestKit {
+		filenames = append(filenames, locafero.NameWithExtensions(DefaultConf+TestSuffix, SupportedExts...)...)
+	}
 
-	for _, configPath := range configPaths {
-		configs = append(configs,
-			ConfSetting{ConfigPath: configPath, ConfigName: DefaultConf},
-		)
-
+	if env != "" {
+		filenames = append(filenames, locafero.NameWithExtensions(env, SupportedExts...)...)
 		if isInTestKit {
-			configs = append(configs,
-				ConfSetting{ConfigPath: configPath, ConfigName: DefaultConf + TestSuffix},
-			)
-		}
-
-		configs = append(configs,
-			ConfSetting{ConfigPath: configPath, ConfigName: envConf},
-		)
-
-		if isInTestKit {
-			configs = append(configs,
-				ConfSetting{ConfigPath: configPath, ConfigName: envConf + TestSuffix},
-			)
+			filenames = append(filenames, locafero.NameWithExtensions(env+TestSuffix, SupportedExts...)...)
 		}
 	}
-	return
+
+	finder := locafero.Finder{
+		Paths: paths,
+		Names: filenames,
+		Type:  locafero.FileTypeFile,
+	}
+
+	return finder.Find(fsys)
+}
+
+func getConfigFiles(isInTestKit bool, fsys afero.Fs) ([]string, error) {
+	paths := getConfigPaths(isInTestKit)
+	return findConfigFiles(GetEnv(), isInTestKit, paths, fsys)
+}
+
+func fileExt(cf string) string {
+	ext := filepath.Ext(cf)
+	if len(ext) > 1 {
+		return ext[1:]
+	}
+	return ""
 }

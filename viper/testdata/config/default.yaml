@@ -15,3 +15,7 @@ setting:
     - name: degfy
       age: 20
       sex: male
+
+
+replace.a: 9900
+replace.b: ${replace.a}
