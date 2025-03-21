@@ -24,7 +24,7 @@ jobs:
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage
-        run: find . -name go.mod -not -path "*/example/*" -not -path "*/examples/*" -execdir  go test -race -coverprofile=coverage.txt -covermode=atomic ./... \;
+        run: find . -name go.mod -not -path "*/example/*" -not -path "*/examples/*" | xargs -n1 dirname | xargs -L1 bash -c 'cd "$0" && pwd && go test -race -coverprofile=coverage.txt -covermode=atomic ./... || exit 255' || echo "Tests failed"
       - name: Merge coverage
         run: find . -name "coverage.txt" -exec cat {} \; > total_coverage.txt
       - name: Upload coverage reports to Codecov

@@ -6,7 +6,7 @@ require (
 	github.com/bytedance/sonic v1.13.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/goccy/go-json v0.10.5
-	github.com/gone-io/gone/v2 v2.0.6
+	github.com/gone-io/gone/v2 v2.0.7
 	github.com/gone-io/goner/cmux v0.0.0-00010101000000-000000000000
 	github.com/gone-io/goner/tracer v0.0.1
 	github.com/google/uuid v1.6.0

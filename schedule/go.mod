@@ -8,7 +8,7 @@ replace (
 )
 
 require (
-	github.com/gone-io/gone/v2 v2.0.6
+	github.com/gone-io/gone/v2 v2.0.7
 	github.com/gone-io/goner/redis v0.0.0-00010101000000-000000000000
 	github.com/gone-io/goner/tracer v0.0.1
 	github.com/robfig/cron/v3 v3.0.1

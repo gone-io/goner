@@ -3,7 +3,7 @@ module github.com/gone-io/goner
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.6
+	github.com/gone-io/gone/v2 v2.0.7
 	github.com/gone-io/goner/gin v0.0.0-20250321103707-52f1be0edf49
 	github.com/gone-io/goner/tracer v0.0.1
 	github.com/gone-io/goner/viper v0.0.1
