@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner"
 	gone_grpc "github.com/gone-io/goner/grpc"
+	"github.com/gone-io/goner/viper"
 	"google.golang.org/grpc"
 	"grpc_demo/proto"
 	"log"
@@ -34,7 +34,7 @@ func (c *helloClient) Stub(conn *grpc.ClientConn) {
 func main() {
 	gone.
 		Load(&helloClient{}).
-		Loads(goner.BaseLoad, gone_grpc.ClientRegisterLoad).
+		Loads(viper.Load, gone_grpc.ClientRegisterLoad).
 		Run(func(in struct {
 			hello *helloClient `gone:"*"` // 在Run方法的参数中，注入 helloClient
 		}) {

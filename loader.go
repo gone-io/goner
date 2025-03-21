@@ -4,7 +4,7 @@ import (
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/gin"
 	"github.com/gone-io/goner/tracer"
-	viper "github.com/gone-io/goner/viper"
+	"github.com/gone-io/goner/viper"
 	zap "github.com/gone-io/goner/zap"
 )
 

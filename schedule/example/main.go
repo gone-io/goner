@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner"
 	"github.com/gone-io/goner/redis"
 	"github.com/gone-io/goner/schedule"
+	"github.com/gone-io/goner/viper"
 )
 
 type sch struct {
@@ -31,7 +31,7 @@ func main() {
 	gone.
 		Load(&sch{}).
 		Loads(
-			goner.BaseLoad,
+			viper.Load,
 			redis.Load, //使用 redis 实现分布式锁；单机模式下（即配置为schedule.in-cluster=false）时，不需要加载redis，
 			schedule.Load,
 		).

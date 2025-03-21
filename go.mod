@@ -3,17 +3,15 @@ module github.com/gone-io/goner
 go 1.24.1
 
 require (
-	github.com/bytedance/sonic v1.12.10
-	github.com/goccy/go-json v0.10.5
 	github.com/gone-io/gone/v2 v2.0.6
 	github.com/gone-io/goner/gin v0.0.0-20250321103707-52f1be0edf49
 	github.com/gone-io/goner/tracer v0.0.1
 	github.com/gone-io/goner/viper v0.0.1
 	github.com/gone-io/goner/zap v0.0.0-20250321103707-52f1be0edf49
-	github.com/json-iterator/go v1.1.12
 )
 
 require (
+	github.com/bytedance/sonic v1.13.2 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
@@ -25,10 +23,12 @@ require (
 	github.com/go-playground/validator/v10 v10.25.0 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
+	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gone-io/goner/cmux v0.0.0-20250321103707-52f1be0edf49 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -38,7 +38,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/petermattis/goid v0.0.0-20250319124200-ccd6737f222a // indirect
-	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/sagikazarmark/locafero v0.8.0 // indirect
 	github.com/soheilhy/cmux v0.1.5 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
@@ -61,4 +60,10 @@ require (
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+)
+
+replace (
+	github.com/gone-io/goner/gin => ./gin
+	github.com/gone-io/goner/tracer => ./tracer
+	github.com/gone-io/goner/zap => ./zap
 )

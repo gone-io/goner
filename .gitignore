@@ -2,6 +2,9 @@
 
 test-app
 coverage.txt
+total_coverage.txt
 
 demo
 *.log
+
+../coverage.txt

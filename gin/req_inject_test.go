@@ -12,9 +12,9 @@ import (
 	"testing"
 )
 
-func init() {
-	gone.GetDefaultLogger().SetLevel(gone.ErrorLevel)
-}
+//func init() {
+//	gone.GetDefaultLogger().SetLevel(gone.ErrorLevel)
+//}
 
 type Req struct {
 	A int    `json:"a,omitempty"`

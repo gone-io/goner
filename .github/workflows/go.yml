@@ -24,8 +24,11 @@ jobs:
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage
-        run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+        run: find . -name go.mod -not -path "*/example/*" -not -path "*/examples/*" -execdir  go test -race -coverprofile=coverage.txt -covermode=atomic ./... \;
+      - name: Merge coverage
+        run: find . -name "coverage.txt" -exec cat {} \; > total_coverage.txt
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
             token: ${{ secrets.CODECOV_TOKEN }}
+            files: ./total_coverage.txt

@@ -1,5 +1,5 @@
-github.com/bytedance/sonic v1.12.10 h1:uVCQr6oS5669E9ZVW0HyksTLfNS7Q/9hV6IVS4nEMsI=
-github.com/bytedance/sonic v1.12.10/go.mod h1:uVvFidNmlt9+wa31S1urfwwthTWteBgG0hWuoKAXTx8=
+github.com/bytedance/sonic v1.13.2 h1:8/H1FempDZqC4VqjptGo14QQlJx8VdZJegxs6wwfqpQ=
+github.com/bytedance/sonic v1.13.2/go.mod h1:o68xyaF9u2gvVBuGHPlUVCy+ZfmNNO5ETf1+KgkJhz4=
 github.com/bytedance/sonic/loader v0.1.1/go.mod h1:ncP89zfokxS5LZrJxl5z0UJcsk4M4yY2JpfqGeCtNLU=
 github.com/bytedance/sonic/loader v0.2.4 h1:ZWCw4stuXUsn1/+zQDqeE7JKP+QO47tz7QCNan80NzY=
 github.com/bytedance/sonic/loader v0.2.4/go.mod h1:N8A3vUdtUebEY2/VQC0MyhYeKUFosQU6FxH2JmUe6VI=
@@ -38,14 +38,8 @@ github.com/gone-io/gone/v2 v2.0.6 h1:OsshPSwqftNU39h5EC3o/svMVUeKkjDBKUVmndNdH5g
 github.com/gone-io/gone/v2 v2.0.6/go.mod h1:R6eUqkbiF/L6Lfd7OsUzNW1SpaXhUb7zc8nQj/i04xE=
 github.com/gone-io/goner/cmux v0.0.0-20250321103707-52f1be0edf49 h1:hJH6n0ZGzDCZjQHoJEjJtNJoA6piZulK3Bl+K/CFUQ0=
 github.com/gone-io/goner/cmux v0.0.0-20250321103707-52f1be0edf49/go.mod h1:B4wFP1powK0GLR86i3csCigc7vwyc/2+3frWhrJR+A8=
-github.com/gone-io/goner/gin v0.0.0-20250321103707-52f1be0edf49 h1:jCVO6iPik010cksEpU2whuF5wN1xqaQ/7O64WdYvxag=
-github.com/gone-io/goner/gin v0.0.0-20250321103707-52f1be0edf49/go.mod h1:9aNlF9dyaJZlV9Fd1jGca2H7msOy1WptvXM9dLe+Eas=
-github.com/gone-io/goner/tracer v0.0.1 h1:/IKaL53r5YvVH53wG18mxkebrkolFiW+riSoXf2IZBQ=
-github.com/gone-io/goner/tracer v0.0.1/go.mod h1:UL4lRTaqyf0ctOsmNZj263DqXT1YIsSL0IWyhxb02oo=
 github.com/gone-io/goner/viper v0.0.1 h1:m3MbyjyyKINF/LAwxWvTWRT3mtMLpS6BY266kWWZnFQ=
 github.com/gone-io/goner/viper v0.0.1/go.mod h1:tgnEw7K2iJ1uW9ikztLWYyEjM0J6LtqJLrjftxJPh4A=
-github.com/gone-io/goner/zap v0.0.0-20250321103707-52f1be0edf49 h1:QGVgxoMJ694mDoTbQTnCpQBD46p53pv/MqGa9+kkG2k=
-github.com/gone-io/goner/zap v0.0.0-20250321103707-52f1be0edf49/go.mod h1:Si4KUiEx7gwhvp12nOByR+/IlERvcFOsZnwmkodmWbA=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
