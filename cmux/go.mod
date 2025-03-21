@@ -3,7 +3,7 @@ module github.com/gone-io/goner/cmux
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.6
+	github.com/gone-io/gone/v2 v2.0.7
 	github.com/gone-io/goner/tracer v0.0.1
 	github.com/soheilhy/cmux v0.1.5
 	github.com/stretchr/testify v1.10.0
