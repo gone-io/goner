@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
-	"github.com/gone-io/goner/tracer"
 	"github.com/soheilhy/cmux"
 	"net"
 	"net/http"
@@ -15,10 +14,6 @@ import (
 const Name = "cmux"
 
 var load = gone.OnceLoad(func(loader gone.Loader) error {
-	err := tracer.Load(loader)
-	if err != nil {
-		return gone.ToError(err)
-	}
 	return loader.Load(
 		&server{listen: net.Listen},
 		gone.IsDefault(new(CMuxServer)),
@@ -34,8 +29,8 @@ type server struct {
 	gone.Flag
 	once   sync.Once
 	cMux   cmux.CMux
-	logger gone.Logger   `gone:"*"`
-	tracer tracer.Tracer `gone:"*" option:"allowNil"`
+	logger gone.Logger `gone:"*"`
+	tracer g.Tracer    `gone:"*" option:"allowNil"`
 
 	stopFlag bool
 	lock     sync.Mutex
