@@ -16,11 +16,6 @@ func Load(loader gone.Loader) error {
 	return load(loader)
 }
 
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
-}
-
 type schedule struct {
 	gone.Flag
 

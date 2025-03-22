@@ -1,4 +1,4 @@
-package svc
+package g
 
 // Endpoint interface for service.
 type Endpoint interface {

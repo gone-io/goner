@@ -3,9 +3,11 @@ package cmux
 import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/tracer"
 	"github.com/soheilhy/cmux"
 	"net"
+	"net/http"
 	"sync"
 	"time"
 )
@@ -26,11 +28,6 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 
 func Load(loader gone.Loader) error {
 	return load(loader)
-}
-
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
 }
 
 type server struct {
@@ -75,6 +72,19 @@ func (s *server) Init() error {
 
 func (s *server) Match(matcher ...cmux.Matcher) net.Listener {
 	return s.cMux.Match(matcher...)
+}
+
+func (s *server) MatchFor(protocol g.ProtocolType) net.Listener {
+	switch protocol {
+	case g.GRPC:
+		return s.MatchWithWriters(
+			cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
+		)
+	case g.HTTP1:
+		return s.Match(cmux.HTTP1Fast(http.MethodPatch))
+	default:
+		panic(gone.ToError(fmt.Errorf("unsupport protocol type:%d", protocol)))
+	}
 }
 
 func (s *server) MatchWithWriters(matcher ...cmux.MatchWriter) net.Listener {
