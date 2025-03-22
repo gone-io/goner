@@ -2,14 +2,9 @@ package redis
 
 import (
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
 )
 
 var load = gone.OnceLoad(func(loader gone.Loader) error {
-	if err := tracer.Load(loader); err != nil {
-		return gone.ToError(err)
-	}
-
 	if err := loader.Load(&pool{}, gone.IsDefault(new(Pool))); err != nil {
 		return gone.ToError(err)
 	}
@@ -33,9 +28,4 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 
 func Load(loader gone.Loader) error {
 	return load(loader)
-}
-
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
 }

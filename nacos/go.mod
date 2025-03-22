@@ -2,13 +2,11 @@ module github.com/gone-io/goner/nacos
 
 go 1.24.1
 
-replace github.com/gone-io/goner/g => ../g
-
 require (
 	github.com/bytedance/sonic v1.13.2
 	github.com/goccy/go-json v0.10.5
 	github.com/gone-io/gone/v2 v2.0.7
-	github.com/gone-io/goner/g v0.0.0-00010101000000-000000000000
+	github.com/gone-io/goner/g v1.0.0
 	github.com/gone-io/goner/viper v0.0.1
 	github.com/json-iterator/go v1.1.12
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.9

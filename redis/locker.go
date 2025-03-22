@@ -3,7 +3,7 @@ package redis
 import (
 	"context"
 	"errors"
-	"github.com/gone-io/goner/tracer"
+	"github.com/gone-io/goner/g"
 	"github.com/google/uuid"
 	"time"
 )
@@ -16,12 +16,8 @@ end`
 
 var ErrorLockFailed = errors.New("not lock success")
 
-//func NewRedisLocker() (gone.Goner, gone.GonerId, gone.GonerOption) {
-//	return &locker{}, gone.IdGoneRedisLocker, gone.IsDefault(new(Locker))
-//}
-
 type locker struct {
-	tracer tracer.Tracer `gone:"*" option:"allowNil"`
+	tracer g.Tracer `gone:"*" option:"allowNil"`
 	*inner `gone:"gone-redis-inner"`
 	k      Key `gone:"*"`
 }

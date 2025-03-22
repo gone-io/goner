@@ -3,7 +3,6 @@ package redis
 import (
 	"errors"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"testing"
@@ -14,6 +13,7 @@ func (r *locker) Warnf(format string, args ...any)  {}
 func (r *locker) Errorf(format string, args ...any) {}
 func (r *locker) Debugf(format string, args ...any) {}
 func Test_locker_getConn(t *testing.T) {
+	setTestEnv()
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
@@ -30,6 +30,7 @@ func Test_locker_getConn(t *testing.T) {
 }
 
 func Test_locker_buildKey(t *testing.T) {
+	setTestEnv()
 	l := locker{
 		inner: &inner{
 			cachePrefix: "pre",
@@ -44,6 +45,7 @@ func Test_locker_buildKey(t *testing.T) {
 }
 
 func Test_locker_TryLock(t *testing.T) {
+	setTestEnv()
 	t.Run("lock suc", func(t *testing.T) {
 		controller := gomock.NewController(t)
 		defer controller.Finish()
@@ -118,6 +120,7 @@ func Test_locker_TryLock(t *testing.T) {
 }
 
 func Test_locker_releaseLock(t *testing.T) {
+	setTestEnv()
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
@@ -139,6 +142,7 @@ func Test_locker_releaseLock(t *testing.T) {
 }
 
 func Test_locker_LockAndDo(t *testing.T) {
+	setTestEnv()
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
@@ -161,25 +165,25 @@ func Test_locker_LockAndDo(t *testing.T) {
 	mockPool2.EXPECT().Close(gomock.Any()).AnyTimes()
 	mockPool2.EXPECT().Get().Return(conn2).AnyTimes()
 
-	gone.NewApp(tracer.Load).Test(func(in struct {
-		tracer tracer.Tracer `gone:"*"`
-	}) {
-		l := locker{
-			inner: &inner{
-				pool: mockPool,
-			},
-			k: &cache{
+	gone.
+		NewApp().
+		Test(func(in struct {
+		}) {
+			l := locker{
 				inner: &inner{
-					pool: mockPool2,
+					pool: mockPool,
 				},
-			},
-			tracer: in.tracer,
-		}
+				k: &cache{
+					inner: &inner{
+						pool: mockPool2,
+					},
+				},
+			}
 
-		err := l.LockAndDo("xxx", func() {
-			time.Sleep(220 * time.Millisecond)
-		}, 100*time.Millisecond, 50*time.Millisecond)
+			err := l.LockAndDo("xxx", func() {
+				time.Sleep(220 * time.Millisecond)
+			}, 100*time.Millisecond, 50*time.Millisecond)
 
-		assert.Nil(t, err)
-	})
+			assert.Nil(t, err)
+		})
 }

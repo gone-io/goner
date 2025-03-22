@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/redis/internal/json"
-	gone_viper "github.com/gone-io/goner/viper"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
@@ -17,8 +16,9 @@ type RedisUser struct {
 }
 
 func TestHash(t *testing.T) {
+	setTestEnv()
 	gone.
-		NewApp(Load, gone_viper.Load, func(loader gone.Loader) error {
+		NewApp(Load, func(loader gone.Loader) error {
 			return loader.Load(&RedisUser{})
 		}).
 		Test(func(u *RedisUser) {

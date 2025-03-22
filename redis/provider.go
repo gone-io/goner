@@ -2,14 +2,14 @@ package redis
 
 import (
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
+	"github.com/gone-io/goner/g"
 	"reflect"
 )
 
 type provider struct {
 	gone.Flag
 	inner     *inner         `gone:"gone-redis-inner"`
-	tracer    tracer.Tracer  `gone:"*" option:"allowNil"`
+	tracer    g.Tracer       `gone:"*" option:"allowNil"`
 	configure gone.Configure `gone:"configure"`
 }
 

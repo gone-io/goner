@@ -5,16 +5,27 @@ package redis
 import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	gone_viper "github.com/gone-io/goner/viper"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
+	"os"
 	"testing"
 	"time"
 )
 
+func setTestEnv() {
+	_ = os.Setenv("GONE_REDIS_SERVER", "127.0.0.1:6379")
+	_ = os.Setenv("GONE_REDIS_PREFIX", "unit-test")
+	_ = os.Setenv("GONE_REDIS_PASSWORD", "")
+	_ = os.Setenv("GONE_REDIS_MAX_IDLE", "10")
+	_ = os.Setenv("GONE_REDIS_MAX_ACTIVE", "5")
+	_ = os.Setenv("GONE_REDIS_DB", "0")
+	_ = os.Setenv("GONE_APP_MODULE_A_REDIS_PREFIX", "module-a")
+}
+
 func TestCache(t *testing.T) {
+	setTestEnv()
 	gone.
-		NewApp(Load, gone_viper.Load).
+		NewApp(Load).
 		Test(func(c *cache) {
 			type Point struct {
 				X int
@@ -53,8 +64,9 @@ func TestCache(t *testing.T) {
 }
 
 func Test_cache_Keys(t *testing.T) {
+	setTestEnv()
 	gone.
-		NewApp(Load, gone_viper.Load).
+		NewApp(Load).
 		Test(func(c *cache) {
 			n := 10
 			f := rand.Intn(100)
@@ -94,8 +106,9 @@ type useKey struct {
 }
 
 func TestKey(t *testing.T) {
+	setTestEnv()
 	gone.
-		NewApp(Load, gone_viper.Load, func(loader gone.Loader) error {
+		NewApp(Load, func(loader gone.Loader) error {
 			return loader.Load(&useKey{})
 		}).
 		Test(func(u *useKey) {
