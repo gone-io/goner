@@ -4,20 +4,10 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.7
-	github.com/gone-io/goner v0.0.3
-	github.com/gone-io/goner/gin v0.0.0-20250321103707-52f1be0edf49
-	github.com/gone-io/goner/gorm v0.0.0-00010101000000-000000000000
-	github.com/gone-io/goner/gorm/mysql v0.0.0-00010101000000-000000000000
 	gorm.io/gorm v1.25.12
 )
 
-replace github.com/gone-io/goner v0.0.3 => ../..
 
-replace (
-	github.com/gone-io/goner/gin => ../../gin
-	github.com/gone-io/goner/gorm => ../../gorm
-	github.com/gone-io/goner/gorm/mysql => ../../gorm/mysql
-)
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect

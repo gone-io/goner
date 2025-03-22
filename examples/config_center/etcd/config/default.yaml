@@ -1,0 +1,21 @@
+viper.remote:
+  type: yaml
+  watch: true
+  watchDuration: 5s
+  useLocalConfIfKeyNotExist: true
+  providers:
+    - provider: etcd3
+      configType: yaml # supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop", "env", "dotenv"
+      endpoint: http://localhost:2379
+      path:  /config/application.yaml
+      keyring:
+
+    - provider: etcd3
+      configType: yaml # supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop", "env", "dotenv"
+      endpoint: http://localhost:2379
+      path:  /config/database.yaml
+      keyring:
+
+
+key:
+  not-existed-in-etcd: 1000

@@ -3,7 +3,7 @@ module urllib_example
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.6
+	github.com/gone-io/gone/v2 v2.0.7
 	github.com/gone-io/goner/urllib v0.0.0-00010101000000-000000000000
 	github.com/imroc/req/v3 v3.50.0
 )
