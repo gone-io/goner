@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/gin/internal/json"
-	"github.com/gone-io/goner/tracer"
 	"github.com/google/uuid"
 	"golang.org/x/time/rate"
 	"io"
@@ -64,7 +64,7 @@ type SysMiddleware struct {
 	tracerIdKey  string `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
 
 	limiter *rate.Limiter
-	tracer  tracer.Tracer `gone:"*" option:"allowNil"`
+	tracer  g.Tracer `gone:"*" option:"allowNil"`
 }
 
 func (m *SysMiddleware) GonerName() string {

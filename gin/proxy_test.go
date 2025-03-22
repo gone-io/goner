@@ -3,13 +3,14 @@ package gin_test
 import (
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/gin"
-	"github.com/gone-io/goner/tracer"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"reflect"
 	"testing"
 )
+
+//go:generate mockgen -package=gin_test -destination ./tracer_mock_test.go github.com/gone-io/goner/g Tracer
 
 func Test_proxy_Proxy(t *testing.T) {
 	controller := gomock.NewController(t)
@@ -19,8 +20,11 @@ func Test_proxy_Proxy(t *testing.T) {
 	responser.EXPECT().Success(gomock.Any(), gomock.Any()).AnyTimes()
 	responser.EXPECT().ProcessResults(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.All()).AnyTimes()
 
+	//mockTracer := NewMockTracer(controller)
+	//mockTracer.EXPECT().GetTraceId().Return("123")
+
 	gone.
-		NewApp(tracer.Load, func(cemetery gone.Loader) error {
+		NewApp(func(cemetery gone.Loader) error {
 			if err := cemetery.Load(gin.NewGinProxy()); err != nil {
 				return err
 			}
@@ -30,6 +34,9 @@ func Test_proxy_Proxy(t *testing.T) {
 			if err := cemetery.Load(injector); err != nil {
 				return err
 			}
+			//if err := cemetery.Load(mockTracer); err != nil {
+			//	return err
+			//}
 			return nil
 		}).
 		Test(func(proxy gin.HandleProxyToGin, logger gone.Logger) {
@@ -76,87 +83,6 @@ func Test_proxy_Proxy(t *testing.T) {
 
 				assert.Equal(t, 9, i)
 			})
-
-			//t.Run("Inject funcs success", func(t *testing.T) {
-			//	defer func() {
-			//		if err := recover(); err != nil {
-			//			//assert.Equal(t, "gone: proxy: proxy: no such func", err)
-			//			fmt.Printf("%v", gone.ToError(err))
-			//		}
-			//	}()
-			//
-			//	i := 0
-			//	type One struct {
-			//		X1  string
-			//		log gone.Logger `gone:"*"`
-			//	}
-			//
-			//	type Two struct {
-			//		X2  string
-			//		log gone.Logger `gone:"*"`
-			//	}
-			//
-			//	j := 0
-			//	injector.EXPECT().StartBindFuncs().
-			//		//MinTimes(3).MaxTimes(3).
-			//		AnyTimes().
-			//		Do(func() {
-			//			j++
-			//			println("j==>", j)
-			//		})
-			//	injector.EXPECT().
-			//		BindFuncs().
-			//		//MinTimes(3).MaxTimes(3).
-			//		AnyTimes().
-			//		Return(func(ctx *gin.OriginContent, arg reflect.Value) (reflect.Value, error) {
-			//			one, ok := arg.Interface().(One)
-			//			assert.True(t, ok)
-			//			assert.Equal(t, logger, one.log)
-			//			one.X1 = "one"
-			//			return reflect.ValueOf(one), nil
-			//		})
-			//
-			//	//fn2 := func(ctx *gin.OriginContent, arg reflect.Value) (reflect.Value, error) {
-			//	//	two, ok := arg.Interface().(Two)
-			//	//	assert.True(t, ok)
-			//	//	assert.Equal(t, logger, two.log)
-			//	//
-			//	//	two.X2 = "two"
-			//	//	return reflect.ValueOf(two), nil
-			//	//}
-			//	//
-			//	//injector.EXPECT().BindFuncs().Return(fn2)
-			//
-			//	funcs := proxy.Proxy(func(
-			//		one One,
-			//		two Two,
-			//		logger gone.Logger,
-			//
-			//		ctxPtr *gone.Context,
-			//		ctx gone.Context,
-			//		ginCtxPtr *gin.OriginContent,
-			//		ginCtx gin.OriginContent,
-			//	) (any, any, any, any, any, error, int) {
-			//		assert.NotNil(t, logger)
-			//		assert.Equal(t, logger, one.log)
-			//		assert.Equal(t, logger, two.log)
-			//		assert.Equal(t, "one", one.X1)
-			//		assert.Equal(t, "two", two.X2)
-			//
-			//		assert.NotNil(t, ctxPtr)
-			//		assert.Equal(t, *ctxPtr, ctx)
-			//		assert.Equal(t, ctx.Context, ginCtxPtr)
-			//		assert.Equal(t, *ctx.Context, ginCtx)
-			//		i++
-			//		var x *int = nil
-			//		type X struct{}
-			//		var s []int
-			//		var s2 = make([]int, 0)
-			//		return 10, s, s2, X{}, x, nil, 0
-			//	})
-			//	funcs[0](&gin.OriginContent{})
-			//	assert.Equal(t, 1, i)
-			//})
 
 			t.Run("Inject Error", func(t *testing.T) {
 				defer func() {

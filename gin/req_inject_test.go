@@ -4,7 +4,6 @@ import (
 	origin "github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/gin"
-	"github.com/gone-io/goner/tracer"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -77,7 +76,7 @@ func BenchmarkProcessRequestWithInject(b *testing.B) {
 	_ = os.Setenv("GONE_SERVER_RETURN_WRAPPED-DATA", "false")
 
 	gone.
-		NewApp(gin.Load, tracer.Load).
+		NewApp(gin.Load).
 		Load(&ctr{}).
 		Run(func(httpHandler http.Handler) {
 			b.ResetTimer()
@@ -113,7 +112,7 @@ func BenchmarkProxyGinHandlerFunc(b *testing.B) {
 	_ = os.Setenv("GONE_SERVER_RETURN_WRAPPED-DATA", "false")
 	engine := origin.New()
 	gone.
-		NewApp(gin.Load, tracer.Load).
+		NewApp(gin.Load).
 		Load(&ctr{}).
 		Run(func(proxy gin.HandleProxyToGin, ctr *ctr) {
 			handle := proxy.Proxy(ctr.httpHandler)

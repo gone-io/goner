@@ -5,9 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/cmux"
-	"github.com/gone-io/goner/tracer"
-	Cmux "github.com/soheilhy/cmux"
+	"github.com/gone-io/goner/g"
 	"net"
 	"net/http"
 	"sync"
@@ -29,10 +27,10 @@ func createListener(s *server) (err error) {
 type server struct {
 	gone.Flag
 	httpServer  *http.Server
-	logger      gone.Logger     `gone:"gone-logger"`
-	httpHandler http.Handler    `gone:"gone-gin-router"`
-	cMuxServer  cmux.CMuxServer `gone:"*" option:"allowNil"`
-	tracer      tracer.Tracer   `gone:"*" option:"allowNil"`
+	logger      gone.Logger  `gone:"gone-logger"`
+	httpHandler http.Handler `gone:"gone-gin-router"`
+	cMuxServer  g.Cmux       `gone:"*" option:"allowNil"`
+	tracer      g.Tracer     `gone:"*" option:"allowNil"`
 
 	controllers []Controller `gone:"*"`
 
@@ -78,7 +76,7 @@ func (s *server) Start() error {
 
 func (s *server) initListener() error {
 	if s.cMuxServer != nil {
-		s.listener = s.cMuxServer.Match(Cmux.HTTP1Fast(http.MethodPatch))
+		s.listener = s.cMuxServer.MatchFor(g.HTTP1)
 		s.address = s.cMuxServer.GetAddress()
 		return nil
 	}
