@@ -1,4 +1,4 @@
-module github.com/gone-io/goner/gorm/grpc
+module github.com/gone-io/goner/grpc
 
 go 1.24.1
 
