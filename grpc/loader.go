@@ -1,4 +1,4 @@
-package gone_grpc
+package grpc
 
 import (
 	"github.com/gone-io/gone/v2"

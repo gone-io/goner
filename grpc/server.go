@@ -1,12 +1,10 @@
-package gone_grpc
+package grpc
 
 import (
 	"context"
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/cmux"
-	"github.com/gone-io/goner/tracer"
-	Cmux "github.com/soheilhy/cmux"
+	"github.com/gone-io/goner/g"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net"
@@ -22,10 +20,10 @@ func createListener(s *server) (err error) {
 
 type server struct {
 	gone.Flag
-	logger       gone.Logger     `gone:"*"`
-	grpcServices []Service       `gone:"*"`
-	cMuxServer   cmux.CMuxServer `gone:"*" option:"allowNil"`
-	tracer       tracer.Tracer   `gone:"*" option:"allowNil"`
+	logger       gone.Logger `gone:"*"`
+	grpcServices []Service   `gone:"*"`
+	cMuxServer   g.Cmux      `gone:"*" option:"allowNil"`
+	tracer       g.Tracer    `gone:"*" option:"allowNil"`
 
 	port         int    `gone:"config,server.grpc.port,default=9090"`
 	host         string `gone:"config,server.grpc.host,default=0.0.0.0"`
@@ -44,9 +42,7 @@ func (s *server) GonerName() string {
 
 func (s *server) initListener() error {
 	if s.cMuxServer != nil {
-		s.listener = s.cMuxServer.MatchWithWriters(
-			Cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
-		)
+		s.listener = s.cMuxServer.MatchFor(g.GRPC)
 		s.address = s.cMuxServer.GetAddress()
 		return nil
 	}
