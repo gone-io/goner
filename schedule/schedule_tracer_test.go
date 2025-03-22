@@ -1,13 +1,13 @@
 package schedule
 
 import (
+	"github.com/gone-io/goner/g"
 	"os"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -15,7 +15,7 @@ import (
 // 自定义tracer实现，用于测试
 type mockTracer struct {
 	gone.Flag
-	tracer.Tracer
+	g.Tracer
 	called bool
 	once   sync.Once
 }

@@ -2,16 +2,12 @@ package urllib
 
 import (
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
+	"github.com/gone-io/goner/g"
 	"github.com/imroc/req/v3"
 )
 
 var load = gone.OnceLoad(func(loader gone.Loader) error {
-	err := tracer.Load(loader)
-	if err != nil {
-		return gone.ToError(err)
-	}
-	err = loader.Load(&r{}, gone.IsDefault(new(Client)))
+	err := loader.Load(&r{}, gone.IsDefault(new(Client)))
 	if err != nil {
 		return gone.ToError(err)
 	}
@@ -26,15 +22,10 @@ func Load(loader gone.Loader) error {
 	return load(loader)
 }
 
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
-}
-
 type r struct {
 	gone.Flag
 	*req.Client
-	tracer tracer.Tracer `gone:"*" option:"allowNil"`
+	tracer g.Tracer `gone:"*" option:"allowNil"`
 
 	requestIdKey string `gone:"config,urllib.req.x-request-id-key=X-Request-Id"`
 	tracerIdKey  string `gone:"config,urllib.req.x-trace-id-key=X-Trace-Id"`

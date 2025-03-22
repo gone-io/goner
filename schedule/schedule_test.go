@@ -1,26 +1,43 @@
 package schedule
 
 import (
+	"github.com/gone-io/goner/g"
 	"os"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/redis"
-	"github.com/gone-io/goner/tracer"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
 
 type locker struct {
 	gone.Flag
-	redis.Locker
 }
 
 func (l *locker) LockAndDo(key string, fn func(), lockTime, checkPeriod time.Duration) (err error) {
 	fn()
 	return nil
+}
+
+type tracer struct {
+	gone.Flag
+	g.Tracer
+}
+
+func (t *tracer) SetTraceId(traceId string, fn func()) {
+	fn()
+}
+
+// GetTraceId Get the traceId of the current goroutine
+func (t *tracer) GetTraceId() string {
+	return "trace-id"
+}
+
+// Go Start a new goroutine instead of `go func`, which can pass the traceId to the new goroutine.
+func (t *tracer) Go(fn func()) {
+	go fn()
 }
 
 func Test_schedule_Start_SingleInstance(t *testing.T) {
@@ -47,6 +64,7 @@ func Test_schedule_Start_SingleInstance(t *testing.T) {
 
 	gone.
 		NewApp(Load).
+		Load(&tracer{}).
 		Load(scheduler).
 		Test(func(s *schedule) {
 			assert.False(t, s.isCluster)
@@ -76,7 +94,7 @@ func Test_schedule_Start_Cluster(t *testing.T) {
 		})
 
 	gone.
-		NewApp(tracer.Load, Load, func(loader gone.Loader) error {
+		NewApp(Load, func(loader gone.Loader) error {
 			return loader.Load(&locker{})
 		}).
 		Load(scheduler).
@@ -157,7 +175,8 @@ func Test_schedule_Start_WithTracer(t *testing.T) {
 		})
 
 	gone.
-		NewApp(tracer.Load, Load).
+		NewApp(Load).
+		Load(&tracer{}).
 		Load(scheduler).
 		Test(func(s *schedule) {
 			assert.NotNil(t, s.tracer)
