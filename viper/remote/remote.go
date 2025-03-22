@@ -10,6 +10,20 @@ import (
 
 import _ "github.com/spf13/viper/remote"
 
+//go:generate mockgen -source=remote.go -destination=mock_viper_interface_test.go -package=remote
+//go:generate mockgen -destination=mock_configure_test.go -package=remote github.com/gone-io/gone/v2 Configure
+
+type ViperInterface interface {
+	ReadRemoteConfig() error
+	AllSettings() map[string]any
+	Get(key string) any
+	MergeConfigMap(settings map[string]any) error
+	UnmarshalKey(key string, rawVal any, opts ...viper.DecoderConfigOption) error
+	SetConfigType(configType string)
+	AddRemoteProvider(provider string, endpoint string, path string) error
+	AddSecureRemoteProvider(provider string, endpoint string, path string, keyring string) error
+}
+
 type remoteConfigure struct {
 	gone.Flag
 
@@ -18,8 +32,8 @@ type remoteConfigure struct {
 	logger   gone.Logger   `gone:"*" option:"lazy"`
 
 	localConfigure gone.Configure
-	viper          *viper.Viper
-	remoteVipers   []*viper.Viper
+	viper          ViperInterface
+	remoteVipers   []ViperInterface
 	keyMap         map[string][]any
 
 	providers                 []Provider    //`gone:"config,viper.remote.providers"`
@@ -39,9 +53,14 @@ type Provider struct {
 	Keyring string //gpg keyring
 }
 
+var newViper = func() ViperInterface {
+	return viper.New()
+}
+var newGonerViper = goneViper.New
+
 func (s *remoteConfigure) Init() error {
-	s.localConfigure = goneViper.New(s.testFlag)
-	s.viper = viper.New()
+	s.localConfigure = newGonerViper(s.testFlag)
+	s.viper = newViper()
 	s.keyMap = make(map[string][]any)
 	return s.init(s.localConfigure, s.viper)
 }
@@ -50,7 +69,7 @@ func (s *remoteConfigure) doWatch(duration time.Duration) {
 	for {
 		time.Sleep(duration)
 
-		all := viper.New()
+		all := newViper()
 		for _, v2 := range s.remoteVipers {
 			if err := v2.ReadRemoteConfig(); err != nil {
 				s.logger.Warnf("try to read remote config err:%v\n", err)
@@ -91,14 +110,14 @@ func compare(a, b any) (equal bool) {
 	return cmp.Equal(a, b)
 }
 
-func (s *remoteConfigure) init(localConfigure gone.Configure, v *viper.Viper) (err error) {
+func (s *remoteConfigure) init(localConfigure gone.Configure, v ViperInterface) (err error) {
 	_ = localConfigure.Get("viper.remote.providers", &s.providers, "")
 	_ = localConfigure.Get("viper.remote.watch", &s.watch, "false")
 	_ = localConfigure.Get("viper.remote.watchDuration", &s.watchDuration, "5s")
 	_ = localConfigure.Get("viper.remote.useLocalConfIfKeyNotExist", &s.useLocalConfIfKeyNotExist, "true")
 
 	for _, p := range s.providers {
-		v2 := viper.New()
+		v2 := newViper()
 		v2.SetConfigType(p.ConfigType)
 
 		if p.Keyring == "" {
