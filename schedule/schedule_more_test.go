@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -220,7 +219,8 @@ func Test_schedule_TracerBehavior(t *testing.T) {
 
 	// 创建一个自定义的tracer加载器，用于验证tracer的行为
 	gone.
-		NewApp(tracer.Load, Load).
+		NewApp(Load).
+		Load(&tracer{}).
 		Load(scheduler).
 		Test(func(s *schedule) {
 			assert.NotNil(t, s.tracer)

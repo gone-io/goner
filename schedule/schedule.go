@@ -3,7 +3,7 @@ package schedule
 import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
+	"github.com/gone-io/goner/g"
 	"github.com/robfig/cron/v3"
 	"time"
 )
@@ -22,7 +22,7 @@ type schedule struct {
 	logger      gone.Logger   `gone:"*"`
 	schedulers  []Scheduler   `gone:"*"`
 	locker      DoLocker      `gone:"*" option:"allowNil"`
-	tracer      tracer.Tracer `gone:"*" option:"allowNil"`
+	tracer      g.Tracer      `gone:"*" option:"allowNil"`
 	isCluster   bool          `gone:"config,schedule.in-cluster=true"`
 	lockTime    time.Duration `gone:"config,schedule.lockTime,default=10s"`
 	checkPeriod time.Duration `gone:"config,schedule.checkPeriod,default=2s"`
