@@ -1,9 +1,8 @@
-package gone_grpc
+package grpc
 
 import (
 	"context"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc"
@@ -15,40 +14,39 @@ import (
 
 func (s *clientRegister) Infof(format string, args ...any) {}
 func TestClientRegister_traceInterceptor(t *testing.T) {
-	gone.
-		NewApp(tracer.Load).
-		Test(func(in struct {
-			tracer      tracer.Tracer `gone:"*"`
-			tracerIdKey string        `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
-		}) {
+	ctr := gomock.NewController(t)
+	defer ctr.Finish()
+	tracer := NewMockTracer(ctr)
+	tracer.EXPECT().SetTraceId(gomock.Any(), gomock.Any()).AnyTimes()
+	tracer.EXPECT().GetTraceId().Return("xxxx").AnyTimes()
 
-			var req, reply any
+	const tracerIdKey = "X-Trace-Id"
 
-			register := clientRegister{
-				tracer:      in.tracer,
-				tracerIdKey: in.tracerIdKey,
-			}
+	register := clientRegister{
+		tracer:      tracer,
+		tracerIdKey: tracerIdKey,
+	}
+	var req, reply any
 
-			in.tracer.SetTraceId("xxxx", func() {
-				err := register.traceInterceptor(
-					context.Background(),
-					"test",
-					req, reply,
-					nil,
-					func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, opts ...grpc.CallOption) error {
-						md, b := metadata.FromOutgoingContext(ctx)
-						assert.True(t, b)
-						list := md[strings.ToLower(in.tracerIdKey)]
+	tracer.SetTraceId("xxxx", func() {
+		err := register.traceInterceptor(
+			context.Background(),
+			"test",
+			req, reply,
+			nil,
+			func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, opts ...grpc.CallOption) error {
+				md, b := metadata.FromOutgoingContext(ctx)
+				assert.True(t, b)
+				list := md[strings.ToLower(tracerIdKey)]
 
-						assert.Equal(t, 1, len(list))
+				assert.Equal(t, 1, len(list))
 
-						assert.Equal(t, "xxxx", list[0])
-						return nil
-					},
-				)
-				assert.Nil(t, err)
-			})
-		})
+				assert.Equal(t, "xxxx", list[0])
+				return nil
+			},
+		)
+		assert.Nil(t, err)
+	})
 }
 
 func Test_clientRegister_register(t *testing.T) {

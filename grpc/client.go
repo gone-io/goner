@@ -1,9 +1,9 @@
-package gone_grpc
+package grpc
 
 import (
 	"context"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
+	"github.com/gone-io/goner/g"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
@@ -14,7 +14,7 @@ type clientRegister struct {
 	gone.Flag
 	logger    gone.Logger    `gone:"*"`
 	clients   []Client       `gone:"*"`
-	tracer    tracer.Tracer  `gone:"*" option:"allowNil"`
+	tracer    g.Tracer       `gone:"*" option:"allowNil"`
 	configure gone.Configure `gone:"configure"`
 
 	connections map[string]*grpc.ClientConn

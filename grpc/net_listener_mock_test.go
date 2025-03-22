@@ -7,7 +7,7 @@
 //
 
 // Package gone_grpc is a generated GoMock package.
-package gone_grpc
+package grpc
 
 import (
 	net "net"
