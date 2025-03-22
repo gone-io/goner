@@ -2,7 +2,7 @@ package gone_zap
 
 import (
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/tracer"
+	"github.com/gone-io/goner/g"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -60,7 +60,7 @@ type zapLoggerProvider struct {
 	rotationCompress    bool   `gone:"config,log.rotation.compress,default=false"`
 
 	beforeStop  gone.BeforeStop `gone:"*"`
-	tracer      tracer.Tracer   `gone:"*" option:"allowNil"`
+	tracer      g.Tracer        `gone:"*" option:"allowNil"`
 	atomicLevel *atomicLevel    `gone:"*"`
 
 	zapLogger *zap.Logger

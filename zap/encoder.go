@@ -1,7 +1,7 @@
 package gone_zap
 
 import (
-	"github.com/gone-io/goner/tracer"
+	"github.com/gone-io/goner/g"
 	"go.uber.org/zap"
 	"go.uber.org/zap/buffer"
 	"go.uber.org/zap/zapcore"
@@ -9,7 +9,7 @@ import (
 
 type traceEncoder struct {
 	zapcore.Encoder
-	tracer tracer.Tracer
+	tracer g.Tracer
 }
 
 func (e *traceEncoder) EncodeEntry(entry zapcore.Entry, fields []Field) (*buffer.Buffer, error) {
@@ -20,7 +20,7 @@ func (e *traceEncoder) EncodeEntry(entry zapcore.Entry, fields []Field) (*buffer
 	return e.Encoder.EncodeEntry(entry, fields)
 }
 
-func NewTraceEncoder(encoder zapcore.Encoder, tracer tracer.Tracer) zapcore.Encoder {
+func NewTraceEncoder(encoder zapcore.Encoder, tracer g.Tracer) zapcore.Encoder {
 	return &traceEncoder{
 		Encoder: encoder,
 		tracer:  tracer,

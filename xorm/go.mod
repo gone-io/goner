@@ -3,7 +3,7 @@ module github.com/gone-io/goner/xorm
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.6
+	github.com/gone-io/gone/v2 v2.0.7
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/jtolds/gls v4.20.0+incompatible
 	github.com/stretchr/testify v1.10.0
