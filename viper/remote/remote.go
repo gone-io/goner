@@ -161,7 +161,7 @@ func (s *remoteConfigure) Get(key string, value any, defaultVal string) error {
 	}
 	err := s.viper.UnmarshalKey(key, value)
 	if err != nil && s.useLocalConfIfKeyNotExist {
-		return s.localConfigure.Get(key, v, defaultVal)
+		return s.localConfigure.Get(key, value, defaultVal)
 	}
 	return gone.ToError(err)
 }
