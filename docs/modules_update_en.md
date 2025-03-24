@@ -1,5 +1,30 @@
 # The Journey of Gone Framework's Modular Redesign
 
+- [The Journey of Gone Framework's Modular Redesign](#the-journey-of-gone-frameworks-modular-redesign)
+  - [I. Redesign Background](#i-redesign-background)
+    - [1. The Positioning of Gone Framework](#1-the-positioning-of-gone-framework)
+    - [2. The Design of Pluggable Components](#2-the-design-of-pluggable-components)
+    - [3. Issues with the Original Architecture](#3-issues-with-the-original-architecture)
+  - [II. The Redesign Process](#ii-the-redesign-process)
+    - [1. Repository Separation](#1-repository-separation)
+    - [2. Single Repository Multiple Modules (Mono Repo) Redesign](#2-single-repository-multiple-modules-mono-repo-redesign)
+    - [3. Interface Abstraction and Dependency Decoupling](#3-interface-abstraction-and-dependency-decoupling)
+  - [III. Existing Issues and Solutions](#iii-existing-issues-and-solutions)
+    - [1. Version Management for Single Repository Multiple Modules in Go Projects](#1-version-management-for-single-repository-multiple-modules-in-go-projects)
+      - [Sub-module Version Tags](#sub-module-version-tags)
+      - [Version Dependency Management](#version-dependency-management)
+    - [2. Unit Testing for Single Repository Multiple Modules in Go Projects](#2-unit-testing-for-single-repository-multiple-modules-in-go-projects)
+      - [Module-level Testing](#module-level-testing)
+      - [Centralized Test Reporting](#centralized-test-reporting)
+    - [3. Component Interdependency Issues](#3-component-interdependency-issues)
+      - [Interface Abstraction](#interface-abstraction)
+      - [Dependency Injection](#dependency-injection)
+      - [Plugin Design](#plugin-design)
+  - [IV. Redesign Results](#iv-redesign-results)
+  - [V. Future Outlook](#v-future-outlook)
+  - [References](#references)
+
+
 ## I. Redesign Background
 
 ### 1. The Positioning of Gone Framework
