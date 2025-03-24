@@ -1,15 +1,15 @@
 package nacos
 
 import (
-	"fmt"
+	"github.com/go-viper/encoding/javaproperties"
 	"github.com/gone-io/gone/v2"
 	goneViper "github.com/gone-io/goner/viper"
+	"github.com/google/go-cmp/cmp"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"github.com/spf13/viper"
-	"reflect"
 	"strings"
 )
 
@@ -46,14 +46,19 @@ func (s *configure) OnChange(namespace, group, dataId, content string) {
 		}
 	}
 
-	v2 := viper.New()
+	v2, err := newViperByFormat(format)
+	if err != nil {
+		s.logger.Errorf("OnChange:%v", err)
+		return
+	}
 	v2.SetConfigType(format)
-	err := v2.ReadConfig(strings.NewReader(content))
+	err = v2.ReadConfig(strings.NewReader(content))
 	if err != nil {
 		s.logger.Errorf("failed to read config file, err: %v", err)
 		return
 	}
 	s.groupConfMap[group] = v2
+
 	tmpViper := viper.New()
 	for _, g := range s.groups {
 		err = tmpViper.MergeConfigMap(s.groupConfMap[g.Group].AllSettings())
@@ -66,16 +71,33 @@ func (s *configure) OnChange(namespace, group, dataId, content string) {
 	for k, values := range s.keyMap {
 		oldValue := s.viper.Get(k)
 		newValue := tmpViper.Get(k)
-		if oldValue != newValue {
-			for _, ani := range values {
-				err = gone.SetValue(reflect.ValueOf(ani), ani, s.viper.GetString(k))
-				if err != nil {
-					s.logger.Warnf("try to set `%s` value err:%v\n", k, err)
-				}
-			}
-			s.viper.Set(k, newValue)
+		if compare(oldValue, newValue) {
+			continue
 		}
+		for _, ani := range values {
+			if err := tmpViper.UnmarshalKey(k, ani); err != nil {
+				s.logger.Warnf("try to set `%s` value err:%v\n", k, err)
+			}
+		}
+		s.viper.Set(k, newValue)
 	}
+}
+func compare(a, b any) (equal bool) {
+	return cmp.Equal(a, b)
+}
+
+func newViperByFormat(format string) (*viper.Viper, error) {
+	if format != "properties" {
+		return viper.New(), nil
+	}
+
+	codecRegistry := viper.NewCodecRegistry()
+	codec := &javaproperties.Codec{}
+	err := codecRegistry.RegisterCodec("properties", codec)
+	if err != nil {
+		return nil, gone.ToError(err)
+	}
+	return viper.NewWithOptions(viper.WithCodecRegistry(codecRegistry)), nil
 }
 
 func (s *configure) getConfigContent(localConfigure gone.Configure, client config_client.IConfigClient) (err error) {
@@ -101,14 +123,15 @@ func (s *configure) getConfigContent(localConfigure gone.Configure, client confi
 			DataId: s.dataId,
 			Group:  g.Group,
 		}
-		if s.watch {
-			param.OnChange = s.OnChange
-		}
+
 		content, err := client.GetConfig(param)
 		if err != nil {
 			return gone.ToError(err)
 		}
-		v2 := viper.New()
+		v2, err := newViperByFormat(g.Format)
+		if err != nil {
+			return gone.ToError(err)
+		}
 		v2.SetConfigType(g.Format)
 		err = v2.ReadConfig(strings.NewReader(content))
 		if err != nil {
@@ -119,11 +142,15 @@ func (s *configure) getConfigContent(localConfigure gone.Configure, client confi
 		if err != nil {
 			return gone.ToError(err)
 		}
+
+		if s.watch {
+			param.OnChange = s.OnChange
+			err = client.ListenConfig(param)
+			if err != nil {
+				return gone.ToError(err)
+			}
+		}
 	}
-
-	keys := s.viper.AllKeys()
-	fmt.Printf("%#+v", keys)
-
 	s.keyMap = make(map[string][]any)
 	return nil
 }
@@ -161,27 +188,22 @@ func (s *configure) Init() (err error) {
 	return s.getConfigContent(s.localConfigure, s.client)
 }
 
-func (s *configure) Get(key string, v any, defaultVal string) error {
+func (s *configure) Get(key string, value any, defaultVal string) error {
 	if s.watch {
-		s.keyMap[key] = append(s.keyMap[key], v)
+		s.keyMap[key] = append(s.keyMap[key], value)
 	}
 
-	if s.client == nil || s.viper == nil {
-		return s.localConfigure.Get(key, v, defaultVal)
+	if s.viper == nil {
+		return s.localConfigure.Get(key, value, defaultVal)
 	}
 
-	value := s.viper.GetString(key)
-	if value == "" && s.useLocalConfIfKeyNotExist {
-		return s.localConfigure.Get(key, v, defaultVal)
+	v := s.viper.Get(key)
+	if v == nil || v == "" {
+		return s.localConfigure.Get(key, value, defaultVal)
 	}
-	err := gone.SetValue(reflect.ValueOf(v), v, value)
-	if err != nil {
-		s.logger.Warnf("try to set `%s` value err:%v\n", key, err)
-	} else {
-		return nil
+	err := s.viper.UnmarshalKey(key, value)
+	if err != nil && s.useLocalConfIfKeyNotExist {
+		return s.localConfigure.Get(key, value, defaultVal)
 	}
-	if s.useLocalConfIfKeyNotExist {
-		return s.localConfigure.Get(key, v, defaultVal)
-	}
-	return nil
+	return gone.ToError(err)
 }

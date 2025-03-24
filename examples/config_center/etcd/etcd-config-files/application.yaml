@@ -1,4 +1,5 @@
 # /config/application.yaml
 
-server.name: config-demo
-server.port: 9090
+server:
+  name: config-demo
+  port: 9090
