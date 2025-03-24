@@ -1,0 +1,5 @@
+# group=database
+
+database:
+  username: config-demo
+  password: config-demo-password

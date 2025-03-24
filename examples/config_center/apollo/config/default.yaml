@@ -1,0 +1,8 @@
+apollo:
+  appId: user-center
+  cluster: default
+  ip: http://127.0.0.1:8080
+  namespace: application,database.yaml
+  secret: 1ad569dfbf42400385ac1ebd0b5100b0
+  isBackupConfig: false
+  watch: true
