@@ -1,150 +1,137 @@
 package apollo
 
 import (
+	"github.com/gone-io/gone/v2"
 	"testing"
 
 	"github.com/apolloconfig/agollo/v4/storage"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
 )
 
-func TestChangeListener_Init(t *testing.T) {
-	// 创建changeListener实例
-	listener := &changeListener{}
-
-	// 执行初始化
-	listener.Init()
-
-	// 验证keyMap已初始化
-	assert.NotNil(t, listener.keyMap, "keyMap应该被初始化")
-	assert.Empty(t, listener.keyMap, "keyMap应该为空")
+type mockLogger struct {
+	gone.Logger
+	warnings []string
 }
 
-func TestChangeListener_add(t *testing.T) {
-	// 创建changeListener实例
-	listener := &changeListener{}
-	listener.Init()
-
-	// 测试数据
-	key := "test.key"
-	var value string
-
-	listener.add(key, &value)
-
-	// 验证key-value是否正确存储
-	assert.Contains(t, listener.keyMap, key, "keyMap应该包含指定的key")
-	assert.Equal(t, &value, listener.keyMap[key][0], "keyMap中存储的值应该是正确的引用")
+func (m *mockLogger) Warnf(format string, args ...interface{}) {
+	m.warnings = append(m.warnings, format)
 }
 
 func TestChangeListener_OnChange(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	// 创建模拟logger
-	mockLogger := NewMockLogger(ctrl)
-
-	// 创建changeListener实例
-	listener := &changeListener{
-		logger: mockLogger,
-	}
-	listener.Init()
-
-	// 测试数据
-	key := "test.key"
-	var value string
-	listener.add(key, &value)
-
-	// 创建配置变更事件
-	changeEvent := &storage.ChangeEvent{
-		Changes: map[string]*storage.ConfigChange{
-			key: {
-				OldValue:   "",
-				NewValue:   "new-value",
-				ChangeType: storage.MODIFIED,
+	tests := []struct {
+		name           string
+		namespace      string
+		changes        map[string]*storage.ConfigChange
+		initialValue   map[string]interface{}
+		expectedValue  map[string]interface{}
+		expectedErrors bool
+	}{
+		{
+			name:      "add new config",
+			namespace: "application",
+			changes: map[string]*storage.ConfigChange{
+				"test.key": {
+					OldValue:   "",
+					NewValue:   "new value",
+					ChangeType: storage.ADDED,
+				},
 			},
+			initialValue:   map[string]interface{}{},
+			expectedValue:  map[string]interface{}{"test.key": "new value"},
+			expectedErrors: false,
+		},
+		{
+			name:      "modify existing config",
+			namespace: "application",
+			changes: map[string]*storage.ConfigChange{
+				"test.key": {
+					OldValue:   "old value",
+					NewValue:   "updated value",
+					ChangeType: storage.MODIFIED,
+				},
+			},
+			initialValue:   map[string]interface{}{"test.key": "old value"},
+			expectedValue:  map[string]interface{}{"test.key": "updated value"},
+			expectedErrors: false,
+		},
+		{
+			name:      "delete config",
+			namespace: "application",
+			changes: map[string]*storage.ConfigChange{
+				"test.key": {
+					OldValue:   "old value",
+					NewValue:   "",
+					ChangeType: storage.DELETED,
+				},
+			},
+			initialValue:   map[string]interface{}{"test.key": "old value"},
+			expectedValue:  map[string]interface{}{"test.key": nil},
+			expectedErrors: false,
 		},
 	}
 
-	// 执行OnChange
-	listener.OnChange(changeEvent)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
 
-	// 验证值是否被更新
-	assert.Equal(t, "new-value", value, "值应该被更新为new-value")
+			// 初始化监听器
+			listener := &changeListener{}
+			listener.Init()
+
+			// 设置mock logger
+			mockLogger := &mockLogger{}
+			listener.logger = mockLogger
+
+			// 初始化viper实例
+			v := viper.New()
+			listener.viper = v
+
+			// 创建namespace对应的viper
+			namespaceViper := viper.New()
+			listener.vipersMap = map[string]*viper.Viper{
+				tt.namespace: namespaceViper,
+			}
+			listener.vipers = []*viper.Viper{namespaceViper}
+
+			event := &storage.ChangeEvent{
+				Changes: tt.changes,
+			}
+			event.Namespace = tt.namespace
+
+			var str = "test"
+			listener.Put("test.key", &str)
+
+			// 触发配置变更
+			listener.OnChange(event)
+
+			// 验证结果
+			for k, expectedVal := range tt.expectedValue {
+				actualVal := listener.viper.Get(k)
+				assert.Equal(t, expectedVal, actualVal)
+			}
+
+			// 验证错误日志
+			if tt.expectedErrors {
+				assert.NotEmpty(t, mockLogger.warnings)
+			} else {
+				assert.Empty(t, mockLogger.warnings)
+			}
+		})
+	}
 }
 
-func TestChangeListener_OnChange_Error(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	// 创建模拟logger
-	mockLogger := NewMockLogger(ctrl)
-	// 期望调用Warnf方法
-	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
-
-	// 创建changeListener实例
-	listener := &changeListener{
-		logger: mockLogger,
-	}
-	listener.Init()
-
-	// 测试数据 - 使用int类型，但新值为字符串，应该导致错误
-	key := "test.key"
-	var value int
-	listener.add(key, &value)
-
-	// 创建配置变更事件 - 新值为非数字字符串，无法转换为int
-	changeEvent := &storage.ChangeEvent{
-		Changes: map[string]*storage.ConfigChange{
-			key: {
-				OldValue:   "0",
-				NewValue:   "not-a-number",
-				ChangeType: storage.MODIFIED,
-			},
-		},
-	}
-
-	// 执行OnChange - 应该记录警告日志
-	listener.OnChange(changeEvent)
-
-	// 值不应该被更新
-	assert.Equal(t, 0, value, "值不应该被更新")
-}
-
-func TestChangeListener_OnChange_NotModified(t *testing.T) {
-	// 创建changeListener实例
+func TestChangeListener_Put(t *testing.T) {
 	listener := &changeListener{}
 	listener.Init()
 
-	// 测试数据
+	// 测试添加监听键值
 	key := "test.key"
-	var value string = "original"
-	listener.add(key, &value)
+	value := "test value"
+	listener.Put(key, value)
 
-	// 创建配置变更事件 - 使用非MODIFIED类型
-	changeEvent := &storage.ChangeEvent{
-		Changes: map[string]*storage.ConfigChange{
-			key: {
-				OldValue:   "original",
-				NewValue:   "new-value",
-				ChangeType: storage.ADDED, // 非MODIFIED类型
-			},
-		},
-	}
-
-	// 执行OnChange
-	listener.OnChange(changeEvent)
-
-	// 验证值没有被更新
-	assert.Equal(t, "original", value, "值不应该被更新")
-}
-
-func TestChangeListener_OnNewestChange(t *testing.T) {
-	// 创建changeListener实例
-	listener := &changeListener{}
-
-	// 执行OnNewestChange - 这是一个空实现，不应该有任何影响
-	listener.OnNewestChange(nil)
-
-	// 没有断言，因为这个方法是空实现
-	// 这个测试只是为了覆盖率
+	// 验证键值是否正确添加到keyMap中
+	values, exists := listener.keyMap[key]
+	assert.True(t, exists)
+	assert.Equal(t, 1, len(values))
+	assert.Equal(t, value, values[0])
 }

@@ -4,24 +4,20 @@ import (
 	"github.com/apolloconfig/agollo/v4"
 	"github.com/apolloconfig/agollo/v4/env/config"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/apollo/internal/json"
 	"github.com/gone-io/goner/viper"
-	"reflect"
+	originViper "github.com/spf13/viper"
 	"strings"
 )
 
-type apolloClient struct {
+type apolloConfigure struct {
 	gone.Flag
-	localConfigure gone.Configure
-	apolloClient   agollo.Client
+	client   agollo.Client
+	testFlag gone.TestFlag `gone:"*" option:"allowNil"`
+	logger   gone.Logger   `gone:"*" option:"lazy"`
+
+	*viper.RemoteConfigure
 
 	changeListener *changeListener `gone:"*"`
-
-	// testFlag only for test environment
-	testFlag gone.TestFlag `gone:"*" option:"allowNil"`
-
-	//lazy fill，resolve circular dependency
-	logger gone.Logger `gone:"*" option:"lazy"`
 
 	appId                     string //`gone:"config,apollo.appId"`
 	cluster                   string //`gone:"config,apollo.cluster"`
@@ -33,7 +29,7 @@ type apolloClient struct {
 	useLocalConfIfKeyNotExist bool   //`gone:"config,apollo.useLocalConfIfKeyNotExist"`
 }
 
-func (s *apolloClient) init(localConfigure gone.Configure, startWithConfig func(loadAppConfig func() (*config.AppConfig, error)) (agollo.Client, error)) {
+func (s *apolloConfigure) init(localConfigure gone.Configure) (*config.AppConfig, error) {
 	type tuple struct {
 		v          any
 		defaultVal string
@@ -52,80 +48,70 @@ func (s *apolloClient) init(localConfigure gone.Configure, startWithConfig func(
 	for k, t := range m {
 		err := localConfigure.Get(k, t.v, t.defaultVal)
 		if err != nil {
-			panic(err)
+			return nil, gone.ToError(err)
 		}
 	}
 
-	c := &config.AppConfig{
+	return &config.AppConfig{
 		AppID:          s.appId,
 		Cluster:        s.cluster,
 		IP:             s.ip,
 		NamespaceName:  s.namespace,
 		IsBackupConfig: s.isBackupConfig,
 		Secret:         s.secret,
-	}
-	client, err := startWithConfig(func() (*config.AppConfig, error) {
-		return c, nil
-	})
+	}, nil
+}
+
+var startWithConfig = agollo.StartWithConfig
+
+func (s *apolloConfigure) Init() error {
+	configure := viper.New(s.testFlag)
+	appConfig, err := s.init(configure)
 	if err != nil {
-		panic(err)
-	}
-	s.apolloClient = client
-	if s.watch {
-		client.AddChangeListener(s.changeListener)
-	}
-}
-
-func (s *apolloClient) Init() {
-	s.localConfigure = viper.New(s.testFlag)
-	s.init(s.localConfigure, agollo.StartWithConfig)
-}
-
-func (s *apolloClient) Get(key string, v any, defaultVal string) error {
-	if s.watch {
-		s.changeListener.add(key, v)
+		return gone.ToError(err)
 	}
 
-	if s.apolloClient == nil {
-		return s.localConfigure.Get(key, v, defaultVal)
+	s.client, err = startWithConfig(func() (*config.AppConfig, error) {
+		return appConfig, nil
+	})
+
+	if err != nil {
+		return gone.ToError(err)
 	}
 
 	namespaces := strings.Split(s.namespace, ",")
+
+	total := originViper.New()
 	for _, ns := range namespaces {
-		cache := s.apolloClient.GetConfigCache(ns)
+		cache := s.client.GetConfigCache(ns)
 		if cache != nil {
-			if value, err := cache.Get(key); err == nil {
-				err = setValue(v, value)
+			if s.watch {
+				v := originViper.New()
+				cache.Range(func(key, value interface{}) bool {
+					if k, ok := key.(string); ok {
+						v.Set(k, value)
+					}
+					return true
+				})
+				err = total.MergeConfigMap(v.AllSettings())
 				if err != nil {
-					s.warnf("try to set `%s` value err:%v\n", key, err)
-				} else {
-					return nil
+					return gone.ToError(err)
 				}
+				s.changeListener.AddViper(ns, v)
 			} else {
-				s.warnf("get `%s` value from apollo ns(%s) err:%v\n", key, ns, err)
+				cache.Range(func(key, value interface{}) bool {
+					if k, ok := key.(string); ok {
+						total.Set(k, value)
+					}
+					return true
+				})
 			}
 		}
 	}
-	if s.useLocalConfIfKeyNotExist {
-		return s.localConfigure.Get(key, v, defaultVal)
+	s.RemoteConfigure = viper.NewRemoteConfigure(total, configure, true, s.changeListener)
+	if s.watch {
+		s.client.AddChangeListener(s.changeListener)
+		s.changeListener.SetViper(total)
 	}
 	return nil
-}
-
-func setValue(v any, value any) error {
-	if str, ok := value.(string); ok {
-		return gone.ToError(gone.SetValue(reflect.ValueOf(v), v, str))
-	} else {
-		marshal, err := json.Marshal(value)
-		if err != nil {
-			return gone.ToError(err)
-		}
-		return gone.ToError(gone.SetValue(reflect.ValueOf(v), v, string(marshal)))
-	}
-}
-
-func (s *apolloClient) warnf(format string, args ...any) {
-	if s.logger != nil {
-		s.logger.Warnf(format, args...)
-	}
 }
