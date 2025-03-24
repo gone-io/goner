@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/spf13/viper"
-	"reflect"
 	"strings"
 )
 
@@ -23,8 +22,7 @@ type configure struct {
 func (c *configure) readConfig() (err error) {
 	codecRegistry := viper.NewCodecRegistry()
 	codec := &javaproperties.Codec{}
-	err = codecRegistry.RegisterCodec("properties", codec)
-	if err != nil {
+	if err = codecRegistry.RegisterCodec("properties", codec); err != nil {
 		return gone.ToError(err)
 	}
 
@@ -39,8 +37,7 @@ func (c *configure) readConfig() (err error) {
 		for _, f := range files {
 			conf.SetConfigFile(f)
 			conf.SetConfigType(fileExt(f))
-			err = conf.MergeInConfig()
-			if err != nil {
+			if err = conf.MergeInConfig(); err != nil {
 				return gone.ToError(err)
 			}
 		}
@@ -51,22 +48,17 @@ func (c *configure) readConfig() (err error) {
 
 func (c *configure) Get(key string, v any, defaultVal string) error {
 	if c.conf == nil {
-		err := c.readConfig()
-		if err != nil {
-			return err
+		if err := c.readConfig(); err != nil {
+			return gone.ToError(err)
 		}
 	}
 	return c.get(key, v, defaultVal)
 }
 
 func (c *configure) get(key string, value any, defaultVale string) error {
-	rv := reflect.ValueOf(value)
-	if rv.Kind() != reflect.Pointer || rv.IsNil() {
-		return gone.NewInnerError("type of value must be ptr", gone.NotSupport)
-	}
 	v := c.conf.Get(key)
 	if v == nil || v == "" {
-		return gone.SetValue(rv, value, defaultVale)
+		return gone.SetPointerValue(value, defaultVale)
 	}
 	return gone.ToError(c.conf.UnmarshalKey(key, value))
 }

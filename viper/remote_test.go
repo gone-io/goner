@@ -1,6 +1,7 @@
 package viper
 
 import (
+	"github.com/gone-io/gone/v2"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -99,6 +100,46 @@ func TestRemoteConfigure_Get_FallbackToLocal(t *testing.T) {
 	// 验证结果
 	assert.NoError(t, err)
 	assert.Equal(t, testValue, result)
+}
+
+// 测试Get方法 - 当远程配置解析失败时回退到本地配置
+func TestRemoteConfigure_Get_FallbackToLocalWhenUnmarshalFailed(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// 创建Mock对象
+	mockViper := NewMockKeyGetter(ctrl)
+	mockLocalConfigure := NewMockConfigure(ctrl)
+	mockWatcher := NewMockWatcherKeeper(ctrl)
+
+	// 创建RemoteConfigure实例
+	remoteCfg := NewRemoteConfigure(mockViper, mockLocalConfigure, true, mockWatcher)
+
+	// 设置Mock行为
+	testKey := "test.key"
+	remoteValue := "invalid-value"
+	localValue := "local-value"
+	var result string
+
+	// 远程配置返回值但解析失败
+	mockViper.EXPECT().Get(testKey).Return(remoteValue)
+	mockViper.EXPECT().UnmarshalKey(testKey, gomock.Any()).Return(gone.ToError("unmarshal error"))
+
+	// 本地配置返回值
+	mockLocalConfigure.EXPECT().Get(testKey, gomock.Any(), "default-value").DoAndReturn(
+		func(key string, value any, defaultVal string) error {
+			p := value.(*string)
+			*p = localValue
+			return nil
+		})
+	mockWatcher.EXPECT().Put(testKey, &result)
+
+	// 执行测试
+	err := remoteCfg.Get(testKey, &result, "default-value")
+
+	// 验证结果
+	assert.NoError(t, err)
+	assert.Equal(t, localValue, result)
 }
 
 // 测试Get方法 - 当viper为nil时直接使用本地配置

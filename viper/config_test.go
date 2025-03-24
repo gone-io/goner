@@ -78,6 +78,12 @@ func TestConfigure_Get(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, CustomType(100), test)
 	})
+	t.Run("c.conf is nil", func(t *testing.T) {
+		c := configure{}
+		var test int
+		err := c.Get("test.int", &test, "900")
+		assert.Nil(t, err)
+	})
 }
 
 func Test_configure_readConfig(t *testing.T) {
