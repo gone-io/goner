@@ -5,7 +5,7 @@ import "github.com/gone-io/gone/v2"
 var load = gone.OnceLoad(func(loader gone.Loader) error {
 	err := loader.
 		Load(
-			&apolloClient{},
+			&apolloConfigure{},
 			gone.Name(gone.ConfigureName),
 			gone.IsDefault(new(gone.Configure)),
 			gone.ForceReplace(),

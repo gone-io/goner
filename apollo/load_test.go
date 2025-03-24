@@ -42,7 +42,7 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, 2, len(mockLoader.loadedComponents), "应该加载了2个组件")
 
 	// 验证第一个加载的组件是apolloClient
-	assert.IsType(t, &apolloClient{}, mockLoader.loadedComponents[0], "第一个组件应该是apolloClient")
+	assert.IsType(t, &apolloConfigure{}, mockLoader.loadedComponents[0], "第一个组件应该是apolloClient")
 
 	// 验证第二个加载的组件是changeListener
 	assert.IsType(t, &changeListener{}, mockLoader.loadedComponents[1], "第二个组件应该是changeListener")
