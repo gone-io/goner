@@ -8,6 +8,6 @@ package gin
 
 //go:generate mockgen -package=gin  -destination=mock_origin_test.go github.com/gin-gonic/gin ResponseWriter
 
-//go:generate mockgen -package=gin  -destination=mock_g_test.go github.com/gone-io/goner/g Cmux
+//go:generate mockgen -package=gin  -destination=mock_g_test.go github.com/gone-io/goner/g Cmux,Tracer
 
 //go:generate mockgen -package=gin  -destination=mock_gin_test.go -self_package=github.com/gone-io/goner/gin -source=interface.go
