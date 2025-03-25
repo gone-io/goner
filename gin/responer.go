@@ -202,13 +202,13 @@ func (r *responser) processChan(ch any, writer gin.ResponseWriter) {
 			case gone.BusinessError:
 				err = sse.Write(map[string]any{
 					"code": t.Code(),
-					"msg":  t.Error(),
+					"msg":  t.Msg(),
 					"data": t.Data(),
 				})
 			case gone.Error:
 				err = sse.Write(map[string]any{
 					"code": t.Code(),
-					"msg":  t.Error(),
+					"msg":  t.Msg(),
 				})
 			case error:
 				err = sse.Write(map[string]any{
