@@ -13,7 +13,6 @@ type apolloConfigure struct {
 	gone.Flag
 	client   agollo.Client
 	testFlag gone.TestFlag `gone:"*" option:"allowNil"`
-	logger   gone.Logger   `gone:"*" option:"lazy"`
 
 	*viper.RemoteConfigure
 
@@ -63,9 +62,11 @@ func (s *apolloConfigure) init(localConfigure gone.Configure) (*config.AppConfig
 }
 
 var startWithConfig = agollo.StartWithConfig
+var viperNew = viper.New
+var originViperNew = originViper.New
 
 func (s *apolloConfigure) Init() error {
-	configure := viper.New(s.testFlag)
+	configure := viperNew(s.testFlag)
 	appConfig, err := s.init(configure)
 	if err != nil {
 		return gone.ToError(err)
@@ -81,12 +82,12 @@ func (s *apolloConfigure) Init() error {
 
 	namespaces := strings.Split(s.namespace, ",")
 
-	total := originViper.New()
+	total := originViperNew()
 	for _, ns := range namespaces {
 		cache := s.client.GetConfigCache(ns)
 		if cache != nil {
 			if s.watch {
-				v := originViper.New()
+				v := originViperNew()
 				cache.Range(func(key, value interface{}) bool {
 					if k, ok := key.(string); ok {
 						v.Set(k, value)
