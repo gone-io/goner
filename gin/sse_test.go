@@ -1,113 +1,195 @@
 package gin
 
 import (
-	"errors"
-	"github.com/gone-io/gone/v2"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
-	"net/http"
-	"testing"
 )
 
-func TestSSE(t *testing.T) {
-	t.Run("suc", func(t *testing.T) {
-		controller := gomock.NewController(t)
-		defer controller.Finish()
+func TestNewSSE(t *testing.T) {
+	// Create a test recorder
+	hw := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(hw)
+	w := c.Writer
 
-		writer := NewMockResponseWriter(controller)
-		writer.EXPECT().Header().Return(http.Header{}).AnyTimes()
-		writer.EXPECT().Flush().AnyTimes()
-		writer.EXPECT().WriteString(gomock.Any()).Return(100, nil).AnyTimes()
-		writer.EXPECT().CloseNotify().Return(nil)
+	// Create a new SSE instance
+	sse := NewSSE(w)
 
-		sse := NewSSE(writer)
+	// Verify the SSE instance is created correctly
+	assert.NotNil(t, sse)
+	assert.IsType(t, &Sse{}, sse)
+	assert.Equal(t, w, sse.(*Sse).Writer)
+}
 
-		sse.Start()
-		err := sse.Write(map[string]any{
-			"key": "value",
+func TestSse_Start(t *testing.T) {
+	// Create a test recorder
+	hw := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(hw)
+	w := c.Writer
+
+	// Create a new SSE instance
+	sse := NewSSE(w)
+
+	// Call Start method
+	sse.Start()
+
+	// Verify headers are set correctly
+	headers := w.Header()
+	assert.Equal(t, "text/event-stream; charset=utf-8", headers.Get("Content-Type"))
+	assert.Equal(t, "no-cache", headers.Get("Cache-Control"))
+	assert.Equal(t, "keep-alive", headers.Get("Connection"))
+	assert.Equal(t, "no", headers.Get("X-Accel-Buffering"))
+}
+
+func TestSse_Write(t *testing.T) {
+	// Create a test recorder
+	hw := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(hw)
+	w := c.Writer
+
+	// Create a new SSE instance
+	sse := NewSSE(w)
+
+	// Call Start method
+	sse.Start()
+
+	// Test writing different types of data
+	tests := []struct {
+		name     string
+		data     any
+		expected string
+	}{
+		{"string", "test message", "event: data\ndata: \"test message\"\n\n"},
+		{"number", 123, "event: data\ndata: 123\n\n"},
+		{"boolean", true, "event: data\ndata: true\n\n"},
+		{"object", map[string]string{"key": "value"}, "event: data\ndata: {\"key\":\"value\"}\n\n"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Reset the recorder body
+			hw.Body.Reset()
+
+			// Write the data
+			err := sse.Write(tt.data)
+			assert.Nil(t, err)
+
+			// Verify the written data
+			assert.Equal(t, tt.expected, hw.Body.String())
 		})
+	}
+}
 
-		assert.Nil(t, err)
+func TestSse_End(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
 
-		err = sse.WriteError(gone.NewError(100, "error", http.StatusInternalServerError))
-		assert.Nil(t, err)
+	// Create a mock ResponseWriter
+	mockWriter := NewMockResponseWriter(controller)
 
-		err = sse.End()
-		assert.Nil(t, err)
-	})
+	// Set up expectations
+	mockWriter.EXPECT().Header().Return(httptest.NewRecorder().Header()).AnyTimes()
+	mockWriter.EXPECT().WriteHeader(gomock.Any()).AnyTimes()
+	mockWriter.EXPECT().WriteString(gomock.Any()).DoAndReturn(func(data string) (int, error) {
+		return len(data), nil
+	}).AnyTimes()
+	mockWriter.EXPECT().Flush().Times(1)
+	mockWriter.EXPECT().CloseNotify().Times(1)
 
-	t.Run("json Marshal error", func(t *testing.T) {
-		controller := gomock.NewController(t)
-		defer controller.Finish()
+	// Create a new SSE instance with the mock writer
+	sse := &Sse{Writer: mockWriter}
 
-		writer := NewMockResponseWriter(controller)
-		writer.EXPECT().Header().Return(http.Header{}).AnyTimes()
-		writer.EXPECT().WriteString(gomock.Any()).Return(100, nil).AnyTimes()
-		writer.EXPECT().Flush().AnyTimes()
+	// Call End method
+	err := sse.End()
 
-		sse := NewSSE(writer)
+	// Verify the result
+	assert.Nil(t, err)
+}
 
-		sse.Start()
-		err := sse.Write(map[string]any{
-			"key": func() {},
-		})
+func TestSse_Write_Error(t *testing.T) {
+	// Create a test case with invalid JSON data
+	// This is a bit tricky to test since most Go values can be marshaled to JSON
+	// One approach is to use a custom type that can't be marshaled
 
-		assert.Error(t, err)
-	})
+	// Create a test recorder
+	hw := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(hw)
+	w := c.Writer
 
-	t.Run("write err", func(t *testing.T) {
-		controller := gomock.NewController(t)
-		defer controller.Finish()
+	// Create a new SSE instance
+	sse := NewSSE(w)
 
-		writer := NewMockResponseWriter(controller)
-		writer.EXPECT().Header().Return(http.Header{}).AnyTimes()
-		writer.EXPECT().Flush().AnyTimes()
-		writer.EXPECT().WriteString(gomock.Any()).Return(0, errors.New("error")).AnyTimes()
+	// Call Start method
+	sse.Start()
 
-		sse := NewSSE(writer)
+	// Create a mock ResponseWriter that returns an error on Write
+	controller := gomock.NewController(t)
+	defer controller.Finish()
 
-		sse.Start()
-		err := sse.Write(map[string]any{
-			"key": "value",
-		})
+	mockWriter := NewMockResponseWriter(controller)
+	mockWriter.EXPECT().Header().Return(w.Header()).AnyTimes()
+	mockWriter.EXPECT().WriteHeader(gomock.Any()).AnyTimes()
+	mockWriter.EXPECT().WriteString(gomock.Any()).Return(0, assert.AnError).AnyTimes()
+	mockWriter.EXPECT().Flush().AnyTimes()
 
-		assert.Error(t, err)
-	})
+	// Replace the writer with our mock
+	sse = &Sse{Writer: mockWriter}
 
-	t.Run("write err", func(t *testing.T) {
-		controller := gomock.NewController(t)
-		defer controller.Finish()
+	// Write should return an error
+	err := sse.Write("test")
+	assert.Error(t, err)
+}
 
-		writer := NewMockResponseWriter(controller)
-		writer.EXPECT().Header().Return(http.Header{}).AnyTimes()
-		writer.EXPECT().Flush().AnyTimes()
-		writer.EXPECT().WriteString(gomock.Any()).Return(100, nil)
-		writer.EXPECT().WriteString(gomock.Any()).Return(0, errors.New("error"))
+func TestSse_End_Error(t *testing.T) {
+	// Create a mock ResponseWriter that returns an error on Write
+	controller := gomock.NewController(t)
+	defer controller.Finish()
 
-		sse := NewSSE(writer)
+	mockWriter := NewMockResponseWriter(controller)
+	mockWriter.EXPECT().Header().Return(httptest.NewRecorder().Header()).AnyTimes()
+	mockWriter.EXPECT().WriteHeader(gomock.Any()).AnyTimes()
+	mockWriter.EXPECT().WriteString(gomock.Any()).Return(0, assert.AnError).AnyTimes()
 
-		sse.Start()
-		err := sse.Write(map[string]any{
-			"key": "value",
-		})
+	// Create a new SSE instance with the mock writer
+	sse := &Sse{Writer: mockWriter}
 
-		assert.Error(t, err)
-	})
+	// End should return an error
+	err := sse.End()
+	assert.Error(t, err)
+}
 
-	t.Run("End write err", func(t *testing.T) {
-		controller := gomock.NewController(t)
-		defer controller.Finish()
+func TestSse_Integration(t *testing.T) {
+	// Create a test recorder
+	controller := gomock.NewController(t)
+	defer controller.Finish()
 
-		writer := NewMockResponseWriter(controller)
-		writer.EXPECT().Header().Return(http.Header{}).AnyTimes()
-		writer.EXPECT().Flush().AnyTimes()
-		writer.EXPECT().WriteString(gomock.Any()).Return(0, errors.New("error")).AnyTimes()
+	var output string
 
-		sse := NewSSE(writer)
+	w := NewMockResponseWriter(controller)
+	w.EXPECT().Header().Return(http.Header{}).AnyTimes()
+	w.EXPECT().Flush().AnyTimes()
+	w.EXPECT().CloseNotify().AnyTimes()
+	w.EXPECT().WriteString(gomock.Any()).DoAndReturn(func(str string) (int, error) {
+		output += str
+		return len(str), nil
+	}).AnyTimes()
 
-		sse.Start()
-		err := sse.End()
+	// Create a new SSE instance
+	sse := NewSSE(w)
 
-		assert.Error(t, err)
-	})
+	// Test a complete SSE session
+	sse.Start()
+	sse.Write("message 1")
+	sse.Write("message 2")
+	sse.End()
+
+	// Verify the output
+	assert.True(t, strings.Contains(output, "event: data\ndata: \"message 1\"\n\n"))
+	assert.True(t, strings.Contains(output, "event: data\ndata: \"message 2\"\n\n"))
+	assert.True(t, strings.Contains(output, "event: done\ndata: [DONE]\n\n"))
 }

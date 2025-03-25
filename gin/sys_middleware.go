@@ -20,9 +20,9 @@ import (
 type SysMiddleware struct {
 	gone.Flag
 
-	logger     gone.Logger      `gone:"*"`
-	resHandler Responser        `gone:"*"`
-	gKeeper    gone.GonerKeeper `gone:"*"`
+	tracer     g.Tracer    `gone:"*" option:"allowNil"`
+	logger     gone.Logger `gone:"*"`
+	resHandler Responser   `gone:"*"`
 
 	disable bool `gone:"config,server.sys-middleware.disable,default=false"`
 
@@ -64,7 +64,6 @@ type SysMiddleware struct {
 	tracerIdKey  string `gone:"config,server.req.x-trace-id-key=X-Trace-Id"`
 
 	limiter *rate.Limiter
-	tracer  g.Tracer `gone:"*" option:"allowNil"`
 }
 
 func (m *SysMiddleware) GonerName() string {

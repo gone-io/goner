@@ -6,18 +6,50 @@ import (
 	"reflect"
 )
 
-//go:generate sh -c "mockgen -package=gin github.com/gin-gonic/gin ResponseWriter > gin_response_writer_mock_test.go"
-//go:generate sh -c "mockgen -package=gin net Listener > net_listener_mock_test.go"
-//go:generate sh -c "mockgen -package=gin -self_package=github.com/gone-io/goner/gin -source=./gin_interface.go |gone mock -o gone_gin_mock_test.go"
-//go:generate sh -c "mockgen -package=gin -source=../../interface.go |gone mock -o gone_mock_test.go"
-//go:generate sh -c "mockgen -package=gin -self_package=github.com/gone-io/goner/gin -source=interface.go |gone mock -o mock_test.go"
+// Context is a wrapper of gin.Context
+type Context struct {
+	*gin.Context
+}
+
+type ResponseWriter = gin.ResponseWriter
+
+type HandlerFunc any
+
+type IRoutes interface {
+	Use(...HandlerFunc) IRoutes
+
+	Handle(string, string, ...HandlerFunc) IRoutes
+	Any(string, ...HandlerFunc) IRoutes
+	GET(string, ...HandlerFunc) IRoutes
+	POST(string, ...HandlerFunc) IRoutes
+	DELETE(string, ...HandlerFunc) IRoutes
+	PATCH(string, ...HandlerFunc) IRoutes
+	PUT(string, ...HandlerFunc) IRoutes
+	OPTIONS(string, ...HandlerFunc) IRoutes
+	HEAD(string, ...HandlerFunc) IRoutes
+}
+
+type IRouter interface {
+	IRoutes
+
+	GetGinRouter() gin.IRouter
+
+	Group(string, ...HandlerFunc) RouteGroup
+
+	LoadHTMLGlob(pattern string)
+}
+
+// RouteGroup route group, which is a wrapper of gin.RouterGroup, and can be injected for mount router.
+type RouteGroup interface {
+	IRouter
+}
 
 // RouterGroupName Router group name
 type RouterGroupName string
 
 type OriginContent = gin.Context
 
-type MountError = GinMountError
+type MountError error
 
 // Controller interface, implemented by business code, used to mount and handle routes
 // For usage reference [example code](https://gitlab.openviewtech.com/gone/gone-example/-/tree/master/gone-app)

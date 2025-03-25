@@ -22,6 +22,8 @@ type res[T any] struct {
 	Data T      `json:"data,omitempty"`
 }
 
+const InternalServerError = "Internal Server Error"
+
 func wrapFunc(code int, msg string, data any) any {
 	return &res[any]{Code: code, Msg: msg, Data: data}
 }
@@ -30,8 +32,9 @@ type responser struct {
 	gone.Flag
 	gone.Logger `gone:"gone-logger"`
 
-	wrappedDataFunc   WrappedDataFunc
-	returnWrappedData bool `gone:"config,server.return.wrapped-data,default=true"`
+	wrappedDataFunc           WrappedDataFunc
+	returnWrappedData         bool `gone:"config,server.return.wrapped-data,default=true"`
+	doNotShowInnerErrorDetail bool `gone:"config,server.do-not-show-inner-error-detail=true"`
 }
 
 func (r *responser) SetWrappedDataFunc(wrappedDataFunc WrappedDataFunc) {
@@ -80,6 +83,13 @@ func (r *responser) Success(ctx XContext, data any) {
 	ctx.JSON(http.StatusOK, r.wrappedDataFunc(0, "", data))
 }
 
+func (r *responser) innerErrorMsg(iErr gone.InnerError) string {
+	if r.doNotShowInnerErrorDetail {
+		return InternalServerError
+	}
+	return iErr.Error()
+}
+
 func (r *responser) Failed(ctx XContext, oErr error) {
 	err := ToError(oErr)
 	if !r.returnWrappedData {
@@ -89,7 +99,7 @@ func (r *responser) Failed(ctx XContext, oErr error) {
 			return
 		}
 		if errors.As(err, &iErr) {
-			ctx.String(http.StatusInternalServerError, iErr.Msg())
+			ctx.String(http.StatusInternalServerError, r.innerErrorMsg(iErr))
 			r.Errorf("inner Error: %s(code=%d)\n%s", iErr.Msg(), iErr.Code(), iErr.Stack())
 			return
 		}
@@ -110,7 +120,7 @@ func (r *responser) Failed(ctx XContext, oErr error) {
 
 	var iErr gone.InnerError
 	if errors.As(err, &iErr) {
-		ctx.JSON(iErr.GetStatusCode(), r.wrappedDataFunc(iErr.Code(), "Internal Server Error", nil))
+		ctx.JSON(iErr.GetStatusCode(), r.wrappedDataFunc(iErr.Code(), r.innerErrorMsg(iErr), nil))
 		r.Errorf("inner Error: %s(code=%d)\n%s", iErr.Msg(), iErr.Code(), iErr.Stack())
 		return
 	}
@@ -118,6 +128,11 @@ func (r *responser) Failed(ctx XContext, oErr error) {
 }
 
 func (r *responser) ProcessResults(context XContext, writer gin.ResponseWriter, last bool, funcName string, results ...any) {
+	if writer.Written() {
+		r.Warnf("content had been written，check fn(%s)，maybe shouldn't return data", funcName)
+		return
+	}
+
 	for _, result := range results {
 		if err, ok := result.(error); ok {
 			r.Failed(context, err)
@@ -126,39 +141,37 @@ func (r *responser) ProcessResults(context XContext, writer gin.ResponseWriter, 
 		}
 	}
 
-	isNotEnd := false
+	var multi []any
 	for _, result := range results {
 		if result == nil {
 			continue
 		}
 
-		if writer.Written() && result != nil {
-			r.Warnf("content had been written，check fn(%s)，maybe shouldn't return data", funcName)
-			return
-		}
-
 		of := reflect.TypeOf(result)
 		if of.Kind() == reflect.Chan {
-			isNotEnd = true
 			r.processChan(result, writer)
 			return
 		}
 
-		switch result.(type) {
-		case error:
-			r.Failed(context, result.(error))
-		case io.Reader:
-			isNotEnd = true
-			_, err := io.Copy(writer, result.(io.Reader))
-			if err != nil {
+		if reader, ok := result.(io.Reader); ok {
+			if _, err := io.Copy(writer, reader); err != nil {
 				r.Warnf("copy data to writer failed, err: %v", err)
 			}
-		default:
-			r.Success(context, result)
+			return
 		}
+		multi = append(multi, result)
+	}
+	if len(multi) == 1 {
+		r.Success(context, multi[0])
+		return
 	}
 
-	if !writer.Written() && last && !isNotEnd {
+	if len(multi) > 1 {
+		r.Success(context, multi)
+		return
+	}
+
+	if last {
 		r.Success(context, nil)
 	}
 }
@@ -179,9 +192,30 @@ func (r *responser) processChan(ch any, writer gin.ResponseWriter) {
 		} else {
 			var err error
 			i := data.Interface()
-			if e, y := i.(error); y {
-				err = sse.WriteError(ToError(e))
-			} else {
+
+			switch t := i.(type) {
+			case gone.InnerError:
+				err = sse.Write(map[string]any{
+					"code": t.Code(),
+					"msg":  r.innerErrorMsg(t),
+				})
+			case gone.BusinessError:
+				err = sse.Write(map[string]any{
+					"code": t.Code(),
+					"msg":  t.Error(),
+					"data": t.Data(),
+				})
+			case gone.Error:
+				err = sse.Write(map[string]any{
+					"code": t.Code(),
+					"msg":  t.Error(),
+				})
+			case error:
+				err = sse.Write(map[string]any{
+					"code": http.StatusInternalServerError,
+					"msg":  t.Error(),
+				})
+			default:
 				err = sse.Write(i)
 			}
 			if err != nil {

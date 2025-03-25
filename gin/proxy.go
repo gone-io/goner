@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-func NewGinProxy() gone.Goner {
-	return &proxy{}
-}
-
 type proxy struct {
 	gone.Flag
 	log          gone.Logger       `gone:"*"`
@@ -64,21 +60,18 @@ type bindStructFuncAndType struct {
 func (p *proxy) proxyOne(x HandlerFunc, last bool) gin.HandlerFunc {
 	funcName := gone.GetFuncName(x)
 
-	switch x.(type) {
+	switch f := x.(type) {
 	case func(*Context) (any, error):
-		f := x.(func(*Context) (any, error))
 		return func(context *gin.Context) {
 			data, err := f(&Context{Context: context})
 			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
 		}
 	case func(*Context) error:
-		f := x.(func(*Context) error)
 		return func(context *gin.Context) {
 			err := f(&Context{Context: context})
 			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
 		}
 	case func(*Context):
-		f := x.(func(*Context))
 		return func(context *gin.Context) {
 			f(&Context{Context: context})
 			p.responser.ProcessResults(context, context.Writer, last, funcName)
@@ -87,31 +80,26 @@ func (p *proxy) proxyOne(x HandlerFunc, last bool) gin.HandlerFunc {
 		return x.(func(ctx *gin.Context))
 
 	case func(ctx *gin.Context) (any, error):
-		f := x.(func(ctx *gin.Context) (any, error))
 		return func(context *gin.Context) {
 			data, err := f(context)
 			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
 		}
 	case func(ctx *gin.Context) error:
-		f := x.(func(ctx *gin.Context) error)
 		return func(context *gin.Context) {
 			err := f(context)
 			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
 		}
 	case func():
-		f := x.(func())
 		return func(context *gin.Context) {
 			f()
 			p.responser.ProcessResults(context, context.Writer, last, funcName)
 		}
 	case func() (any, error):
-		f := x.(func() (any, error))
 		return func(context *gin.Context) {
 			data, err := f()
 			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
 		}
 	case func() error:
-		f := x.(func() error)
 		return func(context *gin.Context) {
 			err := f()
 			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
