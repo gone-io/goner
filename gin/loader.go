@@ -32,6 +32,7 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 	if err := loader.Load(&httpInjector{}); err != nil {
 		return gone.ToError(err)
 	}
+
 	if err := loader.Load(NewGinServer()); err != nil {
 		return gone.ToError(err)
 	}
@@ -40,9 +41,4 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 
 func Load(loader gone.Loader) error {
 	return load(loader)
-}
-
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
 }

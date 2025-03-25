@@ -15,6 +15,3 @@ var NewBusinessError = gone.NewBusinessError
 
 // ToError 转为错误
 var ToError = gone.ToError
-
-// 业务错误
-type bError = gone.BError
