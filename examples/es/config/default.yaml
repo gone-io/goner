@@ -1,0 +1,35 @@
+es:
+  addresses: http://localhost:9200   # A list of Elasticsearch nodes to use.
+  username:   # Username for HTTP Basic Authentication.
+  password:   # Password for HTTP Basic Authentication.
+
+  cloudID:                 # Endpoint for the Elastic Service (https:#elastic.co/cloud).
+  aPIKey: SVg2SDBaVUJiX0hoSFVkX0hsRGU6dWFFdGphdVJTX0dQNHViMWlhX1p5QQ==          # Base64-encoded token for authorization; if set, overrides username/password and service token.
+  serviceToken:            # Service token for authorization; if set, overrides username/password.
+  certificateFingerprint:  # SHA256 hex fingerprint given by Elasticsearch on first launch.
+
+  header: # Global HTTP request header.
+
+  # PEM-encoded certificate authorities.
+  # When set, an empty certificate pool will be created, and the certificates will be appended to it.
+  # The option is only valid when the transport is not specified, or when it's http.Transport.
+  cACert:
+
+  retryOnStatus:                           # List of status codes for retry. Default: 502, 503, 504.
+  disableRetry:                           # Default: false.
+  maxRetries:                            # Default: 3.
+
+  compressRequestBody: # Default: false.
+
+  discoverNodesOnStart:            # Discover nodes when initializing the client. Default: false.
+  discoverNodesInterval: # Discover nodes periodically. Default: disabled.
+
+  enableMetrics:            # Enable the metrics collection.
+  enableDebugLogger:       # Enable the debug logging.
+  enableCompatibilityMode:  # Enable sends compatibility header
+
+  disableMetaHeader: # Disable the additional "X-Elastic-Client-Meta" HTTP header.
+
+  retryBackoff: # Optional backoff duration. Default: nil.
+
+
