@@ -4,6 +4,7 @@ import (
 	"github.com/go-viper/encoding/javaproperties"
 	"github.com/gone-io/gone/v2"
 	"github.com/spf13/afero"
+	"reflect"
 
 	"github.com/spf13/viper"
 	"strings"
@@ -58,7 +59,7 @@ func (c *configure) Get(key string, v any, defaultVal string) error {
 func (c *configure) get(key string, value any, defaultVale string) error {
 	v := c.conf.Get(key)
 	if v == nil || v == "" {
-		return gone.SetPointerValue(value, defaultVale)
+		return gone.SetValue(reflect.ValueOf(value), value, defaultVale)
 	}
 	return gone.ToError(c.conf.UnmarshalKey(key, value))
 }
