@@ -8,6 +8,8 @@ import (
 	"github.com/gone-io/gone/v2"
 )
 
+var newClient = elasticsearch.NewClient
+
 // Load registers a singleton Elasticsearch client provider with the gone loader.
 // It ensures only one client instance is created and reused across the application.
 //
@@ -28,7 +30,7 @@ func Load(loader gone.Loader) error {
 		) (*elasticsearch.Client, error) {
 			var err error
 			if single == nil {
-				if single, err = elasticsearch.NewClient(param.config); err != nil {
+				if single, err = newClient(param.config); err != nil {
 					return nil, gone.ToError(err)
 				}
 			}
@@ -39,6 +41,8 @@ func Load(loader gone.Loader) error {
 	})
 	return load(loader)
 }
+
+var newTypedClient = elasticsearch.NewTypedClient
 
 // LoadTypedClient registers a singleton TypedClient provider with the gone loader.
 // TypedClient provides a more type-safe way to interact with Elasticsearch.
@@ -60,7 +64,7 @@ func LoadTypedClient(loader gone.Loader) error {
 		) (*elasticsearch.TypedClient, error) {
 			var err error
 			if single == nil {
-				if single, err = elasticsearch.NewTypedClient(param.config); err != nil {
+				if single, err = newTypedClient(param.config); err != nil {
 					return nil, gone.ToError(err)
 				}
 			}
