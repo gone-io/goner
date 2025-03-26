@@ -12,6 +12,10 @@ on:
       - 'go.mod'
       - 'go.sum'
 
+# 设置工作流的权限为只读
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
