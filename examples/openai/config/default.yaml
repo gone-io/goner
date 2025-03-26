@@ -1,0 +1,16 @@
+openai:
+  apiToken: "your-api-key"       # 你的 OpenAI API 密钥
+  baseUrl: ""                    # 可选：自定义 API 基础 URL
+  orgID: ""                      # 可选：组织 ID
+  APIType: "openai"              # API 类型：openai, azure, anthropic
+  APIVersion: ""                 # API 版本（Azure 必需）
+  assistantVersion: ""           # 可选：助手 API 版本
+  proxyUrl: ""                   # 可选：HTTP 代理 URL
+
+baidu:
+  apiToken: "baidu-api-key"
+  baseUrl: "https://baidu-api-endpoint"
+
+aliyun:
+  apiToken: "aliyun-api-key"
+  baseUrl: "https://aliyun-api-endpoint"
