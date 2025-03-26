@@ -28,8 +28,7 @@ func Load(loader gone.Loader) error {
 		) (*elasticsearch.Client, error) {
 			var err error
 			if single == nil {
-				single, err = elasticsearch.NewClient(param.config)
-				if err != nil {
+				if single, err = elasticsearch.NewClient(param.config); err != nil {
 					return nil, gone.ToError(err)
 				}
 			}
@@ -61,8 +60,7 @@ func LoadTypedClient(loader gone.Loader) error {
 		) (*elasticsearch.TypedClient, error) {
 			var err error
 			if single == nil {
-				single, err = elasticsearch.NewTypedClient(param.config)
-				if err != nil {
+				if single, err = elasticsearch.NewTypedClient(param.config); err != nil {
 					return nil, gone.ToError(err)
 				}
 			}
