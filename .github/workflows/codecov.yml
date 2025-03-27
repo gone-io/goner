@@ -6,11 +6,13 @@ on:
       - '**.go'
       - 'go.mod'
       - 'go.sum'
+      - '.github/workflows/codecov.yml'
   pull_request:
     paths:
       - '**.go'
       - 'go.mod'
       - 'go.sum'
+      - '.github/workflows/codecov.yml'
 
 # 设置工作流的权限为只读
 permissions:
