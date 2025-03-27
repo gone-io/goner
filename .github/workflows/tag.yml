@@ -1,0 +1,43 @@
+name: Goner AutoCreating SubMod Tags
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+env:
+  TZ: Asia/Shanghai
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    name: Auto Creating Tags
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github Code
+        uses: actions/checkout@v4
+
+      - name: Auto Creating Tags For Packages
+        run: |
+          git config --global user.email "degfy@hotmail.com"
+          git config --global user.name "TagRobot"
+
+          # 遍历所有go.mod文件
+          find . -type f -name "go.mod" | while read -r gomod_file; do
+            # 获取go.mod文件所在的目录
+            dir=$(dirname "$gomod_file")
+
+            # 检查module name是否包含github.com/gone-io/goner
+            if grep -q "module.*github.com/gone-io/goner" "$gomod_file"; then
+              dir="${dir#.}"
+              dir="${dir#/}"
+
+              git_tag="$GITHUB_REF_NAME"
+              if [ -n "$dir" ]; then
+                git_tag="$dir/$GITHUB_REF_NAME"
+                echo "Creating git tag: $git_tag"
+                git push origin "$git_tag"
+              fi              
+            fi
+          done
