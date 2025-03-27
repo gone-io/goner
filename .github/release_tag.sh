@@ -35,16 +35,7 @@ find . -type f -name "go.mod" | while read -r gomod_file; do
         fi
 
         echo "git tag: $git_tag"
-        git tag "$git_tag" -f
-        if [ -n "$is_latest" ]; then
-            latest_tag="latest"
-            # 如果 dir 不为空
-            if [ -n "$dir" ]; then
-                latest_tag="$dir/latest"
-            fi
-            echo "git latest tag: $latest_tag"
-            git tag "$latest_tag"
-        fi
+        git tag "$git_tag"
     fi
 done
 

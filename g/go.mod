@@ -1,3 +1,3 @@
 module github.com/gone-io/goner/g
 
-go 1.24.1
+go 1.21
