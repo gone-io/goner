@@ -37,6 +37,7 @@ jobs:
               if [ -n "$dir" ]; then
                 git_tag="$dir/$GITHUB_REF_NAME"
                 echo "Creating git tag: $git_tag"
+                git tag "$git_tag"
                 git push origin "$git_tag"
               fi              
             fi
