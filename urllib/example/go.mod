@@ -3,7 +3,7 @@ module urllib_example
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.7
+	github.com/gone-io/gone/v2 v2.0.10
 	github.com/gone-io/goner/urllib v0.0.0-00010101000000-000000000000
 	github.com/imroc/req/v3 v3.50.0
 )
@@ -14,19 +14,15 @@ require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/cloudflare/circl v1.6.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/gone-io/goner/tracer v0.0.1 // indirect
+	github.com/gone-io/goner/g v1.0.6 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/pprof v0.0.0-20250302191652-9094ed2288e7 // indirect
-	github.com/google/uuid v1.6.0 // indirect
-	github.com/gopherjs/gopherjs v1.17.2 // indirect
+	github.com/google/pprof v0.0.0-20250317173921-a4b03ec1a45e // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/onsi/ginkgo/v2 v2.23.0 // indirect
-	github.com/petermattis/goid v0.0.0-20250319124200-ccd6737f222a // indirect
+	github.com/onsi/ginkgo/v2 v2.23.3 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
-	github.com/quic-go/quic-go v0.50.0 // indirect
+	github.com/quic-go/quic-go v0.50.1 // indirect
 	github.com/refraction-networking/utls v1.6.7 // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	golang.org/x/crypto v0.36.0 // indirect

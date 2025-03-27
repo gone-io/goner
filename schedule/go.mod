@@ -3,8 +3,8 @@ module github.com/gone-io/goner/schedule
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.7
-	github.com/gone-io/goner/g v1.0.0
+	github.com/gone-io/gone/v2 v2.0.10
+	github.com/gone-io/goner/g v1.0.6
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.0
