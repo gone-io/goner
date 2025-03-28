@@ -25,7 +25,6 @@ jobs:
       fail-fast: false
       matrix:
         go-version:
-          - '1.23'
           - '1.24'
     services:
       redis:
@@ -49,14 +48,12 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Test Go Version
-        run: go version
       - name: Install SQLite
         run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage
-        run: find . -name go.mod -not -path "*/example/*" -not -path "*/examples/*" | xargs -n1 dirname | xargs -L1 bash -c 'cd "$0" && pwd && go test -race -coverprofile=coverage.txt -covermode=atomic ./... || exit 255' || echo "Tests failed"
+        run: find . -name go.mod -not -path "*/example/*" -not -path "*/examples/*" | xargs -n1 dirname | xargs -L1 bash -c 'cd "$0" && pwd && go test -race -coverprofile=coverage.txt -covermode=atomic ./... || exit 255'
       - name: Merge coverage
         run: find . -name "coverage.txt" -exec cat {} \; > total_coverage.txt
       - name: Upload coverage reports to Codecov
