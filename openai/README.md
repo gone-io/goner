@@ -30,6 +30,30 @@ openai:
   proxyUrl: ""                   # Optional: HTTP proxy URL
 ```
 
+### Proxy Configuration (proxyUrl)
+
+The `proxyUrl` parameter is used to access the OpenAI API through an HTTP proxy in network-restricted environments. This is particularly useful in the following scenarios:
+
+- When your network environment cannot directly access the OpenAI API
+- When you need to access external APIs through corporate proxies or VPNs
+- To improve API access speed and stability
+
+Configuration example:
+
+```yaml
+openai:
+  apiToken: "your-api-key"
+  proxyUrl: "http://proxy.example.com:8080"  # HTTP proxy server address and port
+```
+
+You can also use a proxy with authentication:
+
+```yaml
+openai:
+  apiToken: "your-api-key"
+  proxyUrl: "http://username:password@proxy.example.com:8080"
+```
+
 For multiple client configurations, you can use different prefixes:
 
 ```yaml
@@ -47,7 +71,6 @@ anthropic:
   apiToken: "anthropic-api-key"
   baseUrl: "https://api.anthropic.com"
   APIType: "anthropic"
-
 ```
 
 ## Usage
