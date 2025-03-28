@@ -1,29 +1,26 @@
-# Gone Gin 组件
+# Gone Gin Component
 
-`gone-gin` 是一个基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，为 Gone 框架提供 HTTP
-服务支持。它提供了路由管理、中间件处理、HTTP 注入、SSE（Server-Sent Events）等功能，使得在 Gone 框架中开发 Web 应用更加便捷。
+`gone-gin` is a web framework wrapper based on [gin-gonic/gin](https://github.com/gin-gonic/gin), providing HTTP service support for the Gone framework.
 
-## 功能特性
+## Features
 
-- 完整的路由管理
-- 灵活的中间件支持
-- HTTP 参数注入
-- SSE（Server-Sent Events）支持
-- 统一的错误处理
-- 请求限流
-- 健康检查
-- 请求/响应日志记录
-- 分布式追踪支持
+- **Route Management**: Complete RESTful routing support with route grouping
+- **Middleware**: Built-in common middleware with support for custom middleware development
+- **Parameter Injection**: Automatic parameter injection from HTTP requests into structs
+- **SSE Support**: Native support for Server-Sent Events
+- **Error Handling**: Unified error handling mechanism
+- **Performance Optimization**: Built-in request rate limiting, connection pooling, and other optimizations
+- **Observability**: Built-in request logging and distributed tracing support
 
-## 安装
+## Installation
 
 ```bash
 go get github.com/gone-io/goner/gin
 ```
 
-## 快速开始
+## Quick Start
 
-### 1. 基础路由
+### Basic Routing Example
 
 ```go
 package main
@@ -36,12 +33,11 @@ import (
 
 type HelloController struct {
 	gone.Flag
-	gin.IRouter `gone:"*"` // 注入路由器
+	gin.IRouter `gone:"*"`
 }
 
-// Mount 实现 gin.Controller 接口
 func (h *HelloController) Mount() gin.MountError {
-	h.GET("/hello", h.hello) // 注册路由
+	h.GET("/hello", h.hello)
 	return nil
 }
 
@@ -57,206 +53,207 @@ func main() {
 }
 ```
 
-### 2. HTTP 参数注入
+### 2. HTTP Parameter Injection
 
-详细说明请参考 [HTTP 注入说明](./docs/http-inject.md)
+For detailed information, please refer to [HTTP Injection Guide](./docs/http-inject.md)
 
 ```go
-type UserRequest struct {
-ID        int64  `http:"param=id"`   // 路径参数
-Name      string `http:"query=name"` // 查询参数
-Token     string `http:"header=token"`      // 请求头
-SessionID string `http:"cookie=session-id"` // Cookie
-Data      User   `http:"body"`              // 请求体
-}
-
 type UserController struct {
-gone.Flag
-gin.IRouter `gone:"*"`
-http.HttInjector `gone:"http"`
+    gone.Flag
+    gin.IRouter `gone:"*"`
+    http.HttInjector `gone:"http"`
 }
 
 func (u *UserController) Mount() gin.MountError {
-u.POST("/users/:id", u.createUser)
-return nil
+    u.POST("/users/:id", u.createUser)
+    return nil
 }
 
-func (u *UserController) createUser(req UserRequest) error {
-// req 中的字段会自动从 HTTP 请求中注入
-return nil
+// Fields in req will be automatically injected from the HTTP request
+func (u *UserController) createUser(req struct {
+    ID        int64  `http:"param=id"`   // Path parameter
+    Name      string `http:"query=name"` // Query parameter
+    Token     string `http:"header=token"`      // Request header
+    SessionID string `http:"cookie=session-id"` // Cookie
+    Data      User   `http:"body"`              // Request body
+}) error {
+    // Handle user creation logic
+    return nil
 }
 ```
 
-### 3.直接返回数据，不需要调用`context.Success`
+### 3. Direct Data Return without calling `context.Success`
 
-## 中间件使用
+## Middleware Usage
 
-### 1. 系统中间件
+### 1. System Middleware
 
-系统已内置了一些常用中间件，包括：
+The system includes several built-in middleware components:
 
-- 请求日志记录
-- 限流
-- 健康检查
-- 分布式追踪
+- Request logging
+- Rate limiting
+- Health check
+- Distributed tracing
 
-### 2. 自定义中间件
+### 2. Custom Middleware
 
 ```go
 type CustomMiddleware struct {
-gone.Flag
+    gone.Flag
 }
 
 func (m *CustomMiddleware) Process(ctx *gin.Context) {
-// 前置处理
-ctx.Next()
-// 后置处理
+    // Pre-processing
+    ctx.Next()
+    // Post-processing
 }
 ```
 
-## SSE（Server-Sent Events）
+## SSE (Server-Sent Events)
 
-支持服务器发送事件：
+Support for server-sent events:
 
 ```go
-// SSEController 是一个示例控制器，展示如何使用channel返回SSE流
+// SSEController is an example controller showing how to use channels to return SSE streams
 type SSEController struct {
-gone.Flag
-gone.Logger `gone:"gone-logger"`
-router gin.IRouter `gone:"*"`
+    gone.Flag
+    gone.Logger `gone:"gone-logger"`
+    router gin.IRouter `gone:"*"`
 }
 
-// Mount 实现Controller接口，挂载路由
+// Mount implements the Controller interface to mount routes
 func (c *SSEController) Mount() gin.GinMountError {
-// 注册路由
-c.router.GET("/api/sse/events", c.streamEvents)
+    // Register route
+    c.router.GET("/api/sse/events", c.streamEvents)
 
-return nil
+    return nil
 }
 
-// streamEvents 返回一个channel，系统会自动将其转换为SSE流
+// streamEvents returns a channel that will be automatically converted to an SSE stream
 func (c *SSEController) streamEvents() (<-chan any, error) {
-// 创建一个channel用于发送事件
-ch := make(chan any)
+    // Create a channel for sending events
+    ch := make(chan any)
 
-// 启动一个goroutine来发送事件
-go func() {
-defer close(ch) // 确保在函数结束时关闭channel
+    // Start a goroutine to send events
+    go func() {
+        defer close(ch) // Ensure channel is closed when function ends
 
-// 发送10个事件
-for i := 1; i <= 10; i++ {
-// 创建事件数据
-eventData := map[string]any{
-"id":      i,
-"message": fmt.Sprintf("这是第%d个事件", i),
-"time":    time.Now().Format(time.RFC3339),
-}
+        // Send 10 events
+        for i := 1; i <= 10; i++ {
+            // Create event data
+            eventData := map[string]any{
+                "id":      i,
+                "message": fmt.Sprintf("This is event #%d", i),
+                "time":    time.Now().Format(time.RFC3339),
+            }
 
-// 发送事件到channel
-ch <- eventData
+            // Send event to channel
+            ch <- eventData
 
-// 每秒发送一个事件
-time.Sleep(1 * time.Second)
-}
+            // Send one event per second
+            time.Sleep(1 * time.Second)
+        }
 
-// 发送一个错误事件示例
-ch <- gone.NewParameterError("这是一个错误事件示例")
+        // Send an error event example
+        ch <- gone.NewParameterError("This is an example error event")
 
-// 等待一秒后结束
-time.Sleep(1 * time.Second)
-}()
+        // Wait one second before ending
+        time.Sleep(1 * time.Second)
+    }()
 
-return ch, nil
+    return ch, nil
 }
 ```
 
-## 配置说明
+## Configuration
 
-### 服务器基础配置
+### Server Configuration
 
 ```properties
-# 服务器基本配置
-server.port=8080                     # 服务器端口，默认8080
-server.host=0.0.0.0                  # 服务器主机地址，默认0.0.0.0
-server.mode=release                  # 服务器模式，可选：debug, release, test，默认release
-server.max-wait-before-stop=5s       # 服务器关闭前最大等待时间，默认5秒
-server.network=tcp                   # 服务器网络类型，默认tcp
-server.address=                      # 服务器地址，格式为host:port，如果设置了此项，则忽略host和port
-server.html-tpl-pattern=             # HTML模板文件匹配模式，用于加载HTML模板
+# Basic server configuration
+server.port=8080                     # Server port, default 8080
+server.host=0.0.0.0                  # Server host address, default 0.0.0.0
+server.mode=release                  # Server mode, options: debug, release, test, default release
+server.max-wait-before-stop=5s       # Maximum wait time before server shutdown, default 5 seconds
+
+server.address=                      # Server address in host:port format, if set, host and port are ignored
+server.html-tpl-pattern=             # HTML template file pattern for loading HTML templates
 ```
 
-### 日志配置
+### Logging Configuration
 
 ```properties
-# 日志配置
-server.log.format=console                # 日志格式，默认console
-server.log.show-request-time=true        # 是否显示请求时间，默认true
-server.log.show-request-log=true         # 是否显示请求日志，默认true
-server.log.data-max-length=0             # 日志数据最大长度，0表示不限制，默认0
-server.log.request-id=true               # 是否记录请求ID，默认true
-server.log.remote-ip=true                # 是否记录远程IP，默认true
-server.log.request-body=true             # 是否记录请求体，默认true
-server.log.user-agent=true               # 是否记录User-Agent，默认true
-server.log.referer=true                  # 是否记录Referer，默认true
-server.log.show-response-log=true        # 是否显示响应日志，默认true
+# Logging configuration
+server.log.format=console                # Log format, default console
+server.log.show-request-time=true        # Show request time, default true
+server.log.show-request-log=true         # Show request log, default true
+server.log.data-max-length=0             # Maximum log data length, 0 means no limit, default 0
+server.log.request-id=true               # Record request ID, default true
+server.log.remote-ip=true                # Record remote IP, default true
+server.log.request-body=true             # Record request body, default true
+server.log.user-agent=true               # Record User-Agent, default true
+server.log.referer=true                  # Record Referer, default true
+server.log.show-response-log=true        # Show response log, default true
 
-# 请求体日志内容类型配置
+# Request body log content type configuration
 server.log.show-request-body-for-content-types=application/json;application/xml;application/x-www-form-urlencoded
 
-# 响应体日志内容类型配置
+# Response body log content type configuration
 server.log.show-response-body-for-content-types=application/json;application/xml;application/x-www-form-urlencoded
 ```
 
-### 限流配置
+### Rate Limiting Configuration
 
 ```properties
-# 限流配置
-server.req.enable-limit=false        # 是否启用请求限流，默认false
-server.req.limit=100                 # 每秒请求限制数，默认100
-server.req.limit-burst=300           # 突发请求限制数，默认300
-server.req.x-request-id-key=X-Request-Id  # 请求ID的Header键名
-server.req.x-trace-id-key=X-Trace-Id      # 追踪ID的Header键名
+# Rate limiting configuration
+server.req.enable-limit=false        # Enable request rate limiting, default false
+server.req.limit=100                 # Requests per second limit, default 100
+server.req.limit-burst=300           # Burst request limit, default 300
+server.req.x-request-id-key=X-Request-Id  # Request ID header key
+server.req.x-trace-id-key=X-Trace-Id      # Trace ID header key
 ```
 
-### 健康检查与追踪配置
+### Health Check and Tracing Configuration
 
 ```properties
-# 健康检查
-server.health-check=/health          # 健康检查路径，默认为/health
+# Health check
+server.health-check=/health          # Health check path, default /health
 
-server.is-after-proxy=false          # 是否在代理后面，默认false；如果存在反向代理，比如Nginx，则需要设置为true
+server.is-after-proxy=false          # Whether behind a proxy, default false; set to true if behind a reverse proxy like Nginx
 ```
 
-### 代理与响应配置
+### Proxy and Response Configuration
 
 ```properties
-# 代理统计
-server.proxy.stat=false              # 是否启用代理统计，默认false
+# Proxy statistics
+server.proxy.stat=false              # Enable proxy statistics, default false
 
-# 响应包装
-server.return.wrapped-data=true      # 是否包装响应数据，默认true
+# Response wrapping
+server.return.wrapped-data=true      # Wrap response data, default true
 ```
 
-## 最佳实践
+## Best Practices
 
-1. 路由管理
-    - 按业务模块划分控制器
-    - 使用路由分组管理相关接口
-    - 合理使用 HTTP 方法（GET、POST、PUT、DELETE 等）
+1. Route Management
+    - Organize controllers by business modules
+    - Use route groups to manage related endpoints
+    - Use HTTP methods appropriately (GET, POST, PUT, DELETE, etc.)
 
-2. 参数注入
-    - 合理使用 HTTP 注入标签（param、query、header、cookie、body）
-    - 一个请求只能注入一次 body
-    - 为注入的参数添加验证规则
+2. Parameter Injection
+    - Use HTTP injection tags appropriately (param, query, header, cookie, body)
+    - Only one body injection per request
+    - Add validation rules for injected parameters
 
-3. 错误处理
-    - 使用 `gone.Error` 统一处理错误
-    - 在中间件中统一处理异常
-    - 为不同类型的错误定义清晰的错误码
+3. Error Handling
+    - Use `gone.Error` for unified error handling
+    - Handle exceptions uniformly in middleware
+    - Define clear error codes for different types of errors
 
-4. 性能优化
-    - 合理配置限流参数
-    - 适当配置日志级别
-    - 使用连接池管理资源
+4. Performance Optimization
+    - Configure rate limiting parameters appropriately
+    - Set appropriate log levels
+    - Use connection pools for resource management
 
-## [性能测试报告](benchmark_test.md)
+## Performance Testing
+
+See [Performance Test Report](./benchmark_test.md)

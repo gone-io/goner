@@ -1,41 +1,41 @@
 # CMux
 
-`cmux`是一个用于在同一端口上复用多种协议的组件，它允许你在一个端口上同时处理HTTP和gRPC等不同协议的请求。这个组件是基于[soheilhy/cmux](https://github.com/soheilhy/cmux)实现的。
+`cmux` is a component for multiplexing multiple protocols on the same port, allowing you to handle different protocol requests like HTTP and gRPC on a single port. This component is implemented based on [soheilhy/cmux](https://github.com/soheilhy/cmux).
 
-## 功能特点
+## Features
 
-- 支持在同一端口上处理多种协议
-- 支持HTTP和gRPC协议的复用
-- 自动协议检测和分发
-- 与gone框架无缝集成
+- Supports handling multiple protocols on the same port
+- Supports multiplexing of HTTP and gRPC protocols
+- Automatic protocol detection and distribution
+- Seamless integration with the gone framework
 
-## 安装
+## Installation
 
 ```bash
 go get github.com/gone-io/goner/cmux
 ```
 
-## 配置参数
+## Configuration Parameters
 
-在配置文件中可以设置以下参数：
+The following parameters can be set in the configuration file:
 
 ```properties
-# 服务器网络类型，默认为tcp
+# Server network type, default is tcp
 server.network=tcp
 
-# 服务器地址，如果不设置，将使用host和port组合
+# Server address, if not set, will use host and port combination
 server.address=
 
-# 服务器主机名，默认为空
+# Server hostname, default is empty
 server.host=
 
-# 服务器端口号，默认为8080
+# Server port number, default is 8080
 server.port=8080
 ```
 
-## 基础使用
+## Basic Usage
 
-1. 首先，在你的应用中加载cmux组件：
+1. First, load the cmux component in your application:
 
 ```go
 package main
@@ -48,12 +48,12 @@ import (
 func main() {
     gone.Run(
         cmux.Load,
-        // ... 其他组件
+        // ... other components
     )
 }
 ```
 
-2. 在HTTP服务中使用cmux：
+2. Using cmux in HTTP service:
 
 ```go
 type server struct {
@@ -71,12 +71,12 @@ func (s *server) initListener() error {
             return nil
         }
     }
-    // 降级为普通TCP监听
+    // Fallback to normal TCP listening
     return s.createListener()
 }
 ```
 
-3. 在gRPC服务中使用cmux：
+3. Using cmux in gRPC service:
 
 ```go
 func (s *server) initListener() error {
@@ -90,47 +90,47 @@ func (s *server) initListener() error {
             return nil
         }
     }
-    // 降级为普通TCP监听
+    // Fallback to normal TCP listening
     return s.createListener()
 }
 ```
 
-## API接口
+## API Interface
 
 ### CMuxServer
 
 ```go
 type CMuxServer interface {
-    // Match 根据匹配器获取对应的监听器
+    // Match gets the corresponding listener based on the matcher
     Match(matcher ...cmux.Matcher) net.Listener
     
-    // MatchWithWriters 根据写入匹配器获取对应的监听器
+    // MatchWithWriters gets the corresponding listener based on the writer matcher
     MatchWithWriters(matcher ...cmux.MatchWriter) net.Listener
     
-    // GetAddress 获取服务器地址
+    // GetAddress gets the server address
     GetAddress() string
 }
 ```
 
-## 最佳实践
+## Best Practices
 
-1. 优先级设置：cmux组件使用`gone.HighStartPriority()`确保在其他服务之前启动。
+1. Priority setting: The cmux component uses `gone.HighStartPriority()` to ensure it starts before other services.
 
-2. 错误处理：建议实现合适的降级策略，当cmux不可用时可以回退到普通的TCP监听。
+2. Error handling: It is recommended to implement appropriate fallback strategies when cmux is unavailable.
 
-3. 协议匹配顺序：在设置多个协议匹配器时，建议按照以下顺序：
+3. Protocol matching order: When setting multiple protocol matchers, it is recommended to follow this order:
    - gRPC (HTTP/2)
    - HTTP/1.x
-   - 其他协议
+   - Other protocols
 
-4. 监控和日志：cmux组件集成了gone的日志和追踪系统，可以方便地进行监控和调试。
+4. Monitoring and logging: The cmux component integrates with gone's logging and tracing system for easy monitoring and debugging.
 
-## 注意事项
+## Notes
 
-1. 确保在使用cmux时正确配置所有必要的参数。
+1. Ensure all necessary parameters are correctly configured when using cmux.
 
-2. 在停止服务时，记得调用Stop方法以确保资源正确释放。
+2. Remember to call the Stop method when stopping the service to ensure proper resource release.
 
-3. 当使用TLS时，需要特别注意协议检测的配置。
+3. Pay special attention to protocol detection configuration when using TLS.
 
-4. 建议在开发环境中进行充分的测试，确保所有协议都能正确工作。
+4. It is recommended to conduct thorough testing in the development environment to ensure all protocols work correctly.

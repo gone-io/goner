@@ -1,10 +1,10 @@
-# Gone gRPC 组件使用指南
+# Gone gRPC Component Usage Guide
 
-本文档介绍如何在 Gone 框架中使用 gRPC 组件，包括传统方式和 Gone V2 的 Provider 机制两种实现方式。
+This document explains how to use the gRPC component in the Gone framework, covering both the traditional approach and the Gone V2 Provider mechanism.
 
-## 准备工作
+## Getting Started
 
-首先创建一个 grpc 目录，在这个目录中初始化一个 golang mod：
+First, create a grpc directory and initialize a golang mod in it:
 
 ```bash
 mkdir grpc
@@ -12,13 +12,13 @@ cd grpc
 go mod init grpc_demo
 ```
 
-## 编写 proto 文件，生成 golang 代码
+## Writing Proto File and Generating Golang Code
 
-### 编写协议文件
+### Writing Protocol File
 
-定义一个简单的 Hello 服务，包含一个 Say 方法：
+Define a simple Hello service with a Say method:
 
-文件名：proto/hello.proto
+Filename: proto/hello.proto
 ```proto
 syntax = "proto3";
 
@@ -39,7 +39,7 @@ message SayRequest {
 }
 ```
 
-### 生成 golang 代码
+### Generating Golang Code
 
 ```bash
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
@@ -49,13 +49,13 @@ protoc --go_out=. --go_opt=paths=source_relative \
 proto/hello.proto
 ```
 
-> 其中，protoc 的安装参考 [Protocol Buffer 编译器安装](https://blog.csdn.net/waitdeng/article/details/139248507)
+> For protoc installation, refer to [Protocol Buffer Compiler Installation](https://blog.csdn.net/waitdeng/article/details/139248507)
 
-## 实现方式一：传统方式
+## Implementation Method 1: Traditional Approach
 
-### 服务端实现
+### Server Implementation
 
-文件名：v1_server/main.go
+Filename: v1_server/main.go
 ```go
 package main
 
@@ -71,16 +71,16 @@ import (
 
 type server struct {
   gone.Flag
-  proto.UnimplementedHelloServer // 嵌入UnimplementedHelloServer
+  proto.UnimplementedHelloServer // Embed UnimplementedHelloServer
 }
 
-// 重载协议中定义的服务
+// Override the service defined in the protocol
 func (s *server) Say(ctx context.Context, in *proto.SayRequest) (*proto.SayResponse, error) {
   log.Printf("Received: %v", in.GetName())
   return &proto.SayResponse{Message: "Hello " + in.GetName()}, nil
 }
 
-// 实现 goneGrpc.Service接口的RegisterGrpcServer方法，该方法在服务器启动时会被自动调用
+// Implement the RegisterGrpcServer method of the goneGrpc.Service interface, which will be automatically called when the server starts
 func (s *server) RegisterGrpcServer(server *grpc.Server) {
   proto.RegisterHelloServer(server, s)
 }
@@ -89,14 +89,14 @@ func main() {
   gone.
     Load(&server{}).
     Loads(goner.BaseLoad, goneGrpc.ServerLoad).
-    // 启动服务
+    // Start the service
     Serve()
 }
 ```
 
-### 客户端实现
+### Client Implementation
 
-文件名：v1_client/main.go
+Filename: v1_client/main.go
 ```go
 package main
 
@@ -113,20 +113,20 @@ import (
 
 type helloClient struct {
 	gone.Flag
-	proto.HelloClient // 嵌入HelloClient
+	proto.HelloClient // Embed HelloClient
 
 	host string `gone:"config,server.host"`
 	port string `gone:"config,server.port"`
 }
 
-// 实现 gone_grpc.Client接口的Address方法，该方法在客户端启动时会被自动调用
-// 该方法的作用是告诉客户端gRPC服务的地址
+// Implement the Address method of the gone_grpc.Client interface, which will be automatically called when the client starts
+// This method tells the client the address of the gRPC service
 func (c *helloClient) Address() string {
 	return fmt.Sprintf("%s:%s", c.host, c.port)
 }
 
-// 实现 gone_grpc.Client接口的Stub方法，该方法在客户端启动时会被自动调用
-// 在该方法中，完成 HelloClient的初始化
+// Implement the Stub method of the gone_grpc.Client interface, which will be automatically called when the client starts
+// Initialize HelloClient in this method
 func (c *helloClient) Stub(conn *grpc.ClientConn) {
 	c.HelloClient = proto.NewHelloClient(conn)
 }
@@ -136,9 +136,9 @@ func main() {
 		Load(&helloClient{}).
 		Loads(goner.BaseLoad, gone_grpc.ClientRegisterLoad).
 		Run(func(in struct {
-			hello *helloClient `gone:"*"` // 在Run方法的参数中，注入 helloClient
+			hello *helloClient `gone:"*"` // Inject helloClient in the Run method's parameters
 		}) {
-			// 调用Say方法，给服务段发送消息
+			// Call the Say method to send a message to the server
 			say, err := in.hello.Say(context.Background(), &proto.SayRequest{Name: "gone"})
 			if err != nil {
 				log.Printf("er:%v", err)
@@ -149,13 +149,13 @@ func main() {
 }
 ```
 
-## 实现方式二：Gone V2 Provider 机制
+## Implementation Method 2: Gone V2 Provider Mechanism
 
-Gone V2 引入了强大的 Provider 机制，可以大幅简化 gRPC 组件的使用。
+Gone V2 introduces a powerful Provider mechanism that greatly simplifies the use of gRPC components.
 
-### 服务端实现
+### Server Implementation
 
-文件名：v2_server/main.go
+Filename: v2_server/main.go
 ```go
 package main
 
@@ -171,35 +171,35 @@ import (
 
 type server struct {
 	gone.Flag
-	proto.UnimplementedHelloServer              // 嵌入UnimplementedHelloServer
-	grpcServer                     *grpc.Server `gone:"*"` // 注入grpc.Server
+	proto.UnimplementedHelloServer              // Embed UnimplementedHelloServer
+	grpcServer                     *grpc.Server `gone:"*"` // Inject grpc.Server
 }
 
 func (s *server) Init() {
-	proto.RegisterHelloServer(s.grpcServer, s) //注册服务
+	proto.RegisterHelloServer(s.grpcServer, s) // Register service
 }
 
-// Say  重载协议中定义的服务
+// Say  Override the service defined in the protocol
 func (s *server) Say(ctx context.Context, in *proto.SayRequest) (*proto.SayResponse, error) {
 	log.Printf("Received: %v", in.GetName())
 	return &proto.SayResponse{Message: "Hello " + in.GetName()}, nil
 }
 
 func main() {
-	// gone内置默认的配置组件只能从环境变量中读取配置，所以需要设置环境变量
+	// Gone's built-in default configuration component can only read configuration from environment variables
 	os.Setenv("GONE_SERVER_GRPC_PORT", "9091")
 
 	gone.
 		Load(&server{}).
 		Loads(goneGrpc.ServerLoad).
-		// 启动服务
+		// Start the service
 		Serve()
 }
 ```
 
-### 客户端实现
+### Client Implementation
 
-文件名：v2_client/main.go
+Filename: v2_client/main.go
 ```go
 package main
 
@@ -215,18 +215,18 @@ import (
 
 type helloClient struct {
 	gone.Flag
-	proto.HelloClient // 使用方法1：嵌入HelloClient，本组件只负载初始化，能力提供给第三方组件使用
+	proto.HelloClient // Method 1: Embed HelloClient, this component only handles initialization and provides capabilities to third-party components
 
-	// 使用方法2：在本组件直接使用，不提供第三方组件使用
+	// Method 2: Use directly in this component, not providing to third-party components
 	//hello *proto.HelloClient
 
-	// config=${配置的key},address=${服务地址}； //config优先级更高
+	// config=${config key},address=${service address}; //config has higher priority
 	clientConn *grpc.ClientConn `gone:"*,config=grpc.service.hello.address"`
 
-	// config 和 address 可以一起使用，如果config没有读取到值，降级为使用 address
+	// config and address can be used together, if config value is not found, fallback to using address
 	//clientConn1 *grpc.ClientConn `gone:"*,config=grpc.service.hello.address,address=127.0.0.1:9091"`
 
-	// address 也可以单独使用，不推荐这种方式，意味着写死了
+	// address can also be used alone, not recommended as it means hardcoding
 	//clientConn2 *grpc.ClientConn `gone:"*,address=127.0.0.1:9091"`
 }
 
@@ -236,16 +236,16 @@ func (c *helloClient) Init() {
 }
 
 func main() {
-	// gone内置默认的配置组件只能从环境变量中读取配置，所以需要设置环境变量
+	// Gone's built-in default configuration component can only read configuration from environment variables
 	os.Setenv("GONE_GRPC_SERVICE_HELLO_ADDRESS", "127.0.0.1:9091")
 
 	gone.
 		Load(&helloClient{}).
 		Loads(gone_grpc.ClientRegisterLoad).
 		Run(func(in struct {
-			hello *helloClient `gone:"*"` // 在Run方法的参数中，注入 helloClient
+			hello *helloClient `gone:"*"` // Inject helloClient in the Run method's parameters
 		}) {
-			// 调用Say方法，给服务段发送消息
+			// Call the Say method to send a message to the server
 			say, err := in.hello.Say(context.Background(), &proto.SayRequest{Name: "gone"})
 			if err != nil {
 				log.Printf("er:%v", err)
@@ -256,80 +256,80 @@ func main() {
 }
 ```
 
-## 配置文件
+## Configuration File
 
-文件名：config/default.properties
+Filename: config/default.properties
 ```properties
-# 设置grpc服务的端口和host
+# Set grpc service port and host
 server.port=9001
 server.host=127.0.0.1
 
-# 设置客户端使用的grpc服务端口和host
+# Set grpc service port and host used by the client
 server.grpc.port=${server.port}
 server.grpc.host=${server.host}
 ```
 
-## 测试
+## Testing
 
-### 运行服务端
+### Running the Server
 
 ```bash
-go run v2_server/main.go  # 或 v1_server/main.go
+go run v2_server/main.go  # or v1_server/main.go
 ```
 
-程序等待请求，屏幕打印内容：
+The program waits for requests, and the screen displays:
 ```log
 2024-06-19 22:02:41.971|INFO|/Users/jim/works/gone-io/gone/goner/grpc/server.go:84||Register gRPC service *main.server
 2024-06-19 22:02:41.971|INFO|/Users/jim/works/gone-io/gone/goner/grpc/server.go:88||gRPC server now listen at 127.0.0.1:9091
 ```
 
-### 运行客户端
+### Running the Client
 
 ```bash
-go run v2_client/main.go  # 或 v1_client/main.go
+go run v2_client/main.go  # or v1_client/main.go
 ```
 
-程序执行完退出，屏幕打印内容如下：
+The program exits after execution, and the screen displays:
 ```log
 2024-06-19 22:06:20.713|INFO|/Users/jim/works/gone-io/gone/goner/grpc/client.go:59||register gRPC client *main.helloClient on address 127.0.0.1:9091
 
 2024/06/19 22:06:20 say result: Hello gone
 ```
 
-回到服务端窗口，可以看到服务器接收到请求，新打印一行日志：
+Back in the server window, you can see that the server received the request, with a new log line:
 ```log
 2024/06/19 22:06:08 Received: gone
 ```
 
-## 两种实现方式对比
+## Comparison of Two Implementation Methods
 
-### 传统方式
+### Traditional Approach
 
-**服务端**：
-1. 需要实现 `RegisterGrpcServer` 接口方法来注册服务
-2. 手动管理 gRPC 服务的注册过程
+**Server Side**:
+1. Need to implement the `RegisterGrpcServer` interface method to register services
+2. Manual management of gRPC service registration process
 
-**客户端**：
-1. 需要实现 `Address` 和 `Stub` 方法来初始化连接
-2. 配置获取方式不够灵活，地址构建逻辑需要手写
+**Client Side**:
+1. Need to implement `Address` and `Stub` methods to initialize connection
+2. Configuration retrieval is not flexible, address construction logic needs to be written manually
 
-### Provider 机制
+### Provider Mechanism
 
-**服务端**：
-1. 通过标签自动注入 `*grpc.Server`
-2. 在 `Init` 方法中完成服务注册，符合 Gone 的组件生命周期管理
+**Server Side**:
+1. Automatically inject `*grpc.Server` through tags
+2. Complete service registration in the `Init` method, conforming to Gone's component lifecycle management
 
-**客户端**：
-1. 不再需要实现 `Address` 和 `Stub` 方法
-2. 支持灵活的配置方式，包括：
-   - 仅从配置中读取地址
-   - 配置与默认地址配合使用，实现降级策略
-   - 直接硬编码地址（不推荐，但支持）
+**Client Side**:
+1. No longer need to implement `Address` and `Stub` methods
+2. Support flexible configuration methods, including:
+   - Read address from configuration only
+   - Use configuration with default address for fallback strategy
+   - Direct hardcoded address (not recommended, but supported)
 
-## 总结
+## Summary
 
-Gone V2 的 Provider 机制大幅提升了 gRPC 组件的使用体验：
+Gone V2's Provider mechanism greatly improves the gRPC component usage experience:
 
-1. **代码更简洁**：移除了不必要的接口实现和重复性的模板代码
-2. **更符合依赖注入思想**：通过标签自动注入所需组件
-3. **配置更灵活**：支持多种地址获取策略，提高了代码的可维
+1. **More Concise Code**: Removes unnecessary interface implementations and repetitive template code
+2. **Better Alignment with Dependency Injection**: Automatically injects required components through tags
+3. **More Flexible Configuration**: Supports multiple address acquisition strategies, improving code maintainability

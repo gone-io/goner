@@ -244,7 +244,7 @@ import (
 
 type service struct {
 	gone.Flag
-	pool redis.Pool `gone:"gone-redis-pool"`
+	pool redis.Pool `gone:"*"`
 }
 
 func (s *service) Use() {

@@ -1,50 +1,49 @@
-# Gone Zap 组件
+# Gone Zap Component
 
-`gone-zap` 是 Gone 框架的日志组件，基于 [uber-go/zap](https://github.com/uber-go/zap) 实现，提供了高性能的结构化日志记录功能。通过该组件，您可以轻松地在 Gone 应用中实现统一的日志管理，支持多种输出格式和日志级别。
+`gone-zap` is a logging component for the Gone framework, implemented based on [uber-go/zap](https://github.com/uber-go/zap), providing high-performance structured logging functionality. With this component, you can easily implement unified log management in Gone applications, supporting various output formats and log levels.
 
-## 功能特性
+## Features
 
-- 与 Gone 框架无缝集成
-- 高性能的结构化日志记录
-- 支持多种日志级别（Debug、Info、Warn、Error、Panic、Fatal）
-- 支持控制台和文件输出
-- 支持日志轮转
-- 支持追踪 ID 关联
-- 支持自定义日志格式
+- Seamless integration with Gone framework
+- High-performance structured logging
+- Support for multiple log levels (Debug, Info, Warn, Error, Panic, Fatal)
+- Console and file output support
+- Log rotation support
+- Trace ID correlation support
+- Custom log format support
 
-
-## 配置说明
+## Configuration
 
 ```properties
-# 日志级别，可选值：debug、info、warn、error、panic、fatal，默认为 info
+# Log level, available values: debug, info, warn, error, panic, fatal, default is info
 log.level=info
 
-# 是否禁用堆栈跟踪，默认为 false
+# Whether to disable stack trace, default is false
 log.disable-stacktrace=false
 
-# 堆栈跟踪级别，默认为 error
+# Stack trace level, default is error
 log.stacktrace-level=error
 
-# 是否报告调用者信息，默认为 true
+# Whether to report caller information, default is true
 log.report-caller=true
 
-# 日志编码器，可选值：console、json，默认为 console
+# Log encoder, available values: console, json, default is console
 log.encoder=console
 
-# 日志输出路径，默认为 stdout
+# Log output path, default is stdout
 log.output=stdout
 
-# 日志文件配置（当 log.output 设置为文件路径时有效）
+# Log file configuration (effective when log.output is set to a file path)
 log.filename=app.log
-log.max-size=100  # 单个日志文件最大大小，单位为 MB
-log.max-age=30    # 日志文件保留天数
-log.max-backups=5 # 最大备份数量
-log.compress=true # 是否压缩备份文件
+log.max-size=100  # Maximum size of single log file in MB
+log.max-age=30    # Number of days to retain log files
+log.max-backups=5 # Maximum number of backup files
+log.compress=true # Whether to compress backup files
 ```
 
-## 快速开始
+## Quick Start
 
-### 1. 加载日志组件
+### 1. Load the Logger Component
 
 ```go
 package main
@@ -56,42 +55,42 @@ import (
 
 func main() {
     gone.Loads(
-        zap.Load,  // 加载日志组件
-        // 其他组件...
+        zap.Load,  // Load logger component
+        // Other components...
     )
 }
 ```
 
-### 2. 使用日志记录
+### 2. Using the Logger
 
 ```go
 type MyService struct {
     gone.Flag
-    logger gone.Logger `gone:"*"`  // 注入日志器
+    logger gone.Logger `gone:"*"` // Inject logger
 }
 
 func (s *MyService) DoSomething() error {
-    // 记录不同级别的日志
-    s.logger.Debug("调试信息")
-    s.logger.Info("普通信息")
-    s.logger.Warn("警告信息")
-    s.logger.Error("错误信息")
+    // Log different levels
+    s.logger.Debug("Debug message")
+    s.logger.Info("Normal message")
+    s.logger.Warn("Warning message")
+    s.logger.Error("Error message")
     
-    // 使用格式化日志
-    s.logger.Infof("用户 %s 登录成功", "admin")
+    // Use formatted logging
+    s.logger.Infof("User %s logged in successfully", "admin")
     
-    // 记录带有上下文的日志
-    s.logger.With("user_id", 123).Info("用户操作")
+    // Log with context
+    s.logger.With("user_id", 123).Info("User operation")
     
-    // 记录带有错误的日志
-    err := errors.New("操作失败")
-    s.logger.WithError(err).Error("处理请求时出错")
+    // Log with error
+    err := errors.New("operation failed")
+    s.logger.WithError(err).Error("Error processing request")
     
     return nil
 }
 ```
 
-### 3. 创建命名日志器
+### 3. Creating Named Logger
 
 ```go
 type UserService struct {
@@ -100,20 +99,20 @@ type UserService struct {
 }
 
 func (s *UserService) Init() {
-    // 创建带有模块名称的日志器
+    // Create logger with module name
     s.logger = s.logger.Named("user-service")
 }
 
 func (s *UserService) CreateUser() {
-    // 日志输出会包含模块名称前缀
-    s.logger.Info("创建用户")
-    // 输出: [user-service] 创建用户
+    // Log output will include module name prefix
+    s.logger.Info("Creating user")
+    // Output: [user-service] Creating user
 }
 ```
 
-## API 参考
+## API Reference
 
-### Logger 接口
+### Logger Interface
 
 ```go
 type Logger interface {
@@ -137,17 +136,17 @@ type Logger interface {
 }
 ```
 
-## 最佳实践
+## Best Practices
 
-1. 为不同的模块创建命名日志器，便于日志分类和过滤
-2. 在生产环境中使用 JSON 格式的日志，便于日志收集和分析
-3. 合理设置日志级别，避免过多的调试日志影响性能
-4. 使用结构化日志记录关键信息，如用户 ID、请求 ID 等
-5. 与 Tracer 组件结合使用，在日志中包含追踪 ID
-6. 对于敏感信息，如密码、令牌等，避免直接记录到日志中
+1. Create named loggers for different modules to facilitate log categorization and filtering
+2. Use JSON format logs in production environment for easier log collection and analysis
+3. Set appropriate log levels to avoid performance impact from excessive debug logs
+4. Use structured logging to record key information such as user ID, request ID, etc.
+5. Combine with Tracer component to include trace IDs in logs
+6. Avoid logging sensitive information such as passwords and tokens directly
 
-## 注意事项
+## Notes
 
-1. `Panic` 和 `Fatal` 级别的日志会导致程序终止，请谨慎使用
-2. 在高并发场景下，过多的日志记录可能会影响性能，建议适当调整日志级别
-3. 日志文件轮转功能依赖于 [lumberjack](https://github.com/natefinch/lumberjack) 库，确保正确配置相关参数
+1. `Panic` and `Fatal` level logs will terminate the program, use with caution
+2. In high-concurrency scenarios, excessive logging may impact performance, consider adjusting log levels accordingly
+3. Log rotation functionality depends on the [lumberjack](https://github.com/natefinch/lumberjack) library, ensure proper configuration of related parameters

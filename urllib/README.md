@@ -1,26 +1,26 @@
-# Gone URLlib 组件
+# Gone URLlib Component
 
-`gone-urllib` 是 Gone 框架的 HTTP 客户端组件，基于 [imroc/req](https://github.com/imroc/req) 实现，提供了简洁易用的 HTTP 请求功能。通过该组件，您可以轻松地在 Gone 应用中发起 HTTP 请求，处理响应，并与其他组件集成。
+`gone-urllib` is the HTTP client component of the Gone framework, implemented based on [imroc/req](https://github.com/imroc/req). It provides a simple and easy-to-use HTTP request functionality. With this component, you can easily make HTTP requests, handle responses, and integrate with other components in Gone applications.
 
-## 功能特性
+## Features
 
-- 与 Gone 框架无缝集成
-- 简洁的 API 设计
-- 支持常见的 HTTP 方法（GET、POST、PUT、DELETE 等）
-- 支持请求和响应的 JSON 处理
-- 支持请求参数、头部和 Cookie 设置
-- 支持超时控制和重试机制
-- 支持 HTTP/HTTPS 代理
+- Seamless integration with Gone framework
+- Clean API design
+- Support for common HTTP methods (GET, POST, PUT, DELETE, etc.)
+- Support for JSON request and response handling
+- Support for request parameters, headers, and cookies
+- Support for timeout control and retry mechanisms
+- Support for HTTP/HTTPS proxy
 
-## 安装
+## Installation
 
 ```bash
 go get github.com/gone-io/goner/urllib
 ```
 
-## 快速开始
+## Quick Start
 
-### 1. 在应用中使用 URLlib
+### 1. Using URLlib in Your Application
 
 ```go
 package main
@@ -34,15 +34,15 @@ import (
 
 type MyService struct {
 	gone.Flag
-	*req.Request `gone:"*"` // 注入 HTTP 客户端
+	*req.Request `gone:"*"` // Inject HTTP client
 
-	//*req.Client `gone:"*"` // 注入 *req.Client
+	//*req.Client `gone:"*"` // Inject *req.Client
 
-	//urllib.Client `gone:"*"` // 注入 urllib.Client 接口
+	//urllib.Client `gone:"*"` // Inject urllib.Client interface
 }
 
 func (s *MyService) GetData() (string, error) {
-	// 发起 GET 请求
+	// Make a GET request
 	resp, err := s.
 		SetHeader("Accept", "application/json").
 		Get("https://ipinfo.io")
@@ -50,14 +50,14 @@ func (s *MyService) GetData() (string, error) {
 		return "", err
 	}
 
-	// 获取响应内容
+	// Get response content
 	return resp.String(), nil
 }
 
 func main() {
 	gone.
 		Load(&MyService{}).
-		Loads(urllib.Load). // 加载 URLlib 组件
+		Loads(urllib.Load). // Load URLlib component
 		Run(func(s *MyService) {
 			data, err := s.GetData()
 			if err != nil {
@@ -67,21 +67,20 @@ func main() {
 			fmt.Println("Data:", data)
 		})
 }
-
 ```
 
-### 2. 处理 JSON 响应
+### 2. Handling JSON Response
 
-更多说明，请参考 [imroc/req](https://github.com/imroc/req)
+For more details, please refer to [imroc/req](https://github.com/imroc/req)
 
 ```go
 func (s *MyService) GetUserInfo(userId string) (*UserInfo, error) {
-    var result urllib.Res[UserInfo]  // 使用泛型响应结构
+    var result urllib.Res[UserInfo]  // Use generic response structure
     
-    // 发起请求并解析 JSON 响应
+    // Make request and parse JSON response
     resp, err := s.client.R().
         SetQueryParam("id", userId).
-        SetResult(&result).  // 设置响应结果
+        SetResult(&result).  // Set response result
         Get("https://api.example.com/users")
     
     if err != nil {
@@ -92,7 +91,7 @@ func (s *MyService) GetUserInfo(userId string) (*UserInfo, error) {
         return nil, fmt.Errorf("request failed with status code: %d", resp.StatusCode)
     }
     
-    // 检查业务状态码
+    // Check business status code
     if result.Code != 0 {
         return nil, fmt.Errorf("business error: %s", result.Msg)
     }
@@ -107,45 +106,45 @@ type UserInfo struct {
 }
 ```
 
-### 3. 自定义客户端配置
+### 3. Custom Client Configuration
 
 ```go
 func (s *MyService) CustomizeClient() {
-    // 获取底层的 req.Client 进行自定义配置
+    // Get underlying req.Client for custom configuration
     client := s.client.C()
     
-    // 设置超时
+    // Set timeout
     client.SetTimeout(10 * time.Second)
     
-    // 设置重试
+    // Set retry
     client.SetCommonRetryCount(3)
     client.SetCommonRetryInterval(func(resp *req.Response, attempt int) time.Duration {
         return time.Duration(attempt) * time.Second
     })
     
-    // 设置代理
+    // Set proxy
     client.SetProxyURL("http://proxy.example.com:8080")
     
-    // 设置通用头部
+    // Set common headers
     client.SetCommonHeader("User-Agent", "Gone-URLlib/1.0")
 }
 ```
 
-## API 参考
+## API Reference
 
-### Client 接口
+### Client Interface
 
 ```go
 type Client interface {
-    // R 创建一个新的请求对象
+    // R creates a new request object
     R() *req.Request
     
-    // C 获取底层的 req.Client 对象
+    // C gets the underlying req.Client object
     C() *req.Client
 }
 ```
 
-### Res 结构体
+### Res Structure
 
 ```go
 type Res[T any] struct {
@@ -155,18 +154,18 @@ type Res[T any] struct {
 }
 ```
 
-用于处理标准 JSON 响应格式的泛型结构体。
+A generic structure for handling standard JSON response format.
 
-## 最佳实践
+## Best Practices
 
-1. 使用依赖注入获取 URLlib 客户端，避免手动创建
-2. 为不同的 API 服务创建专门的客户端封装，提高代码复用性
-3. 使用泛型响应结构 `Res<T>` 处理标准格式的 JSON 响应
-4. 设置合理的超时和重试策略，提高请求可靠性
-5. 在请求中添加追踪 ID，便于问题排查
+1. Use dependency injection to get URLlib client, avoid manual creation
+2. Create dedicated client wrappers for different API services to improve code reusability
+3. Use generic response structure `Res<T>` to handle standard JSON response format
+4. Set appropriate timeout and retry strategies to improve request reliability
+5. Add trace ID in requests for better problem tracking
 
-## 注意事项
+## Important Notes
 
-1. 处理敏感信息（如认证凭据）时，避免将其硬编码在代码中，推荐使用配置或环境变量
-2. 对于大文件上传或下载，考虑使用流式处理方式
-3. 在生产环境中，建议配置 HTTPS 证书验证
+1. When handling sensitive information (like authentication credentials), avoid hardcoding them in the code, use configuration or environment variables instead
+2. For large file uploads or downloads, consider using streaming processing
+3. In production environment, it's recommended to configure HTTPS certificate verification
