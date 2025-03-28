@@ -6,17 +6,13 @@ import (
 
 // Load load zap logger
 var load = gone.OnceLoad(func(loader gone.Loader) error {
-	err := loader.Load(&atomicLevel{})
-	if err != nil {
+	if err := loader.Load(&atomicLevel{}); err != nil {
 		return err
 	}
-
-	err = loader.Load(&zapLoggerProvider{})
-	if err != nil {
+	if err := loader.Load(&zapLoggerProvider{}); err != nil {
 		return err
 	}
-	err = loader.Load(&sugarProvider{})
-	if err != nil {
+	if err := loader.Load(&sugarProvider{}); err != nil {
 		return err
 	}
 	return loader.Load(&sugar{}, gone.IsDefault(new(gone.Logger)), gone.ForceReplace())
@@ -24,9 +20,4 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 
 func Load(loader gone.Loader) error {
 	return load(loader)
-}
-
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
 }
