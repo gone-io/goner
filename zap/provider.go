@@ -69,10 +69,8 @@ type zapLoggerProvider struct {
 func (s *zapLoggerProvider) Provide(tagConf string) (*zap.Logger, error) {
 	_, keys := gone.TagStringParse(tagConf)
 
-	if len(keys) > 0 {
-		if keys[0] != "" {
-			return s.zapLogger.Named(keys[0]), nil
-		}
+	if len(keys) > 0 && keys[0] != "" {
+		return s.zapLogger.Named(keys[0]), nil
 	}
 	return s.zapLogger, nil
 }

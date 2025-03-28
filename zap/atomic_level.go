@@ -1,7 +1,6 @@
 package gone_zap
 
 import (
-	"fmt"
 	"github.com/gone-io/gone/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -26,22 +25,29 @@ func parseLevel(level string) zapcore.Level {
 	}
 }
 
+func newAtomicLevel(level zapcore.Level) *atomicLevel {
+	a := atomicLevel{
+		level: new(string),
+	}
+	a.SetLevel(level)
+	return &a
+}
+
 type atomicLevel struct {
 	gone.Flag
 	level *string `gone:"config,log.level,default=info"`
 }
 
-func (a atomicLevel) Enabled(level zapcore.Level) bool {
+func (a *atomicLevel) Enabled(level zapcore.Level) bool {
 	zapLevel := parseLevel(*a.level)
 	return zapLevel <= level
 }
 
-func (a atomicLevel) Level() zapcore.Level {
-	fmt.Printf("a.level:%v\n", a.level)
+func (a *atomicLevel) Level() zapcore.Level {
 	return parseLevel(*a.level)
 }
 
-func (a atomicLevel) SetLevel(level zapcore.Level) {
+func (a *atomicLevel) SetLevel(level zapcore.Level) {
 	if a.level == nil {
 		a.level = new(string)
 	}

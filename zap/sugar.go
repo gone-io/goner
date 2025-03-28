@@ -35,11 +35,7 @@ func (l *sugar) GetLevel() gone.LoggerLevel {
 	case zap.ErrorLevel:
 		return gone.ErrorLevel
 	default:
-		if l.SugaredLogger.Level() > zap.ErrorLevel {
-			return gone.ErrorLevel
-		} else {
-			return gone.DebugLevel
-		}
+		return gone.ErrorLevel
 	}
 }
 

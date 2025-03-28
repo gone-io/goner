@@ -2,11 +2,14 @@ package gone_zap
 
 import (
 	"fmt"
-	"github.com/gone-io/gone/v2"
-	"go.uber.org/zap/zapcore"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/gone-io/gone/v2"
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type mockConfigure struct {
@@ -30,6 +33,41 @@ func (m *mockConfigure) setLevel(level string) {
 		s := l.(*string)
 		*s = level
 	}
+}
+
+func TestAtomicLevel_SetLevel(t *testing.T) {
+	tests := []struct {
+		name     string
+		level    zapcore.Level
+		expected string
+	}{
+		{"debug level", zap.DebugLevel, "debug"},
+		{"info level", zap.InfoLevel, "info"},
+		{"warn level", zap.WarnLevel, "warn"},
+		{"error level", zap.ErrorLevel, "error"},
+		{"panic level", zap.PanicLevel, "panic"},
+		{"fatal level", zap.FatalLevel, "fatal"},
+		{"default level", zapcore.Level(99), "info"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := atomicLevel{
+				level: new(string),
+			}
+			a.SetLevel(tt.level)
+			assert.Equal(t, tt.expected, *a.level)
+		})
+	}
+}
+
+func TestAtomicLevel_SetLevel_NilCase(t *testing.T) {
+	a := atomicLevel{
+		level: new(string),
+	}
+	a.SetLevel(zap.InfoLevel)
+	assert.NotNil(t, a.level)
+	assert.Equal(t, "info", *a.level)
 }
 
 func TestLevelChangeByConfigure(t *testing.T) {
