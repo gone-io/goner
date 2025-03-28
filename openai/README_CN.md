@@ -30,6 +30,30 @@ openai:
   proxyUrl: ""                   # 可选：HTTP 代理 URL
 ```
 
+### 代理配置（proxyUrl）
+
+`proxyUrl` 参数用于在网络受限环境下通过HTTP代理访问OpenAI API。这在以下场景特别有用：
+
+- 当你所在的网络环境无法直接访问OpenAI API
+- 需要通过企业代理或VPN访问外部API
+- 为了提高API访问速度和稳定性
+
+配置示例：
+
+```yaml
+openai:
+  apiToken: "your-api-key"
+  proxyUrl: "http://proxy.example.com:8080"  # HTTP代理服务器地址和端口
+```
+
+你也可以使用带认证的代理：
+
+```yaml
+openai:
+  apiToken: "your-api-key"
+  proxyUrl: "http://username:password@proxy.example.com:8080"
+```
+
 对于多客户端配置，你可以使用不同的前缀：
 
 ```yaml

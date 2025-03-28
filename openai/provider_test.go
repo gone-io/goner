@@ -1,6 +1,7 @@
 package openai
 
 import (
+	"github.com/gone-io/goner/g"
 	"net/http"
 	"os"
 	"reflect"
@@ -17,6 +18,10 @@ func getOpenaiConfigToken(config openai.ClientConfig) string {
 	return name.String()
 }
 
+type mockHttpDoer struct {
+	g.HTTPDoer
+}
+
 func TestConfig_ToOpenAiConfig(t *testing.T) {
 	t.Run("test azure config", func(t *testing.T) {
 		config := Config{
@@ -24,7 +29,7 @@ func TestConfig_ToOpenAiConfig(t *testing.T) {
 			BaseUrl:  "https://test.azure.com",
 			APIType:  openai.APITypeAzure,
 		}
-		conf := config.ToOpenAiConfig()
+		conf := config.ToOpenAiConfig(nil)
 		assert.Equal(t, openai.APITypeAzure, conf.APIType)
 		assert.Equal(t, "test-token", getOpenaiConfigToken(conf))
 		assert.Equal(t, "https://test.azure.com", conf.BaseURL)
@@ -36,7 +41,7 @@ func TestConfig_ToOpenAiConfig(t *testing.T) {
 			BaseUrl:  "https://test.anthropic.com",
 			APIType:  openai.APITypeAnthropic,
 		}
-		conf := config.ToOpenAiConfig()
+		conf := config.ToOpenAiConfig(nil)
 		assert.Equal(t, openai.APITypeAnthropic, conf.APIType)
 		assert.Equal(t, "test-token", getOpenaiConfigToken(conf))
 		assert.Equal(t, "https://test.anthropic.com", conf.BaseURL)
@@ -46,7 +51,7 @@ func TestConfig_ToOpenAiConfig(t *testing.T) {
 		config := Config{
 			ApiToken: "test-token",
 		}
-		conf := config.ToOpenAiConfig()
+		conf := config.ToOpenAiConfig(nil)
 		assert.Equal(t, "test-token", getOpenaiConfigToken(conf))
 	})
 
@@ -55,7 +60,7 @@ func TestConfig_ToOpenAiConfig(t *testing.T) {
 			ApiToken: "test-token",
 			ProxyUrl: "http://proxy.test.com",
 		}
-		conf := config.ToOpenAiConfig()
+		conf := config.ToOpenAiConfig(nil)
 		assert.NotNil(t, conf.HTTPClient)
 		assert.NotNil(t, conf.HTTPClient.(*http.Client).Transport)
 	})
@@ -70,7 +75,7 @@ func TestConfig_ToOpenAiConfig(t *testing.T) {
 				t.Error("error")
 			}
 		}()
-		config.ToOpenAiConfig()
+		config.ToOpenAiConfig(nil)
 	})
 
 	t.Run("test api version and assistant version", func(t *testing.T) {
@@ -79,9 +84,19 @@ func TestConfig_ToOpenAiConfig(t *testing.T) {
 			APIVersion:       "v2",
 			AssistantVersion: "assistant-v2",
 		}
-		conf := config.ToOpenAiConfig()
+		conf := config.ToOpenAiConfig(nil)
 		assert.Equal(t, "v2", conf.APIVersion)
 		assert.Equal(t, "assistant-v2", conf.AssistantVersion)
+	})
+	t.Run("test ToOpenAiConfig with httpDoer", func(t *testing.T) {
+		config := Config{
+			ApiToken:         "test-token",
+			APIVersion:       "v2",
+			AssistantVersion: "assistant-v2",
+		}
+		doer := mockHttpDoer{}
+		conf := config.ToOpenAiConfig(doer)
+		assert.Equal(t, doer, conf.HTTPClient)
 	})
 }
 

@@ -3,6 +3,7 @@ package openai
 import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/sashabaranov/go-openai"
 	"net/http"
 	"net/url"
@@ -22,7 +23,7 @@ type Config struct {
 	ProxyUrl         string         `json:"proxyUrl"`
 }
 
-func (config Config) ToOpenAiConfig() openai.ClientConfig {
+func (config Config) ToOpenAiConfig(httpDoer g.HTTPDoer) openai.ClientConfig {
 	var conf openai.ClientConfig
 
 	switch config.APIType {
@@ -49,6 +50,8 @@ func (config Config) ToOpenAiConfig() openai.ClientConfig {
 		conf.HTTPClient = &http.Client{
 			Transport: &transport,
 		}
+	} else if httpDoer != nil {
+		conf.HTTPClient = httpDoer
 	}
 	if config.APIType != "" {
 		conf.APIType = config.APIType
@@ -65,6 +68,7 @@ func (config Config) ToOpenAiConfig() openai.ClientConfig {
 func Load(loader gone.Loader) error {
 	var provider = gone.WrapFunctionProvider(func(tagConf string, param struct {
 		configure gone.Configure `gone:"configure"`
+		httpDoer  g.HTTPDoer     `gone:"openai-proxies" option:"allowNil"`
 	}) (*openai.Client, error) {
 		if value, ok := clientMap.Load(tagConf); ok {
 			return value.(*openai.Client), nil
@@ -81,7 +85,7 @@ func Load(loader gone.Loader) error {
 			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", prefix))
 		}
 
-		client := openai.NewClientWithConfig(config.ToOpenAiConfig())
+		client := openai.NewClientWithConfig(config.ToOpenAiConfig(param.httpDoer))
 		clientMap.Store(tagConf, client)
 		return client, nil
 	})
