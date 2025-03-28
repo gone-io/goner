@@ -29,7 +29,8 @@
 ### Microservices
 #### Configuration Center
 - [apollo](./apollo) - A configuration center component based on [Apollo](https://www.apolloconfig.com/), providing dynamic configuration management
-- [nacos](./nacos) - A configuration center component based on [Nacos](https://nacos.io/), providing dynamic configuration management [In development...]
+- [nacos](./nacos) - A configuration center component based on [Nacos](https://nacos.io/), providing dynamic configuration management
+- [remote](./viper/remote) - A configuration component based on various remote configuration centers (such as etcd, consul, etc.), providing unified configuration management
 
 ### Service Registry
 - [nacos](./nacos) - A service registry component based on [Nacos](https://nacos.io/), providing service registration, discovery, and other features [In development...]
@@ -38,12 +39,17 @@
 - [grpc](./grpc) - gRPC client and server wrapper, simplifying microservice development
 - [urllib](./urllib) - HTTP client wrapper
 
+### AI Components
+- [openai](./openai) - OpenAI client wrapper, providing GPT and other AI capabilities integration
+- [deepseek](./deepseek) - Deepseek client wrapper, providing Chinese LLM integration
+
 ### Utility Components
 - [viper](./viper) - Configuration management component, based on [spf13/viper](https://github.com/spf13/viper)
 - [zap](./zap) - Logging component, based on [uber-go/zap](https://github.com/uber-go/zap)
 - [tracer](./tracer) - Distributed tracing component
 - [urllib](./urllib) - HTTP client wrapper
 - [schedule](./schedule) - Scheduled task component
+- [es](./es) - Elasticsearch client wrapper, providing full-text search functionality
 
 ## Installation
 ```bash

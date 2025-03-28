@@ -29,7 +29,8 @@
 ### 微服务
 #### 配置中心
 - [apollo](./apollo) - 基于 [Apollo](https://www.apolloconfig.com/) 的配置中心组件，提供动态配置管理功能
-- [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能【开发中...】
+- [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能
+- [remote](./viper/remote) - 基于多种远程配置中心（如 etcd、consul 等）的配置组件，提供统一的配置管理功能
 
 ### 注册中心
 - [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能【开发中...】
@@ -38,12 +39,17 @@
 - [grpc](./grpc) - gRPC 客户端和服务端封装，简化微服务开发
 - [urllib](./urllib) - HTTP 客户端封装
 
+### AI 组件
+- [openai](./openai) - OpenAI 客户端封装，提供 GPT 等 AI 能力集成
+- [deepseek](./deepseek) - Deepseek 客户端封装，提供国产大语言模型集成
+
 ### 工具组件
 - [viper](./viper) - 配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper)
 - [zap](./zap) - 日志组件，基于 [uber-go/zap](https://github.com/uber-go/zap)
 - [tracer](./tracer) - 分布式追踪组件
 - [urllib](./urllib) - HTTP 客户端封装
 - [schedule](./schedule) - 定时任务组件
+- [es](./es) - Elasticsearch 客户端封装，提供全文搜索功能
 
 ## 安装
 ```bash
