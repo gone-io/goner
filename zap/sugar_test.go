@@ -116,7 +116,7 @@ func TestSugar_SetLevel(t *testing.T) {
 }
 
 func TestNewSugar(t *testing.T) {
-	os.Setenv("GONE_LOG_LEVEL", "debug")
+	_ = os.Setenv("GONE_LOG_LEVEL", "debug")
 	gone.
 		NewApp(Load).
 		Load(&tracer{}).
