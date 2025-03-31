@@ -6,7 +6,7 @@ require (
 	github.com/gone-io/gone/v2 v2.0.10
 	github.com/gone-io/goner/gin v1.0.7
 	github.com/gone-io/goner/tracer v1.0.7
-	github.com/gone-io/goner/viper v1.0.7
+	github.com/gone-io/goner/viper v1.0.8
 	github.com/gone-io/goner/zap v1.0.7
 )
 
