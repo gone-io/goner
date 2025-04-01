@@ -60,7 +60,7 @@ func Load(loader gone.Loader) error {
 			return value.(*deepseek.Client), nil
 		}
 
-		var prefix = "openai"
+		var prefix = "deepseek"
 		_, keys := gone.TagStringParse(tagConf)
 		if len(keys) > 0 && keys[0] != "" {
 			prefix = strings.TrimSpace(keys[0])
