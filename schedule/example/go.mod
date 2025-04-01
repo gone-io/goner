@@ -23,7 +23,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gomodule/redigo v1.9.2 // indirect
-	github.com/gone-io/goner/g v1.0.6 // indirect
+	github.com/gone-io/goner/g v1.0.7 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

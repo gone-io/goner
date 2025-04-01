@@ -30,6 +30,7 @@ github.com/gone-io/goner/g v1.0.0 h1:EykkC8LYYO0kQtm1/RYt78RCDV6dMXDqVTu5V65GPp0
 github.com/gone-io/goner/g v1.0.0/go.mod h1:HCYUByiWMAZg+gpJ1FOm3u/nmGip4hBxq6YdTklAyjI=
 github.com/gone-io/goner/g v1.0.6 h1:EY0yAvwIRhFxl3PvQUOQtZULl0RgVEpaV1LIcs9TdCI=
 github.com/gone-io/goner/g v1.0.6/go.mod h1:HCYUByiWMAZg+gpJ1FOm3u/nmGip4hBxq6YdTklAyjI=
+github.com/gone-io/goner/g v1.0.7/go.mod h1:lVvyMtNf9BW/53Wx66vr73B4QcsfDghWskXmTRdN7AA=
 github.com/gone-io/goner/viper v0.0.1 h1:m3MbyjyyKINF/LAwxWvTWRT3mtMLpS6BY266kWWZnFQ=
 github.com/gone-io/goner/viper v0.0.1/go.mod h1:tgnEw7K2iJ1uW9ikztLWYyEjM0J6LtqJLrjftxJPh4A=
 github.com/gone-io/goner/viper v1.0.6 h1:694QATJcHi0+7cb3uYyZmDm0ZnSMXTkuAbMo5g1eU/g=

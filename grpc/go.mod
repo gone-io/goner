@@ -4,10 +4,14 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.10
-	github.com/gone-io/goner/g v1.0.7
+	github.com/gone-io/goner/g v1.0.9
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.0
 	google.golang.org/grpc v1.71.0
+)
+
+replace (
+	github.com/gone-io/goner/g => ../g
 )
 
 require (
