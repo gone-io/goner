@@ -82,7 +82,7 @@ func (s *server) register() {
 	}
 }
 
-func (s *server) GetPort() int {
+func (s *server) getPort() int {
 	if s.listener == nil {
 		return s.port
 	}
@@ -90,14 +90,14 @@ func (s *server) GetPort() int {
 }
 
 func (s *server) regService() func() error {
-	if s.registry != nil {
+	if s.cMuxServer == nil && s.registry != nil {
 		if s.serviceName == "" {
 			panic("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value")
 		}
 
 		s.logger.Infof("Register gRPC service %v", reflect.ValueOf(s).Type().String())
 		ips := g.GetLocalIps()
-		port := s.GetPort()
+		port := s.getPort()
 
 		_, ipnet, err := net.ParseCIDR(s.serviceUseSubNet)
 		if err != nil {
@@ -106,7 +106,7 @@ func (s *server) regService() func() error {
 
 		for _, ip := range ips {
 			if ipnet.Contains(ip) {
-				service := g.NewService(s.serviceName, ip.String(), port, nil, true, 100)
+				service := g.NewService(s.serviceName, ip.String(), port, g.Metadata{"grpc": "true"}, true, 100)
 				err := s.registry.Register(service)
 				if err != nil {
 					s.logger.Errorf("register gRPC service %s failed: %v", s.serviceName, err)
