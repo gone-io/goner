@@ -1,0 +1,37 @@
+nacos:
+  client:
+    namespaceId: public
+    asyncUpdateService: false
+    logLevel: debug
+    logDir: ./logs/
+  server:
+    ipAddr: "127.0.0.1"
+    contextPath: /nacos
+    port: 8848
+    scheme: http
+
+  dataId: user-center
+  watch: true
+  useLocalConfIfKeyNotExist: true
+  groups:
+    - group: DEFAULT_GROUP
+      format: properties # support: json、yaml、properties、toml
+    - group: database
+      format: yaml # support: json、yaml、properties、toml
+
+  service:
+    group: DEFAULT_GROUP
+    clusterName: default
+
+log.level: debug
+
+#---
+server:
+    port: 0
+    service-name: user-center
+
+#---
+grpc:
+  service:
+    hello:
+      address: user-center

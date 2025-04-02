@@ -10,9 +10,7 @@ require (
 	go.uber.org/mock v0.5.0
 )
 
-replace (
-	github.com/gone-io/goner/g => ../g
-)
+replace github.com/gone-io/goner/g => ../g
 
 require (
 	github.com/andybalholm/brotli v1.1.1 // indirect

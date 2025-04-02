@@ -8,7 +8,6 @@ import (
 	"github.com/gone-io/goner/g"
 	"net"
 	"net/http"
-	"reflect"
 	"sync"
 	"time"
 )
@@ -21,7 +20,7 @@ func NewGinServer() (gone.Goner, gone.Option) {
 }
 
 func createListener(s *server) (err error) {
-	s.listener, err = net.Listen("tcp", s.getAddress())
+	s.listener, err = net.Listen("tcp", fmt.Sprintf("%s:%d", s.host, s.port))
 	return
 }
 
@@ -99,7 +98,6 @@ func (s *server) regService() func() error {
 			panic("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value")
 		}
 
-		s.logger.Infof("Register gRPC service %v", reflect.ValueOf(s).Type().String())
 		ips := g.GetLocalIps()
 		port := s.getPort()
 
@@ -116,7 +114,7 @@ func (s *server) regService() func() error {
 					s.logger.Errorf("register gRPC service %s failed: %v", s.serviceName, err)
 					panic(err)
 				}
-				s.logger.Debugf("Register gRPC service %s success with %s:%d", service.GetName(), service.GetIP(), service.GetPort())
+				s.logger.Debugf("Register http service success with name `%s` at %s:%d", service.GetName(), service.GetIP(), service.GetPort())
 				return func() error {
 					return gone.ToError(s.registry.Deregister(service))
 				}

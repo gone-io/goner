@@ -39,10 +39,11 @@ func (reg *Registry) Init() (err error) {
 }
 
 func (reg *Registry) GetInstances(serviceName string) ([]g.Service, error) {
-	services, err := reg.iClient.SelectAllInstances(vo.SelectAllInstancesParam{
+	services, err := reg.iClient.SelectInstances(vo.SelectInstancesParam{
 		ServiceName: serviceName,
 		Clusters:    []string{reg.clusterName},
 		GroupName:   reg.groupName,
+		HealthyOnly: true,
 	})
 
 	if err != nil {

@@ -95,7 +95,6 @@ func (s *server) regService() func() error {
 			panic("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value")
 		}
 
-		s.logger.Infof("Register gRPC service %v", reflect.ValueOf(s).Type().String())
 		ips := g.GetLocalIps()
 		port := s.getPort()
 

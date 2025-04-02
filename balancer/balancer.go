@@ -18,9 +18,16 @@ type balancer struct {
 }
 
 func (b *balancer) GetInstance(ctx context.Context, serviceName string) (g.Service, error) {
-	instances, err := b.discovery.GetInstances(serviceName)
-	if err != nil {
-		return nil, gone.ToError(err)
+	var instances []g.Service
+	var err error
+	value, ok := b.m.Load(serviceName)
+	if !ok {
+		instances, err = b.GetInstancesWithCacheAndWatch(serviceName)
+		if err != nil {
+			return nil, gone.ToError(err)
+		}
+	} else {
+		instances, ok = value.([]g.Service)
 	}
 
 	return b.strategy.Select(ctx, instances)
