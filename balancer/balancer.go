@@ -52,13 +52,11 @@ func (b *balancer) GetInstancesWithCacheAndWatch(serviceName string) ([]g.Servic
 			return
 		}
 		defer stop()
+		b.logger.Debugf("balancer watch %s", serviceName)
 		for {
 			select {
-			case <-ch:
-				instances, err := b.discovery.GetInstances(serviceName)
-				if err != nil {
-					continue
-				}
+			case instances = <-ch:
+				b.logger.Debugf("balancer watch %s update: %#v", serviceName, instances)
 				b.m.Store(serviceName, instances)
 			}
 		}
