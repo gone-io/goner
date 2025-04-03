@@ -54,13 +54,14 @@ func Test_clientRegister_register(t *testing.T) {
 	defer controller.Finish()
 
 	client := NewMockClient(controller)
-	client.EXPECT().Address().Return(":8080").AnyTimes()
+	client.EXPECT().Address().Return(":0").AnyTimes()
 	client.EXPECT().Stub(gomock.Any())
 
 	register := clientRegister{
 		connections: make(map[string]*grpc.ClientConn),
 		clients:     []Client{client},
 		logger:      gone.GetDefaultLogger(),
+		insecure:    true,
 	}
 
 	err := register.Start()

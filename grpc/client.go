@@ -61,7 +61,7 @@ func (s *clientRegister) traceInterceptor(
 func (s *clientRegister) createConn(address string) (conn *grpc.ClientConn, err error) {
 	var options = append(s.grpcOptions, grpc.WithChainUnaryInterceptor(s.traceInterceptor))
 	if s.insecure {
-		options = append(options, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithInsecure())
+		options = append(options, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
 
 	if s.rb != nil {

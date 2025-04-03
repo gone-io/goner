@@ -10,9 +10,7 @@ require (
 	google.golang.org/grpc v1.71.0
 )
 
-replace (
-	github.com/gone-io/goner/g => ../g
-)
+replace github.com/gone-io/goner/g => ../g
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

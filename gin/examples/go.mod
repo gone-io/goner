@@ -22,7 +22,6 @@ require (
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gone-io/goner/cmux v1.0.6 // indirect
 	github.com/gone-io/goner/g v1.0.6 // indirect
 	github.com/gone-io/goner/tracer v1.0.6 // indirect
 	github.com/gone-io/goner/viper v1.0.6 // indirect
@@ -40,7 +39,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/petermattis/goid v0.0.0-20250319124200-ccd6737f222a // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect
-	github.com/soheilhy/cmux v0.1.5 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.14.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect

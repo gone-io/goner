@@ -7,5 +7,5 @@ total_coverage.txt
 demo
 *.log
 
-../coverage.txt
-../coverage.out
+**/coverage.txt
+**/coverage.out

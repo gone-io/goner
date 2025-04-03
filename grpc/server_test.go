@@ -29,7 +29,6 @@ func Test_server_initListener(t *testing.T) {
 		cMuxServer := NewMockCmux(controller)
 		listener := NewMockListener(controller)
 		cMuxServer.EXPECT().MatchFor(gomock.Any()).Return(listener)
-		cMuxServer.EXPECT().GetAddress().Return("")
 
 		s := server{
 			cMuxServer: cMuxServer,
