@@ -8,7 +8,8 @@ import (
 
 func Recover(logger gone.Logger) {
 	if r := recover(); r != nil {
-		logger.Errorf("panic: %v, %s",
+		logger.Errorf(
+			"panic: %v, %s",
 			r,
 			gone.PanicTrace(2, 1),
 		)
@@ -16,15 +17,15 @@ func Recover(logger gone.Logger) {
 }
 
 func GetLocalIps() []net.IP {
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
+	if addrs, err := net.InterfaceAddrs(); err != nil {
 		panic(fmt.Sprintf("cannot get ip addresss: %v", err))
-	}
-	var ips []net.IP
-	for _, addr := range addrs {
-		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
-			ips = append(ips, ipnet.IP)
+	} else {
+		var ips []net.IP
+		for _, addr := range addrs {
+			if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+				ips = append(ips, ipnet.IP)
+			}
 		}
+		return ips
 	}
-	return ips
 }
