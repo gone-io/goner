@@ -20,30 +20,47 @@ func NewGinServer() (gone.Goner, gone.Option) {
 }
 
 func createListener(s *server) (err error) {
-	s.listener, err = net.Listen("tcp", s.address)
+	s.listener, err = net.Listen("tcp", fmt.Sprintf("%s:%d", s.host, s.port))
 	return
+}
+
+func (s *server) getAddress() string {
+	if s.cMuxServer != nil {
+		return s.cMuxServer.GetAddress()
+	}
+	return s.listener.Addr().String()
+}
+
+func (s *server) getPort() int {
+	if s.listener == nil {
+		return s.port
+	}
+	return s.listener.Addr().(*net.TCPAddr).Port
 }
 
 type server struct {
 	gone.Flag
 	httpServer  *http.Server
-	logger      gone.Logger  `gone:"gone-logger"`
-	httpHandler http.Handler `gone:"gone-gin-router"`
-	cMuxServer  g.Cmux       `gone:"*" option:"allowNil"`
-	tracer      g.Tracer     `gone:"*" option:"allowNil"`
+	logger      gone.Logger       `gone:"gone-logger"`
+	httpHandler http.Handler      `gone:"gone-gin-router"`
+	cMuxServer  g.Cmux            `gone:"*" option:"allowNil"`
+	tracer      g.Tracer          `gone:"*" option:"allowNil"`
+	registry    g.ServiceRegistry `gone:"*" option:"allowNil"`
 
 	controllers []Controller `gone:"*"`
 
-	address  string
 	stopFlag bool
 	lock     sync.Mutex
 
 	listener          net.Listener
 	port              int           `gone:"config,server.port=8080"`
 	host              string        `gone:"config,server.host,default=0.0.0.0"`
+	serviceName       string        `gone:"config,server.service-name"`
+	serviceUseSubNet  string        `gone:"config,server.service-use-subnet,default=0.0.0.0/0"`
 	maxWaitBeforeStop time.Duration `gone:"config,server.max-wait-before-stop=5s"`
 
 	createListener func(*server) error
+	unRegService   func() error
 }
 
 func (s *server) GonerName() string {
@@ -65,11 +82,45 @@ func (s *server) Start() error {
 		Handler: s.httpHandler,
 	}
 
-	s.logger.Infof("Server Listen At http://%s", s.address)
+	s.logger.Infof("Server Listen At %s", s.getAddress())
 	if s.tracer == nil {
 		go s.serve()
 	} else {
 		s.tracer.Go(s.serve)
+	}
+	s.unRegService = s.regService()
+	return nil
+}
+
+func (s *server) regService() func() error {
+	if s.cMuxServer == nil && s.registry != nil {
+		if s.serviceName == "" {
+			panic("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value")
+		}
+
+		ips := g.GetLocalIps()
+		port := s.getPort()
+
+		_, ipnet, err := net.ParseCIDR(s.serviceUseSubNet)
+		if err != nil {
+			panic(fmt.Sprintf("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
+		}
+
+		for _, ip := range ips {
+			if ipnet.Contains(ip) {
+				service := g.NewService(s.serviceName, ip.String(), port, g.Metadata{"http1": "true"}, true, 100)
+				err := s.registry.Register(service)
+				if err != nil {
+					s.logger.Errorf("register gRPC service %s failed: %v", s.serviceName, err)
+					panic(err)
+				}
+				s.logger.Debugf("Register http service success with name `%s` at %s:%d", service.GetName(), service.GetIP(), service.GetPort())
+				return func() error {
+					return gone.ToError(s.registry.Deregister(service))
+				}
+			}
+		}
+		panic(fmt.Sprintf("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
 	}
 	return nil
 }
@@ -77,11 +128,8 @@ func (s *server) Start() error {
 func (s *server) initListener() error {
 	if s.cMuxServer != nil {
 		s.listener = s.cMuxServer.MatchFor(g.HTTP1)
-		s.address = s.cMuxServer.GetAddress()
 		return nil
 	}
-
-	s.address = fmt.Sprintf("%s:%d", s.host, s.port)
 	return s.createListener(s)
 }
 
@@ -111,7 +159,12 @@ func (s *server) Stop() (err error) {
 	s.lock.Lock()
 	s.stopFlag = true
 	s.lock.Unlock()
-
+	if s.unRegService != nil {
+		err = s.unRegService()
+		if err != nil {
+			s.logger.Errorf("unregister service error: %v", err)
+		}
+	}
 	s.stop()
 	return
 }

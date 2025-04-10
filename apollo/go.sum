@@ -127,8 +127,6 @@ github.com/golang/protobuf v1.5.1/go.mod h1:DopwsBzvsk0Fs44TXzsVbJyPhcCPeIwnvohx
 github.com/golang/protobuf v1.5.2/go.mod h1:XVQd3VNwM+JqD3oG2Ue2ip4fOMUkwXdXDdiuN0vRsmY=
 github.com/gone-io/gone/v2 v2.0.10 h1:QuGsvDMOGGuZpBOSrvm7sHzlJwYBi9st6JEWnQGv9BM=
 github.com/gone-io/gone/v2 v2.0.10/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
-github.com/gone-io/goner/viper v1.0.4 h1:m5ZFBZuBIfSWG9rdLeHbpSg7X3nmnMPUervsfOVrfw4=
-github.com/gone-io/goner/viper v1.0.4/go.mod h1:aSe1uuvtvHKe2gWpv9iHrTnuJJtYhqcR1mBPyfD+Ebk=
 github.com/gone-io/goner/viper v1.0.7 h1:8luTLBAyxGWcJMbDy1DXH/Q286lnqPrB2HrkvoLbeic=
 github.com/gone-io/goner/viper v1.0.7/go.mod h1:hEjwVbQM+ZLz9Y75f2+iUb75+pmGGR+T1Nta08fRZDU=
 github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ5JPQ=

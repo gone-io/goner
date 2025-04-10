@@ -2,28 +2,42 @@ package grpc
 
 import (
 	"context"
+	"fmt"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/resolver"
+	"reflect"
+
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
-	"reflect"
 )
 
 type clientRegister struct {
 	gone.Flag
-	logger    gone.Logger    `gone:"*"`
-	clients   []Client       `gone:"*"`
-	tracer    g.Tracer       `gone:"*" option:"allowNil"`
-	configure gone.Configure `gone:"configure"`
+	logger      gone.Logger        `gone:"*"`
+	clients     []Client           `gone:"*"`
+	grpcOptions []grpc.DialOption  `gone:"*"`
+	tracer      g.Tracer           `gone:"*" option:"allowNil"`
+	discovery   g.ServiceDiscovery `gone:"*" option:"allowNil"`
+	balancer    g.LoadBalancer     `gone:"*" option:"allowNil"`
 
 	connections map[string]*grpc.ClientConn
+	rb          resolver.Builder
 
-	requestIdKey string `gone:"config,server.grpc.x-request-id-key=X-Request-Id"`
-	tracerIdKey  string `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
+	configure           gone.Configure `gone:"configure"`
+	loadBalancingPolicy string         `gone:"config,server.grpc.lb-policy=round_robin"`
+	insecure            bool           `gone:"config,server.grpc.insecure=true"`
+	requestIdKey        string         `gone:"config,server.grpc.x-request-id-key=X-Request-Id"`
+	tracerIdKey         string         `gone:"config,server.grpc.x-trace-id-key=X-Trace-Id"`
 }
 
-//go:gone
+func (s *clientRegister) Init() {
+	if s.discovery != nil {
+		s.rb = NewResolverBuilder(s.discovery, s.logger)
+	}
+}
+
 func NewRegister() gone.Goner {
 	return &clientRegister{connections: make(map[string]*grpc.ClientConn)}
 }
@@ -44,15 +58,30 @@ func (s *clientRegister) traceInterceptor(
 	return invoker(ctx, method, req, reply, cc)
 }
 
+func (s *clientRegister) createConn(address string) (conn *grpc.ClientConn, err error) {
+	var options = append(s.grpcOptions, grpc.WithChainUnaryInterceptor(s.traceInterceptor))
+	if s.insecure {
+		options = append(options, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	}
+
+	if s.rb != nil {
+		options = append(options,
+			grpc.WithResolvers(s.rb),
+			grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"loadBalancingPolicy":"%s"}`, s.loadBalancingPolicy)),
+		)
+	}
+
+	return grpc.NewClient(
+		address,
+		options...,
+	)
+}
+
 // getConn 根据不同的地址创建 grpc.ClientConn
 func (s *clientRegister) getConn(address string) (conn *grpc.ClientConn, err error) {
 	conn = s.connections[address]
 	if conn == nil {
-		if conn, err = grpc.NewClient(
-			address,
-			grpc.WithTransportCredentials(insecure.NewCredentials()),
-			grpc.WithChainUnaryInterceptor(s.traceInterceptor),
-		); err != nil {
+		if conn, err = s.createConn(address); err != nil {
 			return nil, gone.ToError(err)
 		}
 		s.connections[address] = conn

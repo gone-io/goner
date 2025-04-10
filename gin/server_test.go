@@ -43,7 +43,7 @@ func Test_server_initListener_WithCMux(t *testing.T) {
 	err := s.initListener()
 	assert.Nil(t, err)
 	assert.Equal(t, mockListener, s.listener)
-	assert.Equal(t, "127.0.0.1:8080", s.address)
+	assert.Equal(t, "127.0.0.1:8080", s.getAddress())
 }
 
 func Test_server_initListener_WithoutCMux(t *testing.T) {
@@ -51,7 +51,10 @@ func Test_server_initListener_WithoutCMux(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
+	addr := NewMockAddr(controller)
+	addr.EXPECT().String().Return("127.0.0.1:8080")
 	mockListener := NewMockListener(controller)
+	mockListener.EXPECT().Addr().Return(addr)
 
 	// Create server instance with custom createListener function
 	s := &server{
@@ -67,7 +70,7 @@ func Test_server_initListener_WithoutCMux(t *testing.T) {
 	err := s.initListener()
 	assert.Nil(t, err)
 	assert.Equal(t, mockListener, s.listener)
-	assert.Equal(t, "127.0.0.1:8080", s.address)
+	assert.Equal(t, "127.0.0.1:8080", s.getAddress())
 }
 
 func Test_server_mount(t *testing.T) {
@@ -247,7 +250,8 @@ func Test_createListener(t *testing.T) {
 
 	// Create a server instance
 	s := &server{
-		address: "127.0.0.1:0", // Use port 0 to get a random available port
+		host: "127.0.0.1", // Use port 0 to get a random available port
+		port: 0,
 	}
 
 	// Test createListener function

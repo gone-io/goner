@@ -7,6 +7,7 @@ import (
 	"github.com/soheilhy/cmux"
 	"net"
 	"net/http"
+	"reflect"
 	"sync"
 	"time"
 )
@@ -27,20 +28,27 @@ func Load(loader gone.Loader) error {
 
 type server struct {
 	gone.Flag
-	once   sync.Once
-	cMux   cmux.CMux
-	logger gone.Logger `gone:"*"`
-	tracer g.Tracer    `gone:"*" option:"allowNil"`
+	once     sync.Once
+	cMux     cmux.CMux
+	logger   gone.Logger       `gone:"*"`
+	tracer   g.Tracer          `gone:"*" option:"allowNil"`
+	registry g.ServiceRegistry `gone:"*" option:"allowNil"`
+
+	network          string `gone:"config,server.network,default=tcp"`
+	address          string `gone:"config,server.address"`
+	host             string `gone:"config,server.host"`
+	port             int    `gone:"config,server.port,default=8080"`
+	serviceName      string `gone:"config,server.service-name"`
+	serviceUseSubNet string `gone:"config,server.service-use-subnet,default=0.0.0.0/0"`
 
 	stopFlag bool
 	lock     sync.Mutex
+	listener net.Listener
 
-	network string `gone:"config,server.network,default=tcp"`
-	address string `gone:"config,server.address"`
-	host    string `gone:"config,server.host"`
-	port    int    `gone:"config,server.port,default=8080"`
+	listen       func(network, address string) (net.Listener, error)
+	unRegService func() error
 
-	listen func(network, address string) (net.Listener, error)
+	metadata g.Metadata
 }
 
 func (s *server) GonerName() string {
@@ -48,18 +56,19 @@ func (s *server) GonerName() string {
 }
 
 func (s *server) Init() error {
+	s.metadata = make(g.Metadata)
+
 	var err error
 	if s.cMux == nil {
 		s.once.Do(func() {
 			if s.address == "" {
 				s.address = fmt.Sprintf("%s:%d", s.host, s.port)
 			}
-			var listener net.Listener
-			listener, err = s.listen(s.network, s.address)
+			s.listener, err = s.listen(s.network, s.address)
 			if err != nil {
 				return
 			}
-			s.cMux = cmux.New(listener)
+			s.cMux = cmux.New(s.listener)
 		})
 	}
 	return err
@@ -72,10 +81,12 @@ func (s *server) Match(matcher ...cmux.Matcher) net.Listener {
 func (s *server) MatchFor(protocol g.ProtocolType) net.Listener {
 	switch protocol {
 	case g.GRPC:
+		s.metadata["grpc"] = "true"
 		return s.MatchWithWriters(
 			cmux.HTTP2MatchHeaderFieldSendSettings("content-type", "application/grpc"),
 		)
 	case g.HTTP1:
+		s.metadata["http1"] = "true"
 		return s.Match(cmux.HTTP1Fast(http.MethodPatch))
 	default:
 		panic(gone.ToError(fmt.Errorf("unsupport protocol type:%d", protocol)))
@@ -86,8 +97,46 @@ func (s *server) MatchWithWriters(matcher ...cmux.MatchWriter) net.Listener {
 	return s.cMux.MatchWithWriters(matcher...)
 }
 
+func (s *server) regService() func() error {
+	if s.registry != nil {
+		if s.serviceName == "" {
+			panic("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value")
+		}
+
+		s.logger.Infof("Register gRPC service %v", reflect.ValueOf(s).Type().String())
+		ips := g.GetLocalIps()
+		port := s.getPort()
+
+		_, ipnet, err := net.ParseCIDR(s.serviceUseSubNet)
+		if err != nil {
+			panic(fmt.Sprintf("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
+		}
+
+		for _, ip := range ips {
+			if ipnet.Contains(ip) {
+				service := g.NewService(s.serviceName, ip.String(), port, s.metadata, true, 100)
+				err := s.registry.Register(service)
+				if err != nil {
+					s.logger.Errorf("register gRPC service %s failed: %v", s.serviceName, err)
+					panic(err)
+				}
+				s.logger.Debugf("Register gRPC service %s success with %s:%d", service.GetName(), service.GetIP(), service.GetPort())
+				return func() error {
+					return gone.ToError(s.registry.Deregister(service))
+				}
+			}
+		}
+		panic(fmt.Sprintf("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
+	}
+	return nil
+}
+
 func (s *server) GetAddress() string {
-	return s.address
+	return s.listener.Addr().String()
+}
+
+func (s *server) getPort() int {
+	return s.listener.Addr().(*net.TCPAddr).Port
 }
 
 func (s *server) Start() error {
@@ -102,11 +151,13 @@ func (s *server) Start() error {
 		s.processStartError(err)
 	}
 
+	s.logger.Infof("cMux server(%#v) listen on: %s", s.metadata, s.GetAddress())
 	if s.tracer != nil {
 		s.tracer.Go(fn)
 	} else {
 		go fn()
 	}
+	s.unRegService = s.regService()
 	<-time.After(20 * time.Millisecond)
 	return err
 }
@@ -116,6 +167,12 @@ func (s *server) Stop() error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	s.stopFlag = true
+	if s.unRegService != nil {
+		err := s.unRegService()
+		if err != nil {
+			s.logger.Errorf("unregister service error: %v", err)
+		}
+	}
 	s.cMux.Close()
 	return nil
 }
