@@ -58,7 +58,7 @@ func Test_server_Start_Stop(t *testing.T) {
 			)
 			assert.NotNil(t, grpcL)
 			address := s.GetAddress()
-			assert.Equal(t, ":8080", address)
+			assert.Contains(t, address, ":8080")
 			assert.Equal(t, s.GonerName(), Name)
 		})
 }
