@@ -1,46 +1,94 @@
 package gorm
 
 import (
-	"database/sql"
+	mock "github.com/gone-io/gone/mock/v2"
+	"testing"
+
 	"github.com/gone-io/gone/v2"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
-	"gorm.io/gorm"
-	"testing"
 )
 
 //go:generate mockgen -package gorm -destination=./dialector_mock_test.go gorm.io/gorm Dialector
-//go:generate mockgen -package gorm -destination=./pool_mock_test.go -source=./priest_test.go
+//go:generate mockgen -package gorm -destination=./mock_gone_test.go github.com/gone-io/gone/v2 Loader,Logger
 
-type TestPool interface {
-	gorm.GetDBConnector
-	gorm.ConnPool
+// TestLoad_Success 测试正常加载场景
+func TestLoad_Success(t *testing.T) {
+	// 创建gomock控制器
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// 创建MockLoader
+	mockLoader := mock.NewMockLoader(ctrl)
+
+	mockLoader.EXPECT().Loaded(gomock.Any()).Return(false)
+
+	// 设置期望：成功加载iLogger
+	mockLoader.EXPECT().
+		Load(gomock.AssignableToTypeOf(&iLogger{}), gomock.Any()).
+		Return(nil)
+
+	// 设置期望：成功加载dbProvider
+	mockLoader.EXPECT().
+		Load(gomock.AssignableToTypeOf(&dbProvider{}), gomock.Any()).
+		Return(nil)
+
+	// 执行测试
+	err := Load(mockLoader)
+
+	// 验证结果
+	assert.NoError(t, err)
 }
 
-func TestPriest(t *testing.T) {
-	controller := gomock.NewController(t)
-	dialector := NewMockDialector(controller)
-	pool := NewMockTestPool(controller)
-	db := sql.DB{}
-	pool.EXPECT().GetDBConn().Return(&db, nil)
+// TestLoad_LoggerError 测试加载iLogger失败的场景
+func TestLoad_LoggerError(t *testing.T) {
+	// 创建gomock控制器
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	dialector.EXPECT().Initialize(gomock.Any()).DoAndReturn(func(db *gorm.DB) error {
-		db.ConnPool = pool
-		return nil
-	})
+	// 创建MockLoader
+	mockLoader := mock.NewMockLoader(ctrl)
+	mockLoader.EXPECT().Loaded(gomock.Any()).Return(false)
 
-	gone.RunTest(func(
-		in struct {
-			db *gorm.DB `gone:"*"`
-		},
-	) {
-		assert.NotNil(t, in.db)
-	}, func(loader gone.Loader) error {
-		err := loader.Load(gone.WrapFunctionProvider(func(tagConf string, p struct{}) (gorm.Dialector, error) { return dialector, nil }))
-		assert.Nil(t, err)
-		if err != nil {
-			return err
-		}
-		return Priest(loader)
-	})
+	// 设置期望：加载iLogger失败
+	expectedErr := gone.NewError(400, "mock logger error", 500)
+	mockLoader.EXPECT().
+		Load(gomock.AssignableToTypeOf(&iLogger{}), gomock.Any()).
+		Return(expectedErr)
+
+	// 执行测试
+	err := Load(mockLoader)
+
+	// 验证结果
+	assert.Error(t, err)
+	assert.Equal(t, expectedErr, err)
+}
+
+// TestLoad_ProviderError 测试加载dbProvider失败的场景
+func TestLoad_ProviderError(t *testing.T) {
+	// 创建gomock控制器
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// 创建MockLoader
+	mockLoader := mock.NewMockLoader(ctrl)
+	mockLoader.EXPECT().Loaded(gomock.Any()).Return(false)
+
+	// 设置期望：成功加载iLogger
+	mockLoader.EXPECT().
+		Load(gomock.AssignableToTypeOf(&iLogger{}), gomock.Any()).
+		Return(nil)
+
+	// 设置期望：加载dbProvider失败
+	expectedErr := gone.NewError(400, "mock provider error", 500)
+	mockLoader.EXPECT().
+		Load(gomock.AssignableToTypeOf(&dbProvider{}), gomock.Any()).
+		Return(expectedErr)
+
+	// 执行测试
+	err := Load(mockLoader)
+
+	// 验证结果
+	assert.Error(t, err)
+	assert.Equal(t, expectedErr, err)
 }

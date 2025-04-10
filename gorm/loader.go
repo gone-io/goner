@@ -19,8 +19,3 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 func Load(loader gone.Loader) error {
 	return load(loader)
 }
-
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
-}
