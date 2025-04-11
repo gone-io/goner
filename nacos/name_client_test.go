@@ -163,6 +163,7 @@ func TestWatchWithError(t *testing.T) {
 
 	logger := mock.NewMockLogger(controller)
 	logger.EXPECT().Debugf(gomock.Any(), gomock.Any()).AnyTimes()
+	logger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 
 	reg := &Registry{
 		iClient: mockClient,
