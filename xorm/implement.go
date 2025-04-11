@@ -91,6 +91,10 @@ func (e *wrappedEngine) create() error {
 			return gone.NewInnerError("slaves config(database.cluster.slaves) is nil", gone.StartError)
 		}
 
+		if e.newFunc == nil {
+			return gone.ToError("newFunc is nil")
+		}
+
 		master, err := e.newFunc(e.masterConf.DriverName, e.masterConf.DSN)
 		if err != nil {
 			return gone.NewInnerError(err.Error(), gone.StartError)

@@ -145,3 +145,33 @@ func TestWatch(t *testing.T) {
 	assert.Len(t, instances, 1)
 	assert.Equal(t, "test-service", instances[0].GetName())
 }
+
+func TestWatchWithError(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockClient := NewMockINamingClient(controller)
+	mockClient.EXPECT().
+		Subscribe(gomock.Any()).
+		Do(func(param *vo.SubscribeParam) {
+			callback := param.SubscribeCallback
+			go callback(nil, errors.New("mock error"))
+		}).
+		Return(nil)
+
+	mockClient.EXPECT().Unsubscribe(gomock.Any())
+
+	logger := mock.NewMockLogger(controller)
+	logger.EXPECT().Debugf(gomock.Any(), gomock.Any()).AnyTimes()
+
+	reg := &Registry{
+		iClient: mockClient,
+		logger:  logger,
+	}
+
+	_, stop, err := reg.Watch("test-service")
+	assert.NoError(t, err)
+	defer func() {
+		assert.NoError(t, stop())
+	}()
+}

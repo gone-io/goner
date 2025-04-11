@@ -3,6 +3,7 @@ module github.com/gone-io/goner/xorm
 go 1.24.1
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/gone-io/gone/mock/v2 v2.0.10
 	github.com/gone-io/gone/v2 v2.0.10
 	github.com/jmoiron/sqlx v1.4.0
