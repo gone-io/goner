@@ -1,10 +1,11 @@
 package g
 
 import (
+	"errors"
+	"github.com/gone-io/gone/v2"
 	"testing"
 
 	mock "github.com/gone-io/gone/mock/v2"
-	"github.com/gone-io/gone/v2"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
@@ -45,77 +46,58 @@ func TestRecover(t *testing.T) {
 	}()
 }
 
-// TestBuildLoadFunc_Success 测试成功加载场景
-func TestBuildLoadFunc_Success(t *testing.T) {
-	// 创建gomock控制器
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	// 创建MockLoader和MockGoner
-	mockLoader := mock.NewMockLoader(ctrl)
-	mockGoner := &struct {
+func TestBuildOnceLoadFunc(t *testing.T) {
+	type gTest struct {
 		gone.Flag
-	}{}
+	}
 
-	// 设置期望：检查是否已加载
-	mockLoader.EXPECT().Loaded(gomock.Any()).Return(false)
-
-	// 设置期望：成功加载Goner
-	mockLoader.EXPECT().
-		Load(mockGoner, gomock.Any()).
-		Return(nil)
-
-	// 执行测试
-	err := BuildLoadFunc(mockLoader, L(mockGoner))
-
-	// 验证结果
-	assert.NoError(t, err)
+	loadFunc := BuildOnceLoadFunc(L(&gTest{}), F(func(loader gone.Loader) error {
+		return nil
+	}))
+	gone.NewApp(loadFunc, loadFunc).Run(func(
+		gList []*gTest,
+	) {
+		assert.Len(t, gList, 1)
+	})
 }
 
-// TestBuildLoadFunc_LoadError 测试加载失败场景
-func TestBuildLoadFunc_LoadError(t *testing.T) {
-	// 创建gomock控制器
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	// 创建MockLoader和MockGoner
-	mockLoader := mock.NewMockLoader(ctrl)
-	mockGoner := &struct {
+func TestBuildOnceLoadFuncError(t *testing.T) {
+	type gTest struct {
 		gone.Flag
-	}{}
+	}
 
-	// 设置期望：检查是否已加载
-	mockLoader.EXPECT().Loaded(gomock.Any()).Return(false)
+	loadFunc := BuildOnceLoadFunc(
+		L(&gTest{}, gone.Name("test")),
+		L(&gTest{}, gone.Name("test")),
+	)
 
-	// 设置期望：加载失败
-	expectedErr := gone.NewError(400, "mock load error", 500)
-	mockLoader.EXPECT().
-		Load(mockGoner, gomock.Any()).
-		Return(expectedErr)
-
-	// 执行测试
-	err := BuildLoadFunc(mockLoader, L(mockGoner))
-
-	// 验证结果
-	assert.Error(t, err)
-	assert.Equal(t, expectedErr, err)
+	assert.Panics(t, func() {
+		gone.
+			NewApp(loadFunc, loadFunc).
+			Run(func(
+				gList []*gTest,
+			) {
+			})
+	})
 }
 
-// TestBuildLoadFunc_AlreadyLoaded 测试已经加载过的场景
-func TestBuildLoadFunc_AlreadyLoaded(t *testing.T) {
-	// 创建gomock控制器
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+func TestBuildOnceLoadFuncError2(t *testing.T) {
+	type gTest struct {
+		gone.Flag
+	}
 
-	// 创建MockLoader
-	mockLoader := mock.NewMockLoader(ctrl)
+	loadFunc := BuildOnceLoadFunc(
+		F(func(loader gone.Loader) error {
+			return errors.New("test")
+		}),
+	)
 
-	// 设置期望：检查是否已加载，返回true表示已加载
-	mockLoader.EXPECT().Loaded(gomock.Any()).Return(true)
-
-	// 执行测试
-	err := BuildLoadFunc(mockLoader)
-
-	// 验证结果
-	assert.NoError(t, err)
+	assert.Panics(t, func() {
+		gone.
+			NewApp(loadFunc, loadFunc).
+			Run(func(
+				gList []*gTest,
+			) {
+			})
+	})
 }

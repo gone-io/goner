@@ -6,9 +6,11 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+var load = g.BuildOnceLoadFunc(
+	g.L(&iLogger{}, gone.IsDefault(new(logger.Interface))),
+	g.L(&dbProvider{}),
+)
+
 func Load(loader gone.Loader) error {
-	return g.BuildLoadFunc(loader,
-		g.L(&iLogger{}, gone.IsDefault(new(logger.Interface))),
-		g.L(&dbProvider{}),
-	)
+	return load(loader)
 }

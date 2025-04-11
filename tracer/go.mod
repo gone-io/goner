@@ -1,6 +1,6 @@
 module github.com/gone-io/goner/tracer
 
-go 1.21
+go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.10
@@ -10,3 +10,5 @@ require (
 )
 
 require github.com/gopherjs/gopherjs v1.17.2 // indirect
+
+replace github.com/gone-io/goner/g => ../g

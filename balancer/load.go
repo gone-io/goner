@@ -6,6 +6,11 @@ import (
 	"github.com/gone-io/goner/g"
 )
 
+var load = g.BuildOnceLoadFunc(
+	g.L(&balancer{}),
+	g.L(&strategy.RoundRobinStrategy{}),
+)
+
 func Load(loader gone.Loader) error {
-	return g.BuildLoadFunc(loader, g.L(&balancer{}), g.L(&strategy.RoundRobinStrategy{}))
+	return load(loader)
 }

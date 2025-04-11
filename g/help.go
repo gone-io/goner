@@ -1,7 +1,6 @@
 package g
 
 import (
-	"fmt"
 	"github.com/gone-io/gone/v2"
 	"net"
 )
@@ -18,7 +17,7 @@ func Recover(logger gone.Logger) {
 
 func GetLocalIps() []net.IP {
 	if addrs, err := net.InterfaceAddrs(); err != nil {
-		panic(fmt.Sprintf("cannot get ip addresss: %v", err))
+		panic(gone.ToErrorWithMsg(err, "cannot get ip address"))
 	} else {
 		var ips []net.IP
 		for _, addr := range addrs {
@@ -33,6 +32,7 @@ func GetLocalIps() []net.IP {
 type LoadOp struct {
 	goner   gone.Goner
 	options []gone.Option
+	f       gone.LoadFunc
 }
 
 func L(g gone.Goner, options ...gone.Option) *LoadOp {
@@ -42,17 +42,31 @@ func L(g gone.Goner, options ...gone.Option) *LoadOp {
 	}
 }
 
-func BuildLoadFunc(loader gone.Loader, ops ...*LoadOp) error {
+func F(loadFunc gone.LoadFunc) *LoadOp {
+	return &LoadOp{
+		f: loadFunc,
+	}
+}
+
+func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 	return gone.OnceLoad(func(loader gone.Loader) error {
 		for _, op := range ops {
-			err := loader.Load(
-				op.goner,
-				op.options...,
-			)
-			if err != nil {
-				return gone.ToError(err)
+			if op.goner != nil {
+				err := loader.Load(
+					op.goner,
+					op.options...,
+				)
+				if err != nil {
+					return gone.ToError(err)
+				}
+			}
+			if op.f != nil {
+				err := op.f(loader)
+				if err != nil {
+					return gone.ToError(err)
+				}
 			}
 		}
 		return nil
-	})(loader)
+	})
 }

@@ -5,10 +5,12 @@ import (
 	"github.com/gone-io/goner/g"
 )
 
+var load = g.BuildOnceLoadFunc(
+	g.L(&r{}, gone.IsDefault(new(Client))),
+	g.L(&requestProvider{}),
+	g.L(&clientProvider{}),
+)
+
 func Load(loader gone.Loader) error {
-	return g.BuildLoadFunc(loader,
-		g.L(&r{}, gone.IsDefault(new(Client))),
-		g.L(&requestProvider{}),
-		g.L(&clientProvider{}),
-	)
+	return load(loader)
 }

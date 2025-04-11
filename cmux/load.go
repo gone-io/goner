@@ -6,10 +6,14 @@ import (
 	"net"
 )
 
-func Load(loader gone.Loader) error {
-	return g.BuildLoadFunc(loader, g.L(
+var load = g.BuildOnceLoadFunc(
+	g.L(
 		&server{listen: net.Listen},
 		gone.IsDefault(new(CMuxServer)),
-		gone.HighStartPriority()),
-	)
+		gone.HighStartPriority(),
+	),
+)
+
+func Load(loader gone.Loader) error {
+	return load(loader)
 }

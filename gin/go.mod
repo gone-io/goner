@@ -7,7 +7,6 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/goccy/go-json v0.10.5
 	github.com/gone-io/gone/v2 v2.0.10
-	github.com/gone-io/goner/g v1.0.9
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/pkg/errors v0.9.1
@@ -16,6 +15,8 @@ require (
 	golang.org/x/time v0.11.0
 	gopkg.in/yaml.v3 v3.0.1
 )
+
+require github.com/gone-io/goner/g v1.0.9
 
 replace github.com/gone-io/goner/g => ../g
 

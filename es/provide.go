@@ -10,6 +10,27 @@ import (
 
 var newClient = elasticsearch.NewClient
 
+var load = gone.OnceLoad(func(loader gone.Loader) error {
+	var single *elasticsearch.Client
+
+	getSingleEs := func(
+		tagConf string,
+		param struct {
+			config elasticsearch.Config `gone:"config,es"`
+		},
+	) (*elasticsearch.Client, error) {
+		var err error
+		if single == nil {
+			if single, err = newClient(param.config); err != nil {
+				return nil, gone.ToError(err)
+			}
+		}
+		return single, nil
+	}
+	provider := gone.WrapFunctionProvider(getSingleEs)
+	return loader.Load(provider)
+})
+
 // Load registers a singleton Elasticsearch client provider with the gone loader.
 // It ensures only one client instance is created and reused across the application.
 //
@@ -19,26 +40,7 @@ var newClient = elasticsearch.NewClient
 // Returns:
 //   - error: Any error encountered during client creation or registration
 func Load(loader gone.Loader) error {
-	var load = gone.OnceLoad(func(loader gone.Loader) error {
-		var single *elasticsearch.Client
 
-		getSingleEs := func(
-			tagConf string,
-			param struct {
-				config elasticsearch.Config `gone:"config,es"`
-			},
-		) (*elasticsearch.Client, error) {
-			var err error
-			if single == nil {
-				if single, err = newClient(param.config); err != nil {
-					return nil, gone.ToError(err)
-				}
-			}
-			return single, nil
-		}
-		provider := gone.WrapFunctionProvider(getSingleEs)
-		return loader.Load(provider)
-	})
 	return load(loader)
 }
 

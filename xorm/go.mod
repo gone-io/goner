@@ -1,15 +1,18 @@
 module github.com/gone-io/goner/xorm
 
-go 1.22
+go 1.24.1
 
 require (
+	github.com/gone-io/gone/mock/v2 v2.0.10
 	github.com/gone-io/gone/v2 v2.0.10
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/jtolds/gls v4.20.0+incompatible
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/mock v0.5.0
+	go.uber.org/mock v0.5.1
 	xorm.io/xorm v1.3.9
 )
+
+replace github.com/gone-io/goner/g => ../g
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

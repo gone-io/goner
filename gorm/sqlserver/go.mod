@@ -9,6 +9,10 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
+require github.com/gone-io/goner/g v1.0.9
+
+replace github.com/gone-io/goner/g => ../../g
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect

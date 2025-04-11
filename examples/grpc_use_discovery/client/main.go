@@ -39,7 +39,7 @@ func main() {
 		NewApp(
 			gone_grpc.ClientRegisterLoad,
 			viper.Load,
-			nacos.LoadRegistry,
+			nacos.RegistryLoad,
 		).
 		Load(&helloClient{}).
 		Run(func(in struct {

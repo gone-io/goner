@@ -6,11 +6,12 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/gone-io/gone/mock/v2 v2.0.10
 	github.com/gone-io/gone/v2 v2.0.10
-	github.com/gone-io/goner/g v1.0.9
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.1
 	gorm.io/gorm v1.25.12
 )
+
+require github.com/gone-io/goner/g v1.0.9
 
 replace github.com/gone-io/goner/g => ../g
 
