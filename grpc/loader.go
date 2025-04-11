@@ -2,36 +2,28 @@ package grpc
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 )
 
-var serverLoad = gone.OnceLoad(func(loader gone.Loader) error {
-	if err := loader.Load(&server{
-		createListener: createListener,
-	}); err != nil {
-		return gone.ToError(err)
-	}
-	return nil
-})
-
 func ServerLoad(loader gone.Loader) error {
-	return serverLoad(loader)
+	return g.BuildLoadFunc(loader,
+		g.L(newServer()),
+	)
 }
-
-func ServerPriest(loader gone.Loader) error {
-	return ServerLoad(loader)
-}
-
-var clientRegisterLoad = gone.OnceLoad(func(loader gone.Loader) error {
-	if err := loader.Load(NewRegister()); err != nil {
-		return gone.ToError(err)
-	}
-	return nil
-})
 
 func ClientRegisterLoad(loader gone.Loader) error {
-	return clientRegisterLoad(loader)
+	return g.BuildLoadFunc(loader,
+		g.L(NewRegister()),
+	)
 }
 
-func ClientRegisterPriest(loader gone.Loader) error {
+func ClientLoad(loader gone.Loader) error {
 	return ClientRegisterLoad(loader)
+}
+
+func Load(loader gone.Loader) error {
+	return g.BuildLoadFunc(loader,
+		g.L(newServer()),
+		g.L(NewRegister()),
+	)
 }

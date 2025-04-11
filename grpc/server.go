@@ -17,6 +17,10 @@ func createListener(s *server) (err error) {
 	return
 }
 
+func newServer() gone.Goner {
+	return &server{createListener: createListener, getLocalIps: g.GetLocalIps}
+}
+
 type server struct {
 	gone.Flag
 	logger       gone.Logger         `gone:"*"`
@@ -36,6 +40,7 @@ type server struct {
 	listener       net.Listener
 	createListener func(*server) error
 	unRegService   func() error
+	getLocalIps    func() []net.IP
 }
 
 func (s *server) GonerName() string {
@@ -95,7 +100,7 @@ func (s *server) regService() func() error {
 			panic("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value")
 		}
 
-		ips := g.GetLocalIps()
+		ips := s.getLocalIps()
 		port := s.getPort()
 
 		_, ipnet, err := net.ParseCIDR(s.serviceUseSubNet)

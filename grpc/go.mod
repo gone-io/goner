@@ -3,6 +3,7 @@ module github.com/gone-io/goner/grpc
 go 1.24.1
 
 require (
+	github.com/gone-io/gone/mock/v2 v2.0.10
 	github.com/gone-io/gone/v2 v2.0.10
 	github.com/gone-io/goner/g v1.0.9
 	github.com/stretchr/testify v1.10.0

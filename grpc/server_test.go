@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/gone-io/gone/v2"
+	gMock "github.com/gone-io/goner/g/mock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc"
@@ -26,7 +27,7 @@ func Test_server_initListener(t *testing.T) {
 		controller := gomock.NewController(t)
 		defer controller.Finish()
 
-		cMuxServer := NewMockCmux(controller)
+		cMuxServer := gMock.NewMockCmux(controller)
 		listener := NewMockListener(controller)
 		cMuxServer.EXPECT().MatchFor(gomock.Any()).Return(listener)
 
@@ -113,7 +114,7 @@ func Test_server_traceInterceptor(t *testing.T) {
 	ctr := gomock.NewController(t)
 	defer ctr.Finish()
 
-	tracer := NewMockTracer(ctr)
+	tracer := gMock.NewMockTracer(ctr)
 	tracer.EXPECT().SetTraceId(gomock.Any(), gomock.Any()).AnyTimes()
 	tracer.EXPECT().GetTraceId().Return("xxxx").AnyTimes()
 
@@ -143,7 +144,7 @@ func Test_server_traceInterceptor(t *testing.T) {
 func Test_server_recoveryInterceptor(t *testing.T) {
 	ctr := gomock.NewController(t)
 	defer ctr.Finish()
-	tracer := NewMockTracer(ctr)
+	tracer := gMock.NewMockTracer(ctr)
 	tracer.EXPECT().SetTraceId(gomock.Any(), gomock.Any()).AnyTimes()
 	tracer.EXPECT().GetTraceId().Return("xxxx").AnyTimes()
 
