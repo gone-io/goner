@@ -29,3 +29,30 @@ func GetLocalIps() []net.IP {
 		return ips
 	}
 }
+
+type LoadOp struct {
+	goner   gone.Goner
+	options []gone.Option
+}
+
+func L(g gone.Goner, options ...gone.Option) *LoadOp {
+	return &LoadOp{
+		goner:   g,
+		options: options,
+	}
+}
+
+func BuildLoadFunc(loader gone.Loader, ops ...*LoadOp) error {
+	return gone.OnceLoad(func(loader gone.Loader) error {
+		for _, op := range ops {
+			err := loader.Load(
+				op.goner,
+				op.options...,
+			)
+			if err != nil {
+				return gone.ToError(err)
+			}
+		}
+		return nil
+	})(loader)
+}
