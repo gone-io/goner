@@ -11,7 +11,7 @@ import (
 
 func main() {
 	gone.
-		NewApp(goner.GinLoad, nacos.LoadRegistry, viper.Load).
+		NewApp(goner.GinLoad, nacos.RegistryLoad, viper.Load).
 		Load(&HelloController{}).
 		Serve()
 }

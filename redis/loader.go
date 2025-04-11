@@ -2,29 +2,18 @@ package redis
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 )
 
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	if err := loader.Load(&pool{}, gone.IsDefault(new(Pool))); err != nil {
-		return gone.ToError(err)
-	}
-	if err := loader.Load(&inner{}); err != nil {
-		return gone.ToError(err)
-	}
-	if err := loader.Load(
-		&cache{},
-		gone.IsDefault(new(Cache), new(Key)),
-	); err != nil {
-		return gone.ToError(err)
-	}
-	if err := loader.Load(&locker{}, gone.IsDefault(new(Locker))); err != nil {
-		return gone.ToError(err)
-	}
-	if err := loader.Load(&provider{}, gone.IsDefault(new(HashProvider))); err != nil {
-		return gone.ToError(err)
-	}
-	return nil
-})
+var load = g.BuildOnceLoadFunc(
+	g.F(func(loader gone.Loader) error {
+		return loader.Load(&pool{}, gone.IsDefault(new(Pool)))
+	}),
+	g.L(&inner{}),
+	g.L(&cache{}, gone.IsDefault(new(Cache), new(Key))),
+	g.L(&locker{}, gone.IsDefault(new(Locker))),
+	g.L(&provider{}, gone.IsDefault(new(HashProvider))),
+)
 
 func Load(loader gone.Loader) error {
 	return load(loader)

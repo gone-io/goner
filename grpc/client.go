@@ -103,8 +103,7 @@ func (s *clientRegister) Provide(tagConf string) (*grpc.ClientConn, error) {
 	m, _ := gone.TagStringParse(tagConf)
 	address := m["address"]
 	if configKey, ok := m["config"]; ok {
-		err := s.configure.Get(configKey, &address, address)
-		if err != nil {
+		if err := s.configure.Get(configKey, &address, address); err != nil {
 			return nil, gone.ToError(err)
 		}
 	}
@@ -121,14 +120,12 @@ func (s *clientRegister) Start() error {
 			return err
 		}
 	}
-
 	return nil
 }
 
 func (s *clientRegister) Stop() error {
 	for _, conn := range s.connections {
-		err := conn.Close()
-		if err != nil {
+		if err := conn.Close(); err != nil {
 			return err
 		}
 	}

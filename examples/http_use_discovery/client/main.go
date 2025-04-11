@@ -12,7 +12,7 @@ import (
 func main() {
 	gone.
 		NewApp(
-			nacos.LoadRegistry,
+			nacos.RegistryLoad,
 			balancer.Load,
 			viper.Load,
 			urllib.Load,

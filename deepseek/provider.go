@@ -51,8 +51,8 @@ func (c Config) ToDeepseekOptions(httpDoer g.HTTPDoer) []deepseek.Option {
 
 var clientMap sync.Map
 
-func Load(loader gone.Loader) error {
-	provider := gone.WrapFunctionProvider(func(tagConf string, param struct {
+var (
+	provider = gone.WrapFunctionProvider(func(tagConf string, param struct {
 		configure gone.Configure `gone:"configure"`
 		httpDoer  g.HTTPDoer     `gone:"deepseek-proxies" option:"allowNil"`
 	}) (*deepseek.Client, error) {
@@ -79,8 +79,9 @@ func Load(loader gone.Loader) error {
 		return client, nil
 	})
 
-	load := gone.OnceLoad(func(loader gone.Loader) error {
-		return loader.Load(provider)
-	})
+	load = g.BuildOnceLoadFunc(g.L(provider))
+)
+
+func Load(loader gone.Loader) error {
 	return load(loader)
 }

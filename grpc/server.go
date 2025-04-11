@@ -17,6 +17,10 @@ func createListener(s *server) (err error) {
 	return
 }
 
+func newServer() gone.Goner {
+	return &server{createListener: createListener, getLocalIps: g.GetLocalIps}
+}
+
 type server struct {
 	gone.Flag
 	logger       gone.Logger         `gone:"*"`
@@ -36,6 +40,7 @@ type server struct {
 	listener       net.Listener
 	createListener func(*server) error
 	unRegService   func() error
+	getLocalIps    func() []net.IP
 }
 
 func (s *server) GonerName() string {
@@ -57,8 +62,7 @@ func (s *server) initListener() error {
 	return s.createListener(s)
 }
 func (s *server) Init() error {
-	err := s.initListener()
-	if err != nil {
+	if err := s.initListener(); err != nil {
 		return gone.ToError(err)
 	}
 
@@ -72,6 +76,9 @@ func (s *server) Init() error {
 }
 
 func (s *server) Provide() (*grpc.Server, error) {
+	if s.grpcServer == nil {
+		return nil, gone.ToError("grpc server is nil")
+	}
 	return s.grpcServer, nil
 }
 
@@ -92,15 +99,15 @@ func (s *server) getPort() int {
 func (s *server) regService() func() error {
 	if s.cMuxServer == nil && s.registry != nil {
 		if s.serviceName == "" {
-			panic("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value")
+			panic(gone.ToError("serviceName is empty, please config serviceName by setting key `server.grpc.service-name` value"))
 		}
 
-		ips := g.GetLocalIps()
+		ips := s.getLocalIps()
 		port := s.getPort()
 
 		_, ipnet, err := net.ParseCIDR(s.serviceUseSubNet)
 		if err != nil {
-			panic(fmt.Sprintf("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
+			panic(gone.ToError("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
 		}
 
 		for _, ip := range ips {
@@ -117,7 +124,7 @@ func (s *server) regService() func() error {
 				}
 			}
 		}
-		panic(fmt.Sprintf("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
+		panic(gone.ToError("serviceUseSubNet is invalid, please config serviceUseSubNet by setting key `server.grpc.service-use-subnet` value"))
 	}
 	return nil
 }

@@ -9,9 +9,6 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-//go:generate mockgen -package gorm -destination=./dialector_mock_test.go gorm.io/gorm Dialector
-//go:generate mockgen -package gorm -destination=./mock_gone_test.go github.com/gone-io/gone/v2 Loader,Logger
-
 // TestLoad_Success 测试正常加载场景
 func TestLoad_Success(t *testing.T) {
 	// 创建gomock控制器

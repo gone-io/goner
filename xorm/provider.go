@@ -26,9 +26,6 @@ func newProvider(engine *wrappedEngine) gone.Goner {
 type provider struct {
 	gone.Flag
 	engineMap map[string]*wrappedEngine
-
-	//heaven    gone.Heaven    `gone:"*"`
-	//cemetery  gone.Cemetery  `gone:"*"`
 	configure gone.Configure  `gone:"*"`
 	log       gone.Logger     `gone:"*"`
 	before    gone.BeforeStop `gone:"*"`

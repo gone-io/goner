@@ -4,8 +4,8 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.10
-	github.com/gone-io/goner/redis v0.0.0-00010101000000-000000000000
-	github.com/gone-io/goner/schedule v0.0.0-00010101000000-000000000000
+	github.com/gone-io/goner/redis v1.0.9
+	github.com/gone-io/goner/schedule v1.0.9
 	github.com/gone-io/goner/viper v1.0.6
 )
 
@@ -13,6 +13,10 @@ replace (
 	github.com/gone-io/goner/redis => ../../redis
 	github.com/gone-io/goner/schedule => ../
 )
+
+require github.com/gone-io/goner/g v1.0.9 // indirect
+
+replace github.com/gone-io/goner/g => ../../g
 
 require (
 	github.com/bytedance/sonic v1.13.2 // indirect
@@ -23,7 +27,6 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gomodule/redigo v1.9.2 // indirect
-	github.com/gone-io/goner/g v1.0.7 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

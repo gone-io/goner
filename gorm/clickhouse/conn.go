@@ -2,6 +2,7 @@ package clickhouse
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/gorm"
 )
@@ -42,18 +43,8 @@ func (d *dial) Init() error {
 	return nil
 }
 
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	return loader.Load(
-		&dial{},
-		gone.IsDefault(new(gorm.Dialector)),
-	)
-})
+var load = g.BuildOnceLoadFunc(g.L(&dial{}, gone.IsDefault(new(gorm.Dialector))))
 
 func Load(loader gone.Loader) error {
 	return load(loader)
-}
-
-// Priest Deprecated, use Load instead
-func Priest(loader gone.Loader) error {
-	return Load(loader)
 }

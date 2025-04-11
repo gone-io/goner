@@ -74,8 +74,7 @@ func (r *discoveryResolver) ResolveNow(resolver.ResolveNowOptions) {
 
 func (r *discoveryResolver) Close() {
 	if r.stop != nil {
-		err := r.stop()
-		if err != nil {
+		if err := r.stop(); err != nil {
 			r.logger.Errorf("discoveryResolver close err: %v", err)
 		}
 	}

@@ -1,6 +1,7 @@
 package nacos
 
 import (
+	mock "github.com/gone-io/gone/mock/v2"
 	"testing"
 
 	"github.com/spf13/viper"
@@ -12,7 +13,7 @@ func Test_configure_Get(t *testing.T) {
 	ctr := gomock.NewController(t)
 	defer ctr.Finish()
 
-	mockConfigure := NewMockConfigure(ctr)
+	mockConfigure := mock.NewMockConfigure(ctr)
 
 	t.Run("Watch Mode", func(t *testing.T) {
 		c := configure{

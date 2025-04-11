@@ -32,7 +32,7 @@ func main() {
 	gone.
 		NewApp(
 			goneGrpc.ServerLoad,
-			nacos.LoadRegistry,
+			nacos.RegistryLoad,
 			viper.Load,
 		).
 		Load(&server{}).

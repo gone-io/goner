@@ -11,6 +11,10 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
+require github.com/gone-io/goner/g v1.0.9
+
+replace github.com/gone-io/goner/g => ../g
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
