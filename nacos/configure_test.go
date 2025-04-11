@@ -1,6 +1,7 @@
 package nacos
 
 import (
+	mock "github.com/gone-io/gone/mock/v2"
 	"strings"
 	"testing"
 
@@ -13,16 +14,12 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-//go:generate mockgen -destination=mock_configure_test.go -package=nacos github.com/gone-io/gone/v2 Configure,Logger
-
-//go:generate mockgen -destination=mock_nacos_client_test.go -package=nacos github.com/nacos-group/nacos-sdk-go/v2/clients/config_client IConfigClient
-
 func Test_configure_init(t *testing.T) {
 	ctr := gomock.NewController(t)
 	defer ctr.Finish()
 
 	mockClient := NewMockIConfigClient(ctr)
-	mockConfigure := NewMockConfigure(ctr)
+	mockConfigure := mock.NewMockConfigure(ctr)
 
 	t.Run("Success Case", func(t *testing.T) {
 		clientConfig := constant.ClientConfig{}
@@ -129,7 +126,7 @@ func Test_configure_getConfigContent(t *testing.T) {
 	defer ctr.Finish()
 
 	mockClient := NewMockIConfigClient(ctr)
-	mockConfigure := NewMockConfigure(ctr)
+	mockConfigure := mock.NewMockConfigure(ctr)
 
 	t.Run("Success Case", func(t *testing.T) {
 		dataId := "test-data-id"
@@ -305,7 +302,7 @@ func Test_configure_OnChange(t *testing.T) {
 	ctr := gomock.NewController(t)
 	defer ctr.Finish()
 
-	mockLogger := NewMockLogger(ctr)
+	mockLogger := mock.NewMockLogger(ctr)
 
 	t.Run("Success Case", func(t *testing.T) {
 		c := configure{

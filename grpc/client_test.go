@@ -52,6 +52,61 @@ func TestClientRegister_traceInterceptor(t *testing.T) {
 	})
 }
 
+func TestClientRegister_traceInterceptor_WithoutTracer(t *testing.T) {
+	const tracerIdKey = "X-Trace-Id"
+	ctx := context.WithValue(context.Background(), tracerIdKey, "ctx-trace-id")
+
+	register := clientRegister{
+		tracer:      nil,
+		tracerIdKey: tracerIdKey,
+	}
+	var req, reply any
+
+	err := register.traceInterceptor(
+		ctx,
+		"test",
+		req, reply,
+		nil,
+		func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, opts ...grpc.CallOption) error {
+			md, b := metadata.FromOutgoingContext(ctx)
+			assert.True(t, b)
+			list := md[strings.ToLower(tracerIdKey)]
+
+			assert.Equal(t, 1, len(list))
+			assert.Equal(t, "ctx-trace-id", list[0])
+			return nil
+		},
+	)
+	assert.Nil(t, err)
+}
+
+func TestClientRegister_traceInterceptor_EmptyContext(t *testing.T) {
+	const tracerIdKey = "X-Trace-Id"
+
+	register := clientRegister{
+		tracer:      nil,
+		tracerIdKey: tracerIdKey,
+	}
+	var req, reply any
+
+	err := register.traceInterceptor(
+		context.WithValue(context.Background(), tracerIdKey, "value"),
+		"test",
+		req, reply,
+		nil,
+		func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, opts ...grpc.CallOption) error {
+			md, b := metadata.FromOutgoingContext(ctx)
+			assert.True(t, b)
+			list := md[strings.ToLower(tracerIdKey)]
+
+			assert.Equal(t, 1, len(list))
+			assert.NotEmpty(t, list[0]) // Should generate a new trace ID
+			return nil
+		},
+	)
+	assert.Nil(t, err)
+}
+
 func Test_clientRegister_register(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
