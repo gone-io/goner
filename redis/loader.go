@@ -6,7 +6,9 @@ import (
 )
 
 var load = g.BuildOnceLoadFunc(
-	g.L(&pool{}, gone.IsDefault(new(Pool))),
+	g.F(func(loader gone.Loader) error {
+		return loader.Load(&pool{}, gone.IsDefault(new(Pool)))
+	}),
 	g.L(&inner{}),
 	g.L(&cache{}, gone.IsDefault(new(Cache), new(Key))),
 	g.L(&locker{}, gone.IsDefault(new(Locker))),

@@ -18,7 +18,9 @@ var load = g.BuildOnceLoadFunc(
 	g.L(&proxy{}, gone.IsDefault(new(HandleProxyToGin))),
 	g.L(NewGinResponser()),
 	g.L(&httpInjector{}),
-	g.L(NewGinServer()),
+	g.F(func(loader gone.Loader) error {
+		return loader.Load(NewGinServer())
+	}),
 )
 
 func Load(loader gone.Loader) error {
