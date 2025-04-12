@@ -1,9 +1,13 @@
 package xorm
 
 import (
+	"database/sql"
 	"errors"
+	"github.com/DATA-DOG/go-sqlmock"
 	mock "github.com/gone-io/gone/mock/v2"
+	"github.com/gone-io/gone/v2"
 	"go.uber.org/mock/gomock"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -85,4 +89,67 @@ func TestProvider_GonerName(t *testing.T) {
 	p := newProvider(engine).(*provider)
 
 	assert.Equal(t, "xorm", p.GonerName())
+}
+
+func Test_provider_Provide(t *testing.T) {
+	_ = os.Setenv("GONE_DATABASE_CLUSTER_ENABLE", "true")
+	_ = os.Setenv("GONE_DATABASE_CLUSTER_MASTER", "{\"driver-name\":\"sqlite3\",\"dsn\":\"provider-db-test\"}")
+	_ = os.Setenv("GONE_DATABASE_CLUSTER_SLAVES", "[{\"driver-name\":\"sqlite3\",\"dsn\":\"provider-db-test\"},{\"driver-name\":\"sqlite3\",\"dsn\":\"provider-db-test\"}]")
+
+	_ = os.Setenv("GONE_CUSTOM_CLUSTER_ENABLE", "true")
+	_ = os.Setenv("GONE_CUSTOM_CLUSTER_MASTER", "{\"driver-name\":\"sqlite3\",\"dsn\":\"provider-db-test\"}")
+	_ = os.Setenv("GONE_CUSTOM_CLUSTER_SLAVES", "[{\"driver-name\":\"sqlite3\",\"dsn\":\"provider-db-test\"},{\"driver-name\":\"sqlite3\",\"dsn\":\"provider-db-test\"}]")
+
+	defer func() {
+		_ = os.Unsetenv("GONE_DATABASE_CLUSTER_ENABLE")
+		_ = os.Unsetenv("GONE_DATABASE_CLUSTER_MASTER")
+		_ = os.Unsetenv("GONE_DATABASE_CLUSTER_SLAVE")
+		_ = os.Unsetenv("GONE_CUSTOM_CLUSTER_ENABLE")
+		_ = os.Unsetenv("GONE_CUSTOM_CLUSTER_MASTER")
+		_ = os.Unsetenv("GONE_CUSTOM_CLUSTER_SLAVE")
+	}()
+
+	db, dbMock, _ := sqlmock.NewWithDSN(
+		"provider-db-test",
+		sqlmock.MonitorPingsOption(true),
+	)
+	defer db.Close()
+
+	sql.Register("sqlite3", db.Driver())
+
+	dbMock.ExpectPing()
+	dbMock.ExpectPing()
+	dbMock.ExpectPing()
+	dbMock.ExpectPing()
+	dbMock.ExpectPing()
+	dbMock.ExpectPing()
+
+	gone.
+		NewApp(Load).
+		Run(func(in struct {
+			db       Engine   `gone:"*"`         //to get default cluster db
+			dbMaster Engine   `gone:"*,master"`  //use provider to get default cluster master db
+			dbSlaves []Engine `gone:"*,slave"`   //use provider to get default cluster slave dbs
+			dbSlave1 Engine   `gone:"*,slave=0"` //use provider to get default cluster slave db 1
+			dbSlave2 Engine   `gone:"*,slave=1"` //use provider to get default cluster slave db 2
+
+			defaultCluster Engine   `gone:"xorm"`           // use provider to get default cluster db
+			cluster2       Engine   `gone:"xorm,db=custom"` // use provider to get custom db
+			cluster2Master Engine   `gone:"xorm,db=custom,master"`
+			cluster2Slaves []Engine `gone:"xorm,db=custom,slave"`
+			cluster2Slave1 Engine   `gone:"xorm,db=custom,slave=0"`
+			cluster2Slave2 Engine   `gone:"xorm,db=custom,slave=1"`
+		}) {
+			assert.NotNil(t, in.db)
+			assert.NotNil(t, in.dbMaster)
+			assert.NotNil(t, in.dbSlaves)
+			assert.NotNil(t, in.dbSlave1)
+			assert.NotNil(t, in.dbSlave2)
+			assert.NotNil(t, in.defaultCluster)
+			assert.NotNil(t, in.cluster2)
+			assert.NotNil(t, in.cluster2Master)
+			assert.NotNil(t, in.cluster2Slaves)
+			assert.NotNil(t, in.cluster2Slave1)
+			assert.NotNil(t, in.cluster2Slave2)
+		})
 }

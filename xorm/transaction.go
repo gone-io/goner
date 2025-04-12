@@ -12,7 +12,6 @@ import (
 
 var sessionMap = sync.Map{}
 
-//go:generate mockgen -package xorm -destination=./session_mock_test.go -source transaction.go XInterface
 type XInterface interface {
 	xorm.Interface
 	driver.Tx

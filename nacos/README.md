@@ -1,16 +1,19 @@
-# Gone Framework Nacos Configuration Center Component
+# Gone Framework Nacos Component
 
 ## Overview
 
-The Nacos Configuration Center component empowers the Gone framework with dynamic configuration management capabilities by leveraging Alibaba's Nacos as the configuration backend. This integration provides a robust solution for managing application configurations in distributed systems.
+The Nacos component empowers the Gone framework with dynamic configuration management and service discovery capabilities by leveraging Alibaba's Nacos. This integration provides a robust solution for managing application configurations and service discovery in distributed systems.
 
-With the Nacos Configuration Center component, you can:
+With the Nacos component, you can:
 
 - Centralize configuration management across your application ecosystem
 - Implement real-time configuration updates without service restarts
 - Support multiple configuration formats (JSON, YAML, Properties, TOML)
 - Organize configurations with logical grouping and namespaces
 - Maintain configuration version control and change history
+- Register and discover services in a distributed environment
+- Implement load balancing and service routing
+- Monitor service health and availability
 
 ## Configuration Reference
 

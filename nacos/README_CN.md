@@ -1,16 +1,19 @@
-# Gone框架 Nacos配置中心组件
+# Gone框架 Nacos组件
 
 ## 组件概述
 
-Nacos配置中心组件为Gone框架提供了利用阿里巴巴Nacos作为配置后端的动态配置管理能力。这一集成方案为分布式系统中的应用配置管理提供了强大的解决方案。
+Nacos组件为Gone框架提供了利用阿里巴巴Nacos作为配置后端的动态配置管理能力和服务注册发现能力。这一集成方案为分布式系统中的应用配置管理和服务发现提供了强大的解决方案。
 
-通过Nacos配置中心组件，您可以：
+通过Nacos组件，您可以：
 
 - 在应用生态系统中集中管理配置
 - 实现无需服务重启的实时配置更新
 - 支持多种配置格式（JSON、YAML、Properties、TOML）
 - 通过逻辑分组和命名空间组织配置
 - 维护配置版本控制和变更历史
+- 在分布式环境中注册和发现服务
+- 实现负载均衡和服务路由
+- 监控服务健康状态和可用性
 
 ## 配置参考
 
@@ -25,6 +28,7 @@ Nacos配置中心组件为Gone框架提供了利用阿里巴巴Nacos作为配置
 | nacos.client.logLevel | 客户端日志详细程度 | string | info | "info" |
 | nacos.client.logDir | 客户端日志目录 | string | /tmp/nacos/log | "/tmp/nacos/log" |
 | nacos.client.cacheDir | 客户端缓存目录 | string | /tmp/nacos/cache | "/tmp/nacos/cache" |
+| nacos.client.asyncUpdateService | 是否异步更新服务 | bool | false | false |
 
 ### 服务器配置
 
@@ -61,6 +65,15 @@ Nacos配置中心组件为Gone框架提供了利用阿里巴巴Nacos作为配置
 - yaml/yml
 - properties
 - toml
+
+### 服务发现配置
+
+服务注册与发现相关的配置参数：
+
+| 配置参数 | 说明 | 类型 | 默认值 | 示例 |
+|----------|------|------|---------|------|
+| nacos.service.group | 服务分组名称 | string | DEFAULT_GROUP | "DEFAULT_GROUP" |
+| nacos.service.clusterName | 集群名称 | string | default | "default" |
 
 ## 实施指南
 
