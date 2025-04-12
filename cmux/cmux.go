@@ -14,18 +14,6 @@ import (
 
 const Name = "cmux"
 
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	return loader.Load(
-		&server{listen: net.Listen},
-		gone.IsDefault(new(CMuxServer)),
-		gone.HighStartPriority(),
-	)
-})
-
-func Load(loader gone.Loader) error {
-	return load(loader)
-}
-
 type server struct {
 	gone.Flag
 	once     sync.Once

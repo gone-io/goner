@@ -27,15 +27,8 @@ type Registry struct {
 }
 
 func (reg *Registry) Init() (err error) {
-	if reg.iClient, err = clients.NewNamingClient(
-		vo.NacosClientParam{
-			ClientConfig:  &reg.clientConfig,
-			ServerConfigs: reg.serverConfigs,
-		},
-	); err != nil {
-		return gone.ToError(err)
-	}
-	return nil
+	reg.iClient, err = clients.NewNamingClient(vo.NacosClientParam{ClientConfig: &reg.clientConfig, ServerConfigs: reg.serverConfigs})
+	return gone.ToError(err)
 }
 
 func (reg *Registry) GetInstances(serviceName string) ([]g.Service, error) {

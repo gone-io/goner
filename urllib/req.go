@@ -8,22 +8,6 @@ import (
 	"path/filepath"
 )
 
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	err := loader.Load(&r{}, gone.IsDefault(new(Client)))
-	if err != nil {
-		return gone.ToError(err)
-	}
-	err = loader.Load(&requestProvider{})
-	if err != nil {
-		return gone.ToError(err)
-	}
-	return loader.Load(&clientProvider{})
-})
-
-func Load(loader gone.Loader) error {
-	return load(loader)
-}
-
 type r struct {
 	gone.Flag
 	*req.Client
@@ -49,6 +33,7 @@ func (r *r) trip(rt req.RoundTripper) req.RoundTripFunc {
 				instance, err := r.lb.GetInstance(req.Context(), req.URL.Host)
 				if err != nil {
 					r.logger.Errorf("lb get instance err: %v", err)
+					return nil, gone.ToError(err)
 				}
 				req.URL.Host = fmt.Sprintf("%s:%d", instance.GetIP(), instance.GetPort())
 			}

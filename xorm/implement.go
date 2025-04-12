@@ -23,8 +23,8 @@ func newSession(eng xorm.EngineInterface) XInterface {
 }
 
 type ClusterNodeConf struct {
-	DriverName string `properties:"driver-name,default=" mapstructure:"driver-name"`
-	DSN        string `properties:"dsn,default=" mapstructure:"dsn,default=yyyy"`
+	DriverName string `properties:"driver-name,default=" mapstructure:"driver-name" json:"driver-name"`
+	DSN        string `properties:"dsn,default=" mapstructure:"dsn,default=yyyy" json:"dsn"`
 }
 
 type Conf struct {
@@ -36,7 +36,6 @@ type Conf struct {
 	ShowSql      bool          `properties:"show-sql,default=true" mapstructure:"show-sql,default=true"`
 }
 
-//go:generate mockgen -package xorm -destination=./engine_mock_test.go xorm.io/xorm EngineInterface
 type wrappedEngine struct {
 	gone.Flag
 	xorm.EngineInterface
@@ -89,6 +88,10 @@ func (e *wrappedEngine) create() error {
 
 		if len(e.slavesConf) == 0 {
 			return gone.NewInnerError("slaves config(database.cluster.slaves) is nil", gone.StartError)
+		}
+
+		if e.newFunc == nil {
+			return gone.ToError("newFunc is nil")
 		}
 
 		master, err := e.newFunc(e.masterConf.DriverName, e.masterConf.DSN)

@@ -26,10 +26,7 @@ func newProvider(engine *wrappedEngine) gone.Goner {
 type provider struct {
 	gone.Flag
 	engineMap map[string]*wrappedEngine
-
-	//heaven    gone.Heaven    `gone:"*"`
-	//cemetery  gone.Cemetery  `gone:"*"`
-	configure gone.Configure  `gone:"*"`
+	configure gone.Configure  `gone:"configure"`
 	log       gone.Logger     `gone:"*"`
 	before    gone.BeforeStop `gone:"*"`
 
@@ -138,6 +135,7 @@ func (p *provider) getDb(clusterName string) (*wrappedEngine, error) {
 
 		db = newWrappedEngine()
 		db.conf = config
+		db.log = p.log
 		db.enableCluster = enableCluster
 		db.masterConf = &masterConf
 		db.slavesConf = slavesConf
@@ -148,7 +146,7 @@ func (p *provider) getDb(clusterName string) (*wrappedEngine, error) {
 
 		err = db.Start()
 		if err != nil {
-			return nil, gone.NewInnerError("failed to start xorm engine for cluster: "+clusterName, gone.InjectError)
+			return nil, gone.NewInnerErrorWithParams(gone.InjectError, "failed to start xorm engine for cluster: %s; err: %v", clusterName, err)
 		}
 
 		p.before(func() {

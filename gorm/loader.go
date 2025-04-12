@@ -2,19 +2,14 @@ package gorm
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"gorm.io/gorm/logger"
 )
 
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	if err := loader.Load(&iLogger{}, gone.IsDefault(new(logger.Interface))); err != nil {
-		return gone.ToError(err)
-	}
-
-	if err := loader.Load(&dbProvider{}); err != nil {
-		return gone.ToError(err)
-	}
-	return nil
-})
+var load = g.BuildOnceLoadFunc(
+	g.L(&iLogger{}, gone.IsDefault(new(logger.Interface))),
+	g.L(&dbProvider{}),
+)
 
 func Load(loader gone.Loader) error {
 	return load(loader)

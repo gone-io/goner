@@ -6,15 +6,16 @@ require (
 	github.com/bytedance/sonic v1.13.2
 	github.com/go-viper/encoding/javaproperties v0.1.0
 	github.com/goccy/go-json v0.10.5
+	github.com/gone-io/gone/mock/v2 v2.0.10
 	github.com/gone-io/gone/v2 v2.0.10
-	github.com/gone-io/goner/g v1.0.7
+	github.com/gone-io/goner/g v1.0.9
 	github.com/gone-io/goner/viper v1.0.9
 	github.com/google/go-cmp v0.7.0
 	github.com/json-iterator/go v1.1.12
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.7
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/mock v0.5.0
+	go.uber.org/mock v0.5.1
 )
 
 replace (

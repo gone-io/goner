@@ -8,6 +8,8 @@ require (
 	github.com/sashabaranov/go-openai v1.38.1
 )
 
-require github.com/gone-io/goner/g v1.0.8 // indirect
+require github.com/gone-io/goner/g v1.0.9 // indirect
 
 replace github.com/gone-io/goner/openai => ../../openai
+
+replace github.com/gone-io/goner/g => ../../g

@@ -65,8 +65,8 @@ func (config Config) ToOpenAiConfig(httpDoer g.HTTPDoer) openai.ClientConfig {
 	return conf
 }
 
-func Load(loader gone.Loader) error {
-	var provider = gone.WrapFunctionProvider(func(tagConf string, param struct {
+var (
+	provider = gone.WrapFunctionProvider(func(tagConf string, param struct {
 		configure gone.Configure `gone:"configure"`
 		httpDoer  g.HTTPDoer     `gone:"openai-proxies" option:"allowNil"`
 	}) (*openai.Client, error) {
@@ -90,8 +90,9 @@ func Load(loader gone.Loader) error {
 		return client, nil
 	})
 
-	load := gone.OnceLoad(func(loader gone.Loader) error {
-		return loader.Load(provider)
-	})
+	load = g.BuildOnceLoadFunc(g.L(provider))
+)
+
+func Load(loader gone.Loader) error {
 	return load(loader)
 }
