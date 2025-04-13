@@ -3,7 +3,7 @@ module examples/config_center/etcd
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.10
+	github.com/gone-io/gone/v2 v2.0.11
 	github.com/gone-io/goner/viper/remote v1.0.4
 )
 

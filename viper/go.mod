@@ -4,12 +4,12 @@ go 1.23.0
 
 require (
 	github.com/go-viper/encoding/javaproperties v0.1.0
-	github.com/gone-io/gone/v2 v2.0.10
+	github.com/gone-io/gone/v2 v2.0.11
 	github.com/sagikazarmark/locafero v0.9.0
 	github.com/spf13/afero v1.14.0
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/mock v0.5.0
+	go.uber.org/mock v0.5.1
 )
 
 require (

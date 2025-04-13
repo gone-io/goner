@@ -10,10 +10,10 @@ github.com/go-viper/encoding/javaproperties v0.1.0 h1:4pQN/pez/rMy9ITZ++SgLH6VIN
 github.com/go-viper/encoding/javaproperties v0.1.0/go.mod h1:LGaThjx5J/GFdQRJscxLMQsYt0XKAM7IW9YzsJTv6jw=
 github.com/go-viper/mapstructure/v2 v2.2.1 h1:ZAaOCxANMuZx5RCeg0mBdEZk7DZasvvZIxtHqx8aGss=
 github.com/go-viper/mapstructure/v2 v2.2.1/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
-github.com/gone-io/gone/mock/v2 v2.0.10 h1:QeaioZu9wOJIAD/X+iFNQDlNTlWdpXvq7235c+ptlEE=
-github.com/gone-io/gone/mock/v2 v2.0.10/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
-github.com/gone-io/gone/v2 v2.0.10 h1:QuGsvDMOGGuZpBOSrvm7sHzlJwYBi9st6JEWnQGv9BM=
-github.com/gone-io/gone/v2 v2.0.10/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
+github.com/gone-io/gone/mock/v2 v2.0.11 h1:mhFBPFiCrxYS+ri0vksSARlalnAGk0gyB3Z7cLVnH5A=
+github.com/gone-io/gone/mock/v2 v2.0.11/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
+github.com/gone-io/gone/v2 v2.0.11 h1:gESrUYELNxJrTlZQF5zp/hBeoSCwTPszLbvZiA/IyoM=
+github.com/gone-io/gone/v2 v2.0.11/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
 github.com/gone-io/goner/viper v0.0.1 h1:m3MbyjyyKINF/LAwxWvTWRT3mtMLpS6BY266kWWZnFQ=
 github.com/gone-io/goner/viper v0.0.1/go.mod h1:tgnEw7K2iJ1uW9ikztLWYyEjM0J6LtqJLrjftxJPh4A=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=

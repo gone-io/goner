@@ -14,4 +14,4 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 )
 
-require github.com/gone-io/gone/v2 v2.0.10
+require github.com/gone-io/gone/v2 v2.0.11
