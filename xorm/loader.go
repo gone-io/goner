@@ -2,24 +2,16 @@ package xorm
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 )
-
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	engine := newWrappedEngine()
-	if err := loader.Load(
-		engine,
-		gone.IsDefault(new(XormEngine)),
-		gone.HighStartPriority(),
-	); err != nil {
-		return gone.ToError(err)
-	}
-
-	if err := loader.Load(newProvider(engine)); err != nil {
-		return gone.ToError(err)
-	}
-	return nil
-})
 
 func Load(loader gone.Loader) error {
 	return load(loader)
 }
+
+var load = g.BuildOnceLoadFunc(
+	g.L(&xormProvider{}),
+	g.L(xormEngineProvider),
+	g.L(xormGroupProvider),
+	g.L(&engProvider{}, gone.IsDefault(new(Engine), new([]Engine))),
+)
