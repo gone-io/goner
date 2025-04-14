@@ -46,6 +46,27 @@ func Load(loader gone.Loader) error {
 
 var newTypedClient = elasticsearch.NewTypedClient
 
+var loadTypedClient = gone.OnceLoad(func(loader gone.Loader) error {
+	var single *elasticsearch.TypedClient
+
+	getSingleEs := func(
+		tagConf string,
+		param struct {
+			config elasticsearch.Config `gone:"config,es"`
+		},
+	) (*elasticsearch.TypedClient, error) {
+		var err error
+		if single == nil {
+			if single, err = newTypedClient(param.config); err != nil {
+				return nil, gone.ToError(err)
+			}
+		}
+		return single, nil
+	}
+	provider := gone.WrapFunctionProvider(getSingleEs)
+	return loader.Load(provider)
+})
+
 // LoadTypedClient registers a singleton TypedClient provider with the gone loader.
 // TypedClient provides a more type-safe way to interact with Elasticsearch.
 //
@@ -55,25 +76,5 @@ var newTypedClient = elasticsearch.NewTypedClient
 // Returns:
 //   - error: Any error encountered during client creation or registration
 func LoadTypedClient(loader gone.Loader) error {
-	var load = gone.OnceLoad(func(loader gone.Loader) error {
-		var single *elasticsearch.TypedClient
-
-		getSingleEs := func(
-			tagConf string,
-			param struct {
-				config elasticsearch.Config `gone:"config,es"`
-			},
-		) (*elasticsearch.TypedClient, error) {
-			var err error
-			if single == nil {
-				if single, err = newTypedClient(param.config); err != nil {
-					return nil, gone.ToError(err)
-				}
-			}
-			return single, nil
-		}
-		provider := gone.WrapFunctionProvider(getSingleEs)
-		return loader.Load(provider)
-	})
-	return load(loader)
+	return loadTypedClient(loader)
 }

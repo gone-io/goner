@@ -6,6 +6,7 @@ import (
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/gone-io/gone/v2"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -48,7 +49,7 @@ func TestLoadError(t *testing.T) {
 
 		defer func() {
 			if err := recover(); err != nil {
-				if err.(gone.Error).Code() != gone.InjectError {
+				if !strings.Contains(err.(gone.Error).Error(), "create-error") {
 					t.Error(err)
 				}
 			}
@@ -66,7 +67,7 @@ func TestLoadError(t *testing.T) {
 		}
 		defer func() {
 			if err := recover(); err != nil {
-				if err.(gone.Error).Code() != gone.InjectError {
+				if !strings.Contains(err.(gone.Error).Error(), "create-error") {
 					t.Error(err)
 				}
 			}
