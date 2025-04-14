@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/viper v1.0.4
+	github.com/gone-io/goner/viper v1.0.9
 	github.com/google/go-cmp v0.7.0
 	github.com/spf13/viper v1.20.1
 	github.com/spf13/viper/remote v1.20.1
@@ -12,7 +12,7 @@ require (
 	go.uber.org/mock v0.5.1
 )
 
-replace github.com/gone-io/goner/viper v1.0.4 => ../
+replace github.com/gone-io/goner/viper => ../
 
 require (
 	cloud.google.com/go v0.120.0 // indirect

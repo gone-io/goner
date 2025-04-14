@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/nacos v1.0.2
+	github.com/gone-io/goner/nacos v1.0.9
 )
 
 replace (

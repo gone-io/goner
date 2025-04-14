@@ -4,8 +4,17 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner v1.0.6
-	github.com/gone-io/goner/gin v1.0.6
+	github.com/gone-io/goner v1.0.9
+	github.com/gone-io/goner/gin v1.0.9
+)
+
+replace (
+	github.com/gone-io/goner => ../../
+	github.com/gone-io/goner/g => ../../g
+	github.com/gone-io/goner/gin => ../../gin
+	github.com/gone-io/goner/tracer => ../../tracer
+	github.com/gone-io/goner/viper => ../../viper
+	github.com/gone-io/goner/zap => ../../zap
 )
 
 require (
@@ -22,10 +31,10 @@ require (
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gone-io/goner/g v1.0.6 // indirect
-	github.com/gone-io/goner/tracer v1.0.6 // indirect
-	github.com/gone-io/goner/viper v1.0.6 // indirect
-	github.com/gone-io/goner/zap v1.0.6 // indirect
+	github.com/gone-io/goner/g v1.0.9 // indirect
+	github.com/gone-io/goner/tracer v1.0.9 // indirect
+	github.com/gone-io/goner/viper v1.0.9 // indirect
+	github.com/gone-io/goner/zap v1.0.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -51,7 +60,7 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/arch v0.15.0 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
