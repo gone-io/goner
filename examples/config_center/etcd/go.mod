@@ -3,11 +3,14 @@ module examples/config_center/etcd
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.10
-	github.com/gone-io/goner/viper/remote v1.0.4
+	github.com/gone-io/gone/v2 v2.0.11
+	github.com/gone-io/goner/viper/remote v1.0.9
 )
 
-replace github.com/gone-io/goner/viper/remote => ../../../viper/remote
+replace (
+	github.com/gone-io/goner/viper => ../../../viper
+	github.com/gone-io/goner/viper/remote => ../../../viper/remote
+)
 
 require (
 	cloud.google.com/go v0.120.0 // indirect
@@ -28,7 +31,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/gone-io/goner/viper v1.0.6 // indirect
+	github.com/gone-io/goner/viper v1.0.9 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect

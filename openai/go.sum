@@ -1,9 +1,9 @@
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/gone-io/gone/mock/v2 v2.0.10 h1:QeaioZu9wOJIAD/X+iFNQDlNTlWdpXvq7235c+ptlEE=
-github.com/gone-io/gone/mock/v2 v2.0.10/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
-github.com/gone-io/gone/v2 v2.0.10 h1:QuGsvDMOGGuZpBOSrvm7sHzlJwYBi9st6JEWnQGv9BM=
-github.com/gone-io/gone/v2 v2.0.10/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
+github.com/gone-io/gone/mock/v2 v2.0.11 h1:mhFBPFiCrxYS+ri0vksSARlalnAGk0gyB3Z7cLVnH5A=
+github.com/gone-io/gone/mock/v2 v2.0.11/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
+github.com/gone-io/gone/v2 v2.0.11 h1:gESrUYELNxJrTlZQF5zp/hBeoSCwTPszLbvZiA/IyoM=
+github.com/gone-io/gone/v2 v2.0.11/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sashabaranov/go-openai v1.38.1 h1:TtZabbFQZa1nEni/IhVtDF/WQjVqDgd+cWR5OeddzF8=

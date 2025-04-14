@@ -2,6 +2,7 @@ package deepseek
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/cohesion-org/deepseek-go"
@@ -105,7 +106,7 @@ func TestLoad(t *testing.T) {
 
 		defer func() {
 			if err := recover(); err != nil {
-				if err.(gone.Error).Code() != gone.NotSupport {
+				if !strings.Contains(err.(gone.Error).Error(), "config err") {
 					t.Error(err)
 				}
 			}

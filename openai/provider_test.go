@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/gone-io/gone/v2"
@@ -109,7 +110,7 @@ func TestLoad(t *testing.T) {
 
 		defer func() {
 			if err := recover(); err != nil {
-				if err.(gone.Error).Code() != gone.NotSupport {
+				if !strings.Contains(err.(gone.Error).Error(), "config err") {
 					t.Error(err)
 				}
 			}
