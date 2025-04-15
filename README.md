@@ -33,7 +33,7 @@
 - [remote](./viper/remote) - A configuration component based on various remote configuration centers (such as etcd, consul, etc.), providing unified configuration management
 
 ### Service Registry
-- [nacos](./nacos) - A service registry component based on [Nacos](https://nacos.io/), providing service registration, discovery, and other features [In development...]
+- [nacos](./nacos) - A service registry component based on [Nacos](https://nacos.io/), providing service registration, discovery, and other features
 
 #### RPC
 - [grpc](./grpc) - gRPC client and server wrapper, simplifying microservice development

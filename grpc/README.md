@@ -333,3 +333,168 @@ Gone V2's Provider mechanism greatly improves the gRPC component usage experienc
 1. **More Concise Code**: Removes unnecessary interface implementations and repetitive template code
 2. **Better Alignment with Dependency Injection**: Automatically injects required components through tags
 3. **More Flexible Configuration**: Supports multiple address acquisition strategies, improving code maintainability
+
+## Implementation Method 3: Service Registration and Discovery
+
+Gone framework provides service registration and discovery functionality, allowing gRPC services to be deployed and called more flexibly.
+
+### Service Registration
+
+The server can register itself with a service discovery center (such as Nacos), allowing clients to access services by service name rather than specific IP address.
+
+#### Server Implementation
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/gone-io/gone/v2"
+	goneGrpc "github.com/gone-io/goner/grpc"
+	"github.com/gone-io/goner/nacos" // Import nacos component
+	"github.com/gone-io/goner/viper" // Import configuration component
+	"google.golang.org/grpc"
+	"grpc_demo/proto"
+	"log"
+)
+
+type server struct {
+	gone.Flag
+	proto.UnimplementedHelloServer              // Embed UnimplementedHelloServer
+	grpcServer                     *grpc.Server `gone:"*"` // Inject grpc.Server
+}
+
+func (s *server) Init() {
+	proto.RegisterHelloServer(s.grpcServer, s) // Register service
+}
+
+// Say Override the service defined in the protocol
+func (s *server) Say(ctx context.Context, in *proto.SayRequest) (*proto.SayResponse, error) {
+	log.Printf("Received: %v", in.GetName())
+	return &proto.SayResponse{Message: "Hello " + in.GetName()}, nil
+}
+
+func main() {
+	gone.
+		NewApp(
+			goneGrpc.ServerLoad,
+			nacos.RegistryLoad, // Load nacos registry center
+			viper.Load,       // Load configuration component
+		).
+		Load(&server{}).
+		// Start the service
+		Serve()
+}
+```
+
+#### Server Configuration
+
+The server needs to set the service name and other Nacos-related configurations in the configuration file:
+
+```yaml
+nacos:
+  client:
+    namespaceId: public
+    asyncUpdateService: false
+    logLevel: debug
+    logDir: ./logs/
+  server:
+    ipAddr: "127.0.0.1"
+    contextPath: /nacos
+    port: 8848
+    scheme: http
+
+  service:
+    group: DEFAULT_GROUP
+    clusterName: default
+
+server:
+  grpc:
+    port: 0  # Use 0 to indicate a random port
+    service-name: user-center  # Service name
+```
+
+### Service Discovery
+
+The client can obtain the service address from the service discovery center by service name, without hardcoding the service address.
+
+#### Client Implementation
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/gone-io/gone/v2"
+	gone_grpc "github.com/gone-io/goner/grpc"
+	"github.com/gone-io/goner/nacos" // Import nacos component
+	"github.com/gone-io/goner/viper" // Import configuration component
+	"google.golang.org/grpc"
+	"grpc_demo/proto"
+	"log"
+)
+
+type helloClient struct {
+	gone.Flag
+	proto.HelloClient // Embed HelloClient
+
+	// Connect to the service by service name
+	clientConn *grpc.ClientConn `gone:"*,config=grpc.service.hello.address"`
+}
+
+func (c *helloClient) Init() {
+	c.HelloClient = proto.NewHelloClient(c.clientConn)
+}
+
+func main() {
+	gone.
+		NewApp(
+			gone_grpc.ClientRegisterLoad,
+			viper.Load,       // Load configuration component
+			nacos.RegistryLoad, // Load nacos registry center
+		).
+		Load(&helloClient{}).
+		Run(func(in struct {
+			hello *helloClient `gone:"*"` // Inject helloClient in the Run method's parameters
+		}) {
+			// Call the Say method to send a message to the server
+			say, err := in.hello.Say(context.Background(), &proto.SayRequest{Name: "gone"})
+			if err != nil {
+				log.Printf("err: %v", err)
+				return
+			}
+			log.Printf("say result: %s", say.Message)
+		})
+}
+```
+
+#### Client Configuration
+
+The client needs to set the service name and other Nacos-related configurations in the configuration file:
+
+```yaml
+nacos:
+  client:
+    namespaceId: public
+    asyncUpdateService: false
+    logLevel: debug
+    logDir: ./logs/
+  server:
+    ipAddr: "127.0.0.1"
+    contextPath: /nacos
+    port: 8848
+    scheme: http
+
+grpc:
+  service:
+    hello:
+      address: user-center  # Service name, not a specific IP address
+```
+
+### Advantages of Service Registration and Discovery
+
+1. **Service Decoupling**: The client does not need to know the specific address of the server, only the service name
+2. **Dynamic Scaling**: Service instances can be dynamically added or reduced, and the client automatically perceives this
+3. **Load Balancing**: When there are multiple service instances, the client can automatically perform load balancing
+4. **High Availability**: When a service instance fails, the client can automatically switch to other available instances
+5. **Unified Management**: All services can be uniformly managed and monitored in the service discovery center

@@ -232,6 +232,63 @@ server.proxy.stat=false              # Enable proxy statistics, default false
 server.return.wrapped-data=true      # Wrap response data, default true
 ```
 
+### Service Registration Configuration
+
+```properties
+# Service registration configuration
+server.service-name=                 # Service name for registration, must be set
+server.service-use-subnet=0.0.0.0/0  # Subnet for service registration, default 0.0.0.0/0, used to select IP address for registration
+```
+
+## Service Registration and Discovery
+
+Gone Gin component supports service registration and discovery, allowing services to be registered with a service registry for easy discovery and invocation by other services.
+
+### Service Registration Process
+
+When a service starts, it automatically registers its information with the service registry and deregisters when the service shuts down. The registration process is as follows:
+
+1. Get the list of local IP addresses
+2. Filter IP addresses based on the configured subnet
+3. Register the service using the filtered IP address and port number
+4. Automatically deregister when the service shuts down
+
+### Service Registration Example
+
+```go
+package main
+
+import (
+	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner"
+	"github.com/gone-io/goner/gin"
+	"github.com/gone-io/goner/g"
+)
+
+// Implementing service registration requires injecting g.ServiceRegistry
+type ServiceRegistry struct {
+	gone.Flag
+	registry g.ServiceRegistry `gone:"*"`
+}
+
+func main() {
+	gone.
+		NewApp(
+            goner.GinLoad, // Load Gone Gin component
+            nacos.RegistryLoad, // Load Nacos registry component
+            viper.Load, // Load Viper configuration component
+            // Load other components
+            // ...
+        ).
+		Serve()
+}
+```
+
+### Configuration Parameters
+
+- **server.service-name**: Service name for registration, must be set
+- **server.service-use-subnet**: Subnet for service registration, default 0.0.0.0/0, used to select IP address for registration
+
 ## Best Practices
 
 1. Route Management
