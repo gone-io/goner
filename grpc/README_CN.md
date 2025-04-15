@@ -1,6 +1,37 @@
 # Gone gRPC 组件使用指南
 
-本文档介绍如何在 Gone 框架中使用 gRPC 组件，包括传统方式和 Gone V2 的 Provider 机制两种实现方式。
+本文档介绍如何在 Gone 框架中使用 gRPC 组件，包括传统方式、Gone V2 的 Provider 机制以及服务注册与发现三种实现方式。
+
+## 目录
+
+- [Gone gRPC 组件使用指南](#gone-grpc-组件使用指南)
+	- [目录](#目录)
+	- [准备工作](#准备工作)
+	- [编写 Proto 文件生成 Golang 代码](#编写-proto-文件生成-golang-代码)
+		- [编写协议文件](#编写协议文件)
+		- [生成 Golang 代码](#生成-golang-代码)
+	- [实现方式一：传统方式](#实现方式一传统方式)
+		- [服务端实现](#服务端实现)
+		- [客户端实现](#客户端实现)
+	- [实现方式二：Gone V2 Provider 机制](#实现方式二gone-v2-provider-机制)
+		- [服务端实现](#服务端实现-1)
+		- [客户端实现](#客户端实现-1)
+	- [配置文件](#配置文件)
+	- [测试](#测试)
+		- [运行服务端](#运行服务端)
+		- [运行客户端](#运行客户端)
+	- [两种实现方式对比](#两种实现方式对比)
+		- [传统方式](#传统方式)
+		- [Provider 机制](#provider-机制)
+	- [总结](#总结)
+	- [实现方式三：服务注册与发现](#实现方式三服务注册与发现)
+		- [服务注册](#服务注册)
+			- [服务端实现](#服务端实现-2)
+			- [服务端配置](#服务端配置)
+		- [服务发现](#服务发现)
+			- [客户端实现](#客户端实现-2)
+			- [客户端配置](#客户端配置)
+		- [服务注册与发现的优势](#服务注册与发现的优势)
 
 ## 准备工作
 
@@ -12,7 +43,7 @@ cd grpc
 go mod init grpc_demo
 ```
 
-## 编写 proto 文件，生成 golang 代码
+## 编写 Proto 文件生成 Golang 代码
 
 ### 编写协议文件
 
@@ -39,7 +70,7 @@ message SayRequest {
 }
 ```
 
-### 生成 golang 代码
+### 生成 Golang 代码
 
 ```bash
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
@@ -332,4 +363,169 @@ Gone V2 的 Provider 机制大幅提升了 gRPC 组件的使用体验：
 
 1. **代码更简洁**：移除了不必要的接口实现和重复性的模板代码
 2. **更符合依赖注入思想**：通过标签自动注入所需组件
-3. **配置更灵活**：支持多种地址获取策略，提高了代码的可维
+3. **配置更灵活**：支持多种地址获取策略，提高了代码的可维护性
+
+## 实现方式三：服务注册与发现
+
+Gone 框架提供了服务注册与发现功能，可以让 gRPC 服务更加灵活地部署和调用。
+
+### 服务注册
+
+服务端可以将自己注册到服务发现中心（如 Nacos），让客户端通过服务名称而非具体 IP 地址来访问服务。
+
+#### 服务端实现
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/gone-io/gone/v2"
+	goneGrpc "github.com/gone-io/goner/grpc"
+	"github.com/gone-io/goner/nacos" // 引入 nacos 组件
+	"github.com/gone-io/goner/viper" // 引入配置组件
+	"google.golang.org/grpc"
+	"grpc_demo/proto"
+	"log"
+)
+
+type server struct {
+	gone.Flag
+	proto.UnimplementedHelloServer              // 嵌入UnimplementedHelloServer
+	grpcServer                     *grpc.Server `gone:"*"` // 注入grpc.Server
+}
+
+func (s *server) Init() {
+	proto.RegisterHelloServer(s.grpcServer, s) //注册服务
+}
+
+// Say 重载协议中定义的服务
+func (s *server) Say(ctx context.Context, in *proto.SayRequest) (*proto.SayResponse, error) {
+	log.Printf("Received: %v", in.GetName())
+	return &proto.SayResponse{Message: "Hello " + in.GetName()}, nil
+}
+
+func main() {
+	gone.
+		NewApp(
+			goneGrpc.ServerLoad,
+			nacos.RegistryLoad, // 加载 nacos 注册中心
+			viper.Load,       // 加载配置组件
+		).
+		Load(&server{}).
+		// 启动服务
+		Serve()
+}
+```
+
+#### 服务端配置
+
+服务端需要在配置文件中设置服务名称和其他 Nacos 相关配置：
+
+```yaml
+nacos:
+  client:
+    namespaceId: public
+    asyncUpdateService: false
+    logLevel: debug
+    logDir: ./logs/
+  server:
+    ipAddr: "127.0.0.1"
+    contextPath: /nacos
+    port: 8848
+    scheme: http
+
+  service:
+    group: DEFAULT_GROUP
+    clusterName: default
+
+server:
+  grpc:
+    port: 0  # 使用0表示随机端口
+    service-name: user-center  # 服务名称
+```
+
+### 服务发现
+
+客户端可以通过服务名称从服务发现中心获取服务地址，无需硬编码服务地址。
+
+#### 客户端实现
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/gone-io/gone/v2"
+	gone_grpc "github.com/gone-io/goner/grpc"
+	"github.com/gone-io/goner/nacos" // 引入 nacos 组件
+	"github.com/gone-io/goner/viper" // 引入配置组件
+	"google.golang.org/grpc"
+	"grpc_demo/proto"
+	"log"
+)
+
+type helloClient struct {
+	gone.Flag
+	proto.HelloClient // 嵌入HelloClient
+
+	// 通过服务名称连接服务
+	clientConn *grpc.ClientConn `gone:"*,config=grpc.service.hello.address"`
+}
+
+func (c *helloClient) Init() {
+	c.HelloClient = proto.NewHelloClient(c.clientConn)
+}
+
+func main() {
+	gone.
+		NewApp(
+			gone_grpc.ClientRegisterLoad,
+			viper.Load,       // 加载配置组件
+			nacos.RegistryLoad, // 加载 nacos 注册中心
+		).
+		Load(&helloClient{}).
+		Run(func(in struct {
+			hello *helloClient `gone:"*"` // 在Run方法的参数中，注入 helloClient
+		}) {
+			// 调用Say方法，给服务端发送消息
+			say, err := in.hello.Say(context.Background(), &proto.SayRequest{Name: "gone"})
+			if err != nil {
+				log.Printf("err: %v", err)
+				return
+			}
+			log.Printf("say result: %s", say.Message)
+		})
+}
+```
+
+#### 客户端配置
+
+客户端需要在配置文件中设置服务名称和其他 Nacos 相关配置：
+
+```yaml
+nacos:
+  client:
+    namespaceId: public
+    asyncUpdateService: false
+    logLevel: debug
+    logDir: ./logs/
+  server:
+    ipAddr: "127.0.0.1"
+    contextPath: /nacos
+    port: 8848
+    scheme: http
+
+grpc:
+  service:
+    hello:
+      address: user-center  # 服务名称，而非具体IP地址
+```
+
+### 服务注册与发现的优势
+
+1. **服务解耦**：客户端不需要知道服务端的具体地址，只需要知道服务名称
+2. **动态扩展**：可以动态增加或减少服务实例，客户端自动感知
+3. **负载均衡**：当有多个服务实例时，客户端可以自动进行负载均衡
+4. **高可用性**：服务实例故障时，客户端可以自动切换到其他可用实例
+5. **统一管理**：可以在服务发现中心统一管理和监控所有服务

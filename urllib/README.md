@@ -76,26 +76,26 @@ For more details, please refer to [imroc/req](https://github.com/imroc/req)
 ```go
 func (s *MyService) GetUserInfo(userId string) (*UserInfo, error) {
     var result urllib.Res[UserInfo]  // Use generic response structure
-    
+
     // Make request and parse JSON response
     resp, err := s.client.R().
         SetQueryParam("id", userId).
         SetResult(&result).  // Set response result
         Get("https://api.example.com/users")
-    
+
     if err != nil {
         return nil, err
     }
-    
+
     if !resp.IsSuccess() {
         return nil, fmt.Errorf("request failed with status code: %d", resp.StatusCode)
     }
-    
+
     // Check business status code
     if result.Code != 0 {
         return nil, fmt.Errorf("business error: %s", result.Msg)
     }
-    
+
     return &result.Data, nil
 }
 
@@ -112,19 +112,19 @@ type UserInfo struct {
 func (s *MyService) CustomizeClient() {
     // Get underlying req.Client for custom configuration
     client := s.client.C()
-    
+
     // Set timeout
     client.SetTimeout(10 * time.Second)
-    
+
     // Set retry
     client.SetCommonRetryCount(3)
     client.SetCommonRetryInterval(func(resp *req.Response, attempt int) time.Duration {
         return time.Duration(attempt) * time.Second
     })
-    
+
     // Set proxy
     client.SetProxyURL("http://proxy.example.com:8080")
-    
+
     // Set common headers
     client.SetCommonHeader("User-Agent", "Gone-URLlib/1.0")
 }
@@ -138,7 +138,7 @@ func (s *MyService) CustomizeClient() {
 type Client interface {
     // R creates a new request object
     R() *req.Request
-    
+
     // C gets the underlying req.Client object
     C() *req.Client
 }
@@ -156,6 +156,77 @@ type Res[T any] struct {
 
 A generic structure for handling standard JSON response format.
 
+## Integration with Load Balancer
+
+`gone-urllib` can be seamlessly integrated with the `gone-balancer` component to implement service discovery and load balancing functionality. Through this integration, you can use service names instead of specific IP addresses to make requests, and the system will automatically select appropriate service instances based on the configured load balancing strategy.
+
+### 1. Import Related Components
+
+```go
+import (
+	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/balancer"
+	"github.com/gone-io/goner/nacos"  // or other service discovery components
+	"github.com/gone-io/goner/urllib"
+	"github.com/gone-io/goner/viper"
+)
+```
+
+### 2. Load Components
+
+```go
+func main() {
+	gone.
+		NewApp(
+			nacos.RegistryLoad,  // Load service discovery component
+			balancer.Load,      // Load load balancer component
+			viper.Load,         // Load configuration component
+			urllib.Load,        // Load URLlib component
+		).
+		Run(func(client urllib.Client, logger gone.Logger) {
+			// Use client to make requests
+		})
+}
+```
+
+### 3. Make Requests Using Service Name
+
+```go
+func CallService(client urllib.Client) {
+	var result urllib.Res[string]
+	res, err := client.
+		R().
+		SetSuccessResult(&result).
+		Get("http://service-name/api/endpoint")  // Use service name instead of IP address
+
+	if err != nil {
+		// Handle error
+		return
+	}
+
+	if res.IsSuccessState() {
+		// Handle response result
+	}
+}
+```
+
+### 4. Configure Load Balancing Strategy
+
+Set the load balancing strategy in the configuration file (using Nacos as an example):
+
+```yaml
+balancer:
+  strategy: round-robin  # Options: round-robin, random, weight
+  cache-ttl: 60s         # Service instance cache time
+
+nacos:
+  server-addr: 127.0.0.1:8848
+  namespace: public
+  group: DEFAULT_GROUP
+  username: nacos
+  password: nacos
+```
+
 ## Best Practices
 
 1. Use dependency injection to get URLlib client, avoid manual creation
@@ -163,6 +234,7 @@ A generic structure for handling standard JSON response format.
 3. Use generic response structure `Res<T>` to handle standard JSON response format
 4. Set appropriate timeout and retry strategies to improve request reliability
 5. Add trace ID in requests for better problem tracking
+6. Use service names with the load balancer component to implement service discovery and load balancing
 
 ## Important Notes
 

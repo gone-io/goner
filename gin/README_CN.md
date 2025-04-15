@@ -233,6 +233,63 @@ server.proxy.stat=false              # 是否启用代理统计，默认false
 server.return.wrapped-data=true      # 是否包装响应数据，默认true
 ```
 
+### 服务注册与发现配置
+
+```properties
+# 服务注册配置
+server.service-name=                 # 服务名称，用于服务注册，必须设置
+server.service-use-subnet=0.0.0.0/0  # 服务使用的子网，默认0.0.0.0/0，用于选择注册的IP地址
+```
+
+## 服务注册与发现
+
+Gone Gin 组件支持服务注册与发现功能，可以将服务注册到服务注册中心，方便其他服务发现和调用。
+
+### 服务注册原理
+
+服务启动时，会自动将服务信息注册到服务注册中心，服务关闭时会自动注销。注册过程如下：
+
+1. 获取本地IP地址列表
+2. 根据配置的子网过滤IP地址
+3. 使用过滤后的IP地址和端口号注册服务
+4. 服务关闭时自动注销
+
+### 服务注册示例
+
+```go
+package main
+
+import (
+	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner"
+	"github.com/gone-io/goner/gin"
+	"github.com/gone-io/goner/g"
+)
+
+// 实现服务注册需要注入 g.ServiceRegistry
+type ServiceRegistry struct {
+	gone.Flag
+	registry g.ServiceRegistry `gone:"*"`
+}
+
+func main() {
+	gone.
+		NewApp(
+            goner.GinLoad, // 加载Gone Gin组件
+            nacos.RegistryLoad, // 加载Nacos注册中心组件
+            viper.Load, // 加载Viper配置组件
+            // 加载其他组件
+            // ...
+        ).
+		Serve()
+}
+```
+
+### 配置说明
+
+- **server.service-name**：服务名称，用于服务注册，必须设置
+- **server.service-use-subnet**：服务使用的子网，默认0.0.0.0/0，用于选择注册的IP地址
+
 ## 最佳实践
 
 1. 路由管理
