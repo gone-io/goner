@@ -26,14 +26,14 @@ const configKey = "configKey"
 func newStdioClient(m map[string]string, config gone.Configure) (c *client.Client, err error) {
 	var conf StdioConf
 	if m[configKey] != "" {
-		err := config.Get(m[configKey], &conf, "")
+		err = config.Get(m[configKey], &conf, "")
 		if err != nil {
 			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get mcp client config failed by key=%s", m[configKey]))
 		}
 	} else if m[paramKey] != "" {
 		split := strings.Split(m[paramKey], " ")
 		for _, it := range split {
-			it := strings.TrimSpace(it)
+			it = strings.TrimSpace(it)
 			if it != "" {
 				if conf.Command == "" {
 					conf.Command = it
@@ -54,7 +54,7 @@ func newStdioClient(m map[string]string, config gone.Configure) (c *client.Clien
 func newSseClient(m map[string]string, config gone.Configure) (c *client.Client, err error) {
 	var conf SSEConf
 	if m[configKey] != "" {
-		err := config.Get(m[configKey], &conf, "")
+		err = config.Get(m[configKey], &conf, "")
 		if err != nil {
 			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get mcp client config failed by key=%s", m[configKey]))
 		}
@@ -83,9 +83,9 @@ var clientMap = make(map[string]*client.Client)
 var clientProvider = gone.WrapFunctionProvider(func(
 	tagConf string,
 	param struct {
-	keeper gone.GonerKeeper `gone:"*"`
-	config gone.Configure   `gone:"configure"`
-},
+		keeper gone.GonerKeeper `gone:"*"`
+		config gone.Configure   `gone:"configure"`
+	},
 ) (c *client.Client, err error) {
 	c = clientMap[tagConf]
 	if c != nil {
