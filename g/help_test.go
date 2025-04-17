@@ -101,3 +101,48 @@ func TestBuildOnceLoadFuncError2(t *testing.T) {
 			})
 	})
 }
+
+func TestSingLoadProviderFunc(t *testing.T) {
+	t.Run("once load", func(t *testing.T) {
+		type TestStruct struct {
+		}
+
+		var loadTimes int
+
+		providerFunc := SingLoadProviderFunc(func(tagConf string, param struct{}) (*TestStruct, error) {
+			loadTimes++
+			return &TestStruct{}, nil
+		})
+		gone.
+			NewApp(providerFunc, providerFunc).
+			Run(func(s *TestStruct, in struct {
+				s1 *TestStruct
+				s2 *TestStruct
+			}) {
+				assert.Equal(t, 1, loadTimes)
+			})
+	})
+}
+
+func TestNamedThirdComponentLoadFunc(t *testing.T) {
+	t.Run("once load", func(t *testing.T) {
+		type TestStruct struct {
+			Name string
+		}
+		var s = TestStruct{
+			Name: "X",
+		}
+
+		loadFunc := NamedThirdComponentLoadFunc("test", &s)
+		gone.
+			NewApp(loadFunc, loadFunc).
+			Run(func(s0 *TestStruct, in struct {
+				s1 *TestStruct `gone:"test"`
+				s2 *TestStruct `gone:"test"`
+			}) {
+				assert.Equal(t, s0, &s)
+				assert.Equal(t, s0, in.s1)
+				assert.Equal(t, s0, in.s2)
+			})
+	})
+}
