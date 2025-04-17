@@ -1,11 +1,12 @@
 package goneMcp
 
 import (
-	"context"
+	"fmt"
+	"time"
+
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"github.com/mark3labs/mcp-go/server"
-	"time"
 )
 
 type SSEConfig struct {
@@ -97,19 +98,18 @@ func (s *serverProvider) Init() error {
 	s.m = make(map[string]*server.MCPServer)
 
 	if len(s.tools) > 0 || len(s.props) > 0 || len(s.resources) > 0 {
-		mcpServer, err := s.Provide("")
-		if err != nil {
+		if mcpServer, err := s.Provide(""); err != nil {
 			return gone.ToError(err)
-		}
-
-		for _, tool := range s.tools {
-			mcpServer.AddTool(tool.Define(), tool.Process())
-		}
-		for _, prompt := range s.props {
-			mcpServer.AddPrompt(prompt.Define(), prompt.Process())
-		}
-		for _, resource := range s.resources {
-			mcpServer.AddResource(resource.Define(), resource.Process())
+		} else {
+			for _, tool := range s.tools {
+				mcpServer.AddTool(tool.Define(), tool.Process())
+			}
+			for _, prompt := range s.props {
+				mcpServer.AddPrompt(prompt.Define(), prompt.Process())
+			}
+			for _, resource := range s.resources {
+				mcpServer.AddResource(resource.Define(), resource.Process())
+			}
 		}
 	}
 	return nil
@@ -128,7 +128,7 @@ func (s *serverProvider) Provide(tagConf string) (*server.MCPServer, error) {
 
 	var conf Conf
 	if err := s.config.Get(key, &conf, ""); err != nil {
-		return nil, err
+		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get mcp server config failed by key=%s", key))
 	}
 
 	options := conf.ToOptions()
@@ -141,38 +141,42 @@ func (s *serverProvider) Provide(tagConf string) (*server.MCPServer, error) {
 	switch conf.TransportType {
 	case "sse":
 		var sseConf SSEConfig
-		if err := s.config.Get(key+".sse", &sseConf, ""); err != nil {
-			return nil, err
+		sseKey := key + ".sse"
+		if err := s.config.Get(sseKey, &sseConf, ""); err != nil {
+			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get mcp sse server config failed by key=%s", sseKey))
 		}
 		ops := sseConf.ToOptions()
-		if fn, err := g.GetComponentByName[server.SSEContextFunc](s.keeper, key+".sse.context"); err == nil {
+		if fn, err := g.GetComponentByName[server.SSEContextFunc](s.keeper, sseKey+".context"); err == nil {
 			ops = append(ops, server.WithSSEContextFunc(fn))
 		}
 
 		sseServer := server.NewSSEServer(mcpServer, ops...)
+
 		s.beforeStart(func() {
+			address := sseConf.Address
+			if sseConf.Address == "" {
+				address = ":8080"
+			}
+			s.logger.Infof("mcp: start sse server at %s", address)
 			go func() {
-				if sseConf.Address == "" {
-					sseConf.Address = ":8080"
-				}
-				s.logger.Infof("mcp: start sse server at %s", sseConf.Address)
-				err := sseServer.Start(sseConf.Address)
-				if err != nil {
+				if err := sseServer.Start(address); err != nil {
 					s.logger.Errorf("mcp: start sse server err: %v", err)
 				}
 			}()
 		})
-		s.beforeStop(func() {
-			err := sseServer.Shutdown(context.Background())
-			if err != nil {
-				s.logger.Errorf("mcp: shutdown sse server err: %v", err)
-			}
-		})
+
+		// there is a data trace for sseServer.Start writing `srv` and sseServer.Shutdown read `srv`,
+		// look for https://github.com/mark3labs/mcp-go/issues/166
+		//s.beforeStop(func() {
+		//	if err := sseServer.Shutdown(context.Background()); err != nil {
+		//		s.logger.Errorf("mcp: shutdown sse server err: %v", err)
+		//	}
+		//})
 
 		s.m[key] = mcpServer
 		return mcpServer, nil
 
-	case "stdio", "":
+	case "", "stdio":
 		var ops []server.StdioOption
 		if fn, err := g.GetComponentByName[server.StdioContextFunc](s.keeper, key+".stdio.context"); err == nil {
 			ops = append(ops, server.WithStdioContextFunc(fn))
@@ -181,8 +185,7 @@ func (s *serverProvider) Provide(tagConf string) (*server.MCPServer, error) {
 		s.beforeStart(func() {
 			go func() {
 				s.logger.Infof("mcp: start stdio server")
-				err := server.ServeStdio(mcpServer, ops...)
-				if err != nil {
+				if err := server.ServeStdio(mcpServer, ops...); err != nil {
 					s.logger.Errorf("mcp: serve stdio err: %v", err)
 				}
 			}()
