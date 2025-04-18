@@ -12,7 +12,7 @@ import (
 type mcpServerDefine struct {
 	gone.Flag
 
-	// use MCPServer pointer
+	// use MCPServer pointer Receive Injected Value
 	s *server.MCPServer `gone:"*"`
 }
 

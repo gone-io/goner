@@ -1,28 +1,28 @@
 # Gone Viper Remote
 
-## 什么是Gone Viper Remote？
+## What is Gone Viper Remote?
 
-`remote`包是Gone框架的重要组件，它对Viper配置系统进行了扩展，让你的应用能够从远程配置中心（如etcd、consul等）获取配置信息。该包基于[spf13/viper/remote](https://github.com/spf13/viper/tree/master/remote)构建，专门为Gone框架优化，提供无缝集成体验。
+The `remote` package is a crucial component of the Gone framework that extends the Viper configuration system, enabling your applications to fetch configuration information from remote configuration centers (such as etcd, consul, etc.). Built upon [spf13/viper/remote](https://github.com/spf13/viper/tree/master/remote), this package is specifically optimized for the Gone framework, providing seamless integration.
 
-想象一下，你有多个应用实例需要共享同一套配置，或者需要在不重启应用的情况下动态更新配置 — 这正是Gone Viper Remote的用武之地。
+Imagine having multiple application instances that need to share the same configuration, or needing to dynamically update configurations without restarting your application — this is where Gone Viper Remote shines.
 
-## 为什么选择Gone Viper Remote？
+## Why Choose Gone Viper Remote?
 
-- **集中式配置管理**：所有应用实例可以从同一个配置中心获取最新配置
-- **实时配置更新**：支持配置热更新，无需重启应用
-- **更高的安全性**：支持加密配置，保护敏感信息
-- **本地配置兜底**：当远程配置不可用时自动回退到本地配置
-- **多种数据源支持**：适配多种流行的配置中心
+- **Centralized Configuration Management**: All application instances can fetch the latest configuration from a single configuration center
+- **Real-time Configuration Updates**: Supports hot configuration updates without application restart
+- **Enhanced Security**: Supports encrypted configuration to protect sensitive information
+- **Local Configuration Fallback**: Automatically falls back to local configuration when remote configuration is unavailable
+- **Multiple Data Source Support**: Compatible with various popular configuration centers
 
-## 开始使用
+## Getting Started
 
-### 第一步：安装包
+### Step 1: Install the Package
 
 ```bash
 go get github.com/gone-io/goner/viper/remote
 ```
 
-### 第二步：在应用中加载组件
+### Step 2: Load the Component in Your Application
 
 ```go
 import (
@@ -31,29 +31,29 @@ import (
 )
 
 func main() {
-    // 创建Gone应用并加载remote组件
+    // Create Gone application and load remote component
     gone.NewApp(remote.Load).Run()
 }
 ```
 
-### 第三步：配置远程提供者
+### Step 3: Configure Remote Provider
 
-在你的配置文件（如`config/default.yaml`）中设置远程配置提供者：
+Set up the remote configuration provider in your configuration file (e.g., `config/default.yaml`):
 
 ```yaml
 # config/default.yaml
 viper:
   remote:
     type: yaml
-    watch: true                     # 启用配置热更新
-    watchDuration: 5s               # 每5秒检查一次配置变化
-    useLocalConfIfKeyNotExist: true # 远程找不到时使用本地配置
+    watch: true                     # Enable hot configuration updates
+    watchDuration: 5s               # Check for changes every 5 seconds
+    useLocalConfIfKeyNotExist: true # Use local configuration if remote key not found
     providers:
-      - provider: etcd              # 提供者类型
-        endpoint: localhost:2379    # 提供者地址
-        path: /config/myapp         # 配置路径
-        configType: json            # 配置格式
-        keyring:                    # 用于加密配置的密钥(可选)
+      - provider: etcd              # Provider type
+        endpoint: localhost:2379    # Provider address
+        path: /config/myapp         # Configuration path
+        configType: json            # Configuration format
+        keyring:                    # Encryption key for configuration (optional)
       - provider: consul
         endpoint: localhost:8500
         path: myapp/config
@@ -61,26 +61,26 @@ viper:
         keyring:
 ```
 
-## 增强安全性：使用加密配置
+## Enhanced Security: Using Encrypted Configuration
 
-对于敏感信息（如数据库密码、API密钥），你可以使用加密配置来提高安全性。
+For sensitive information (such as database passwords, API keys), you can use encrypted configuration to enhance security.
 
-### 设置GPG密钥
+### Setting up GPG Keys
 
-1. 生成GPG密钥对：
+1. Generate GPG key pair:
 
 ```bash
-# 生成GPG密钥对
+# Generate GPG key pair
 gpg --gen-key
 
-# 导出公钥(用于加密)
+# Export public key (for encryption)
 gpg --export > pubring.gpg
 
-# 导出私钥(用于解密)
+# Export private key (for decryption)
 gpg --export-secret-keys > secring.gpg
 ```
 
-2. 在配置中指定密钥文件：
+2. Specify the key file in configuration:
 
 ```yaml
 viper.remote:
@@ -89,10 +89,10 @@ viper.remote:
       endpoint: http://localhost:2379
       path: /config/secure-config
       configType: yaml
-      keyring: /path/to/secring.gpg  # 指定密钥文件路径
+      keyring: /path/to/secring.gpg  # Specify key file path
 ```
 
-### 使用加密配置的示例
+### Example Using Encrypted Configuration
 
 ```go
 package main
@@ -115,68 +115,68 @@ func main() {
 }
 ```
 
-## 配置详解
+## Configuration Details
 
-### Provider详细说明
+### Provider Specification
 
-每个远程提供者都由以下属性定义：
+Each remote provider is defined by the following attributes:
 
 ```go
 type Provider struct {
-    Provider   string // 提供者类型：etcd、consul等
-    Endpoint   string // 提供者地址
-    Path       string // 配置在提供者中的路径
-    ConfigType string // 配置格式：json、yaml等
-    Keyring    string // 用于加密配置的密钥(可选)
+    Provider   string // Provider type: etcd, consul, etc.
+    Endpoint   string // Provider address
+    Path       string // Configuration path in provider
+    ConfigType string // Configuration format: json, yaml, etc.
+    Keyring    string // Encryption key for configuration (optional)
 }
 ```
 
-### 全局配置选项详解
+### Global Configuration Options
 
-| 配置项 | 说明 | 默认值 | 使用建议 |
-|-------|------|-------|---------|
-| viper.remote.providers | 远程配置提供者列表 | [] | 可配置多个提供者实现配置冗余 |
-| viper.remote.watch | 是否启用配置热更新 | false | 生产环境建议开启 |
-| viper.remote.watchDuration | 检查配置更新的间隔时间 | 5s | 根据配置变更频率调整 |
-| viper.remote.useLocalConfIfKeyNotExist | 远程不存在时是否使用本地配置 | true | 建议开启，提高系统可靠性 |
+| Option | Description | Default | Usage Recommendation |
+|--------|-------------|---------|---------------------|
+| viper.remote.providers | List of remote configuration providers | [] | Configure multiple providers for redundancy |
+| viper.remote.watch | Enable hot configuration updates | false | Recommended for production environments |
+| viper.remote.watchDuration | Interval for checking configuration updates | 5s | Adjust based on configuration change frequency |
+| viper.remote.useLocalConfIfKeyNotExist | Use local configuration if remote key not found | true | Enable to improve system reliability |
 
-## 支持的远程提供者
+## Supported Remote Providers
 
-目前支持以下远程配置中心：
+Currently supports the following remote configuration centers:
 
-- **etcd/etcd3**：高可用的分布式键值存储，适合大规模集群
-- **consul**：服务发现和配置的工具，自带健康检查
-- **firestore**：Google云端的NoSQL数据库
-- **nats**：高性能的分布式消息系统
+- **etcd/etcd3**: High-availability distributed key-value store, suitable for large-scale clusters
+- **consul**: Service discovery and configuration tool with built-in health checks
+- **firestore**: Google Cloud's NoSQL database
+- **nats**: High-performance distributed messaging system
 
-## 工作原理解析
+## Working Principle Analysis
 
-Gone Viper Remote的工作流程如下：
+Gone Viper Remote works as follows:
 
-1. **初始化**：从本地配置文件读取远程提供者信息
-2. **连接**：连接到远程配置中心
-3. **加载**：从远程获取配置信息，并与本地配置合并
-4. **监控**（如果启用）：周期性检查远程配置变化，及时更新
+1. **Initialization**: Read remote provider information from local configuration file
+2. **Connection**: Connect to remote configuration center
+3. **Loading**: Fetch configuration information from remote and merge with local configuration
+4. **Monitoring** (if enabled): Periodically check for remote configuration changes and update timely
 
-### 本地配置兜底机制
+### Local Configuration Fallback Mechanism
 
-当远程配置中心不可用或某个配置键不存在时，系统会自动回退到本地配置：
+When the remote configuration center is unavailable or a configuration key doesn't exist, the system automatically falls back to local configuration:
 
-1. 应用请求配置值
-2. 系统先从远程获取
-3. 如获取失败且`useLocalConfIfKeyNotExist`为`true`
-4. 系统回退到本地配置文件
-5. 如本地也不存在，则使用默认值（如有提供）
+1. Application requests configuration value
+2. System first tries to fetch from remote
+3. If fetch fails and `useLocalConfIfKeyNotExist` is `true`
+4. System falls back to local configuration file
+5. If local configuration doesn't exist, use default value (if provided)
 
-这种机制特别适合以下场景：
+This mechanism is particularly suitable for:
 
-- **开发环境**：开发人员可在本地覆盖某些配置
-- **灾备恢复**：远程配置中心不可用时，应用仍能运行
-- **配置迁移**：从本地配置逐步迁移到远程配置中心
+- **Development Environment**: Developers can override certain configurations locally
+- **Disaster Recovery**: Application can still run when remote configuration center is unavailable
+- **Configuration Migration**: Gradually migrate from local to remote configuration center
 
-## 实用示例：完整应用
+## Practical Example: Complete Application
 
-以下是一个使用etcd作为配置中心的完整示例：
+Here's a complete example using etcd as configuration center:
 
 ```go
 package main
@@ -188,7 +188,7 @@ import (
     "time"
 )
 
-// 定义数据库配置结构
+// Define database configuration structure
 type Database struct {
     UserName string `mapstructure:"username"`
     Pass     string `mapstructure:"password"`
@@ -205,21 +205,21 @@ func main() {
             database   *Database `gone:"config,database"`
             key        string   `gone:"config,key.not-existed-in-etcd"`
         }) {
-            // 打印配置信息
-            fmt.Printf("服务名称: %s, 端口: %d\n", params.serverName, params.serverPort)
-            fmt.Printf("数据库用户: %s, 密码: %s\n", params.dbUserName, params.dbUserPass)
-            fmt.Printf("本地配置项: %s\n", params.key)
+            // Print configuration information
+            fmt.Printf("Server Name: %s, Port: %d\n", params.serverName, params.serverPort)
+            fmt.Printf("Database User: %s, Password: %s\n", params.dbUserName, params.dbUserPass)
+            fmt.Printf("Local Config Item: %s\n", params.key)
 
-            // 每10秒打印一次数据库配置，演示热更新
+            // Print database configuration every 10 seconds to demonstrate hot updates
             for i := 0; i < 10; i++ {
-                fmt.Printf("数据库配置: %#+v\n", *params.database)
+                fmt.Printf("Database Configuration: %#+v\n", *params.database)
                 time.Sleep(10 * time.Second)
             }
         })
 }
 ```
 
-配置文件设置：
+Configuration file setup:
 
 ```yaml
 # config/default.yaml
@@ -239,12 +239,12 @@ viper.remote:
       endpoint: http://localhost:2379
       path: /config/database.yaml
 
-# 本地配置，当远程不存在时使用
+# Local configuration, used when remote key doesn't exist
 key:
   not-existed-in-etcd: 1000
 ```
 
-etcd中的配置内容：
+Configuration content in etcd:
 
 ```yaml
 # /config/application.yaml
@@ -257,30 +257,30 @@ database:
   password: config-demo-password
 ```
 
-## 最佳实践建议
+## Best Practice Recommendations
 
-1. **分层配置**：将配置按功能区分，存储在不同的路径
-2. **定期备份**：对远程配置中心的数据定期备份
-3. **适当的监控间隔**：根据应用需求调整`watchDuration`，避免过于频繁的检查
-4. **敏感信息加密**：对密码、API密钥等敏感信息使用加密存储
-5. **本地配置兜底**：保持本地配置与远程配置的基本一致，作为应急措施
+1. **Layered Configuration**: Separate configurations by functionality, store in different paths
+2. **Regular Backups**: Regularly backup remote configuration center data
+3. **Appropriate Monitoring Interval**: Adjust `watchDuration` based on application needs, avoid too frequent checks
+4. **Encrypt Sensitive Information**: Use encryption for passwords, API keys, and other sensitive information
+5. **Local Configuration Fallback**: Keep local configuration consistent with remote configuration as an emergency measure
 
-## 常见问题解答
+## Frequently Asked Questions
 
-1. **远程配置中心连接失败怎么办？**
-    - 确保配置中心服务正常运行
-    - 检查网络连接和防火墙设置
-    - 系统会自动回退到本地配置
+1. **What to do when remote configuration center connection fails?**
+    - Ensure configuration center service is running normally
+    - Check network connection and firewall settings
+    - System will automatically fall back to local configuration
 
-2. **如何测试配置热更新？**
-    - 启动应用后，直接修改远程配置中心的值
-    - 等待至少一个`watchDuration`周期
-    - 观察应用日志或行为变化
+2. **How to test hot configuration updates?**
+    - After starting the application, directly modify values in remote configuration center
+    - Wait for at least one `watchDuration` cycle
+    - Observe application logs or behavior changes
 
-3. **支持哪些配置格式？**
-    - 支持JSON、YAML、TOML等主流格式
-    - 由`configType`参数指定
+3. **What configuration formats are supported?**
+    - Supports mainstream formats including JSON, YAML, TOML
+    - Specified by `configType` parameter
 
-## 许可证
+## License
 
-本项目采用MIT许可证。详情请参阅[LICENSE](https://github.com/gone-io/goner/blob/main/LICENSE)文件。
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/gone-io/goner/blob/main/LICENSE) file for details.
