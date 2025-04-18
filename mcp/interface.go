@@ -18,15 +18,15 @@ type ResourceContents = mcp.ResourceContents
 
 type ITool interface {
 	Define() Tool
-	Process() func(ctx context.Context, request CallToolRequest) (*CallToolResult, error)
+	Handler(ctx context.Context, request CallToolRequest) (*CallToolResult, error)
 }
 
 type IPrompt interface {
 	Define() Prompt
-	Process() func(ctx context.Context, request GetPromptRequest) (*GetPromptResult, error)
+	Handler(ctx context.Context, request GetPromptRequest) (*GetPromptResult, error)
 }
 
 type IResource interface {
 	Define() Resource
-	Process() func(ctx context.Context, request ReadResourceRequest) ([]ResourceContents, error)
+	Handler(ctx context.Context, request ReadResourceRequest) ([]ResourceContents, error)
 }

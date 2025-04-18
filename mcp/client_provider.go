@@ -10,14 +10,14 @@ import (
 )
 
 type StdioConf struct {
-	Command string
-	Env     []string
-	Args    []string
+	Command string   `json:"command"`
+	Env     []string `json:"env"`
+	Args    []string `json:"args"`
 }
 
 type SSEConf struct {
-	BaseUrl string
-	Header  map[string]string
+	BaseUrl string            `json:"baseUrl"`
+	Header  map[string]string `json:"header"`
 }
 
 const paramKey = "param"
@@ -26,8 +26,7 @@ const configKey = "configKey"
 func newStdioClient(m map[string]string, config gone.Configure) (c *client.Client, err error) {
 	var conf StdioConf
 	if m[configKey] != "" {
-		err = config.Get(m[configKey], &conf, "")
-		if err != nil {
+		if err = config.Get(m[configKey], &conf, ""); err != nil {
 			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get mcp client config failed by key=%s", m[configKey]))
 		}
 	} else if m[paramKey] != "" {
@@ -46,7 +45,7 @@ func newStdioClient(m map[string]string, config gone.Configure) (c *client.Clien
 
 	c, err = client.NewStdioMCPClient(conf.Command, conf.Env, conf.Args...)
 	if err != nil {
-		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("create mcp client failed by type=%s", m["type"]))
+		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("create mcp client failed by type=stdio"))
 	}
 	return
 }
@@ -54,8 +53,7 @@ func newStdioClient(m map[string]string, config gone.Configure) (c *client.Clien
 func newSseClient(m map[string]string, config gone.Configure) (c *client.Client, err error) {
 	var conf SSEConf
 	if m[configKey] != "" {
-		err = config.Get(m[configKey], &conf, "")
-		if err != nil {
+		if err = config.Get(m[configKey], &conf, ""); err != nil {
 			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get mcp client config failed by key=%s", m[configKey]))
 		}
 	} else if m[paramKey] != "" {
@@ -63,16 +61,13 @@ func newSseClient(m map[string]string, config gone.Configure) (c *client.Client,
 	}
 
 	c, err = client.NewSSEMCPClient(conf.BaseUrl, client.WithHeaders(conf.Header))
-	if err != nil {
-		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("create mcp client failed by type=%s", m["type"]))
-	}
-	return
+	return c, gone.ToErrorWithMsg(err, fmt.Sprintf("create mcp client failed by type=sse"))
 }
 
 func newSseClientByInjectTransport(m map[string]string, keeper gone.GonerKeeper) (c *client.Client, err error) {
 	trans, err := g.GetComponentByName[transport.Interface](keeper, m[paramKey])
 	if err != nil {
-		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get mcp client failed by type=%s", m["type"]))
+		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("can not found the transport by name=%s, please load it first", m[paramKey]))
 	}
 	c = client.NewClient(trans)
 	return
@@ -102,7 +97,7 @@ var clientProvider = gone.WrapFunctionProvider(func(
 	case "transport":
 		c, err = newSseClientByInjectTransport(m, param.keeper)
 	default:
-		return nil, gone.ToError(fmt.Sprintf("support type=%s", m["type"]))
+		return nil, gone.ToError(fmt.Sprintf("support type=%s, inject config format: `gone:\"*,type=${stdio|sse|transport},param=${parameter},configKey=${configKey}\"`", m["type"]))
 	}
 	if err != nil {
 		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("create mcp client failed by type=%s", m["type"]))

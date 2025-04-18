@@ -21,23 +21,21 @@ func (g greeting) Define() goneMcp.Prompt {
 	)
 }
 
-func (g greeting) Process() func(ctx context.Context, request goneMcp.GetPromptRequest) (*goneMcp.GetPromptResult, error) {
-	return func(ctx context.Context, request mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
-		name := request.Params.Arguments["name"]
-		if name == "" {
-			name = "friend"
-		}
-
-		return mcp.NewGetPromptResult(
-			"A friendly greeting",
-			[]mcp.PromptMessage{
-				mcp.NewPromptMessage(
-					mcp.RoleAssistant,
-					mcp.NewTextContent(fmt.Sprintf("Hello, %s! How can I help you today?", name)),
-				),
-			},
-		), nil
+func (g greeting) Handler(ctx context.Context, request mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
+	name := request.Params.Arguments["name"]
+	if name == "" {
+		name = "friend"
 	}
+
+	return mcp.NewGetPromptResult(
+		"A friendly greeting",
+		[]mcp.PromptMessage{
+			mcp.NewPromptMessage(
+				mcp.RoleAssistant,
+				mcp.NewTextContent(fmt.Sprintf("Hello, %s! How can I help you today?", name)),
+			),
+		},
+	), nil
 }
 
 var _ goneMcp.IPrompt = (*greeting)(nil)

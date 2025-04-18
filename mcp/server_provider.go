@@ -102,13 +102,13 @@ func (s *serverProvider) Init() error {
 			return gone.ToError(err)
 		} else {
 			for _, tool := range s.tools {
-				mcpServer.AddTool(tool.Define(), tool.Process())
+				mcpServer.AddTool(tool.Define(), tool.Handler)
 			}
 			for _, prompt := range s.props {
-				mcpServer.AddPrompt(prompt.Define(), prompt.Process())
+				mcpServer.AddPrompt(prompt.Define(), prompt.Handler)
 			}
 			for _, resource := range s.resources {
-				mcpServer.AddResource(resource.Define(), resource.Process())
+				mcpServer.AddResource(resource.Define(), resource.Handler)
 			}
 		}
 	}

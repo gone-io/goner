@@ -22,10 +22,8 @@ func (i iTool) Define() Tool {
 	return mcp.NewTool("test", mcp.WithDescription("test tool"))
 }
 
-func (i iTool) Process() func(ctx context.Context, request CallToolRequest) (*CallToolResult, error) {
-	return func(ctx context.Context, request CallToolRequest) (*CallToolResult, error) {
-		return mcp.NewToolResultText("test"), nil
-	}
+func (i iTool) Handler(ctx context.Context, request CallToolRequest) (*CallToolResult, error) {
+	return mcp.NewToolResultText("test"), nil
 }
 
 var _ ITool = (*iTool)(nil)
@@ -38,15 +36,13 @@ func (i iPrompt) Define() Prompt {
 	return mcp.NewPrompt("test", mcp.WithPromptDescription("test prompt"))
 }
 
-func (i iPrompt) Process() func(ctx context.Context, request GetPromptRequest) (*GetPromptResult, error) {
-	return func(ctx context.Context, request GetPromptRequest) (*GetPromptResult, error) {
-		return mcp.NewGetPromptResult("test prompt", []mcp.PromptMessage{
-			mcp.NewPromptMessage(
-				mcp.RoleUser,
-				mcp.NewTextContent("test prompt"),
-			),
-		}), nil
-	}
+func (i iPrompt) Handler(ctx context.Context, request GetPromptRequest) (*GetPromptResult, error) {
+	return mcp.NewGetPromptResult("test prompt", []mcp.PromptMessage{
+		mcp.NewPromptMessage(
+			mcp.RoleUser,
+			mcp.NewTextContent("test prompt"),
+		),
+	}), nil
 }
 
 var _ IPrompt = (*iPrompt)(nil)
@@ -59,16 +55,14 @@ func (i iResource) Define() Resource {
 	return mcp.NewResource("test://test", "test")
 }
 
-func (i iResource) Process() func(ctx context.Context, request ReadResourceRequest) ([]ResourceContents, error) {
-	return func(ctx context.Context, request ReadResourceRequest) ([]ResourceContents, error) {
-		return []mcp.ResourceContents{
-			mcp.TextResourceContents{
-				URI:      "test://test",
-				MIMEType: "text/markdown",
-				Text:     "test content",
-			},
-		}, nil
-	}
+func (i iResource) Handler(ctx context.Context, request ReadResourceRequest) ([]ResourceContents, error) {
+	return []mcp.ResourceContents{
+		mcp.TextResourceContents{
+			URI:      "test://test",
+			MIMEType: "text/markdown",
+			Text:     "test content",
+		},
+	}, nil
 }
 
 var _ IResource = (*iResource)(nil)
@@ -76,7 +70,7 @@ var _ IResource = (*iResource)(nil)
 func Test_serverProvider_Init(t *testing.T) {
 	t.Run("goner define", func(t *testing.T) {
 		gone.
-			NewApp(serverLoad).
+			NewApp(ServerLoad).
 			Load(&iTool{}).
 			Load(&iPrompt{}).
 			Load(&iResource{}).

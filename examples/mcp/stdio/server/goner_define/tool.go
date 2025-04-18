@@ -23,14 +23,12 @@ func (h helloTool) Define() goneMcp.Tool {
 	)
 }
 
-func (h helloTool) Process() func(ctx context.Context, request goneMcp.CallToolRequest) (*goneMcp.CallToolResult, error) {
-	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		name, ok := request.Params.Arguments["name"].(string)
-		if !ok {
-			return nil, errors.New("name must be a string")
-		}
-		return mcp.NewToolResultText(fmt.Sprintf("Hello, %s!", name)), nil
+func (h helloTool) Handler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	name, ok := request.Params.Arguments["name"].(string)
+	if !ok {
+		return nil, errors.New("name must be a string")
 	}
+	return mcp.NewToolResultText(fmt.Sprintf("Hello, %s!", name)), nil
 }
 
 var _ goneMcp.ITool = (*helloTool)(nil)

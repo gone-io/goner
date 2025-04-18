@@ -20,16 +20,14 @@ func (r readmeResource) Define() goneMcp.Resource {
 	)
 }
 
-func (r readmeResource) Process() func(ctx context.Context, request goneMcp.ReadResourceRequest) ([]goneMcp.ResourceContents, error) {
-	return func(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
-		return []mcp.ResourceContents{
-			mcp.TextResourceContents{
-				URI:      "docs://readme",
-				MIMEType: "text/markdown",
-				Text:     "readme content",
-			},
-		}, nil
-	}
+func (r readmeResource) Handler(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+	return []mcp.ResourceContents{
+		mcp.TextResourceContents{
+			URI:      "docs://readme",
+			MIMEType: "text/markdown",
+			Text:     "readme content",
+		},
+	}, nil
 }
 
 var _ goneMcp.IResource = (*readmeResource)(nil)
