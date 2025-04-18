@@ -42,7 +42,8 @@
 ### AI Components
 - [openai](./openai) - OpenAI client wrapper, providing GPT and other AI capabilities integration
 - [deepseek](./deepseek) - Deepseek client wrapper, providing Chinese LLM integration
-
+- [mcp](./mcp) - is a toolkit wrapped around `github.com/mark3labs/mcp-go`, helping developers quickly build MCP(Model Context Protocol)  server and client applications. By using the Gone MCP component, you can easily integrate AI models with your business systems.
+- 
 ### Utility Components
 - [viper](./viper) - Configuration management component, based on [spf13/viper](https://github.com/spf13/viper)
 - [zap](./zap) - Logging component, based on [uber-go/zap](https://github.com/uber-go/zap)

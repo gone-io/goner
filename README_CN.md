@@ -42,6 +42,7 @@
 ### AI 组件
 - [openai](./openai) - OpenAI 客户端封装，提供 GPT 等 AI 能力集成
 - [deepseek](./deepseek) - Deepseek 客户端封装，提供国产大语言模型集成
+- [mcp](./mcp) - 基于 `github.com/mark3labs/mcp-go` 进行封装的工具包，它能帮助开发者快速构建 MCP (Model Context Protocol)  的服务端和客户端应用。通过使用 Gone MCP 组件，您可以轻松地将 AI 模型与您的业务系统进行集成。
 
 ### 工具组件
 - [viper](./viper) - 配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper)

@@ -3,6 +3,7 @@ package g
 import (
 	"errors"
 	"github.com/gone-io/gone/v2"
+	"reflect"
 	"testing"
 
 	mock "github.com/gone-io/gone/mock/v2"
@@ -99,5 +100,141 @@ func TestBuildOnceLoadFuncError2(t *testing.T) {
 				gList []*gTest,
 			) {
 			})
+	})
+}
+
+func TestSingLoadProviderFunc(t *testing.T) {
+	t.Run("once load", func(t *testing.T) {
+		type TestStruct struct {
+		}
+
+		var loadTimes int
+
+		providerFunc := SingLoadProviderFunc(func(tagConf string, param struct{}) (*TestStruct, error) {
+			loadTimes++
+			return &TestStruct{}, nil
+		})
+		gone.
+			NewApp(providerFunc, providerFunc).
+			Run(func(s *TestStruct, in struct {
+				s1 *TestStruct
+				s2 *TestStruct
+			}) {
+				assert.Equal(t, 1, loadTimes)
+			})
+	})
+}
+
+func TestNamedThirdComponentLoadFunc(t *testing.T) {
+	t.Run("once load", func(t *testing.T) {
+		type TestStruct struct {
+			Name string
+		}
+		var s = TestStruct{
+			Name: "X",
+		}
+
+		loadFunc := NamedThirdComponentLoadFunc("test", &s)
+		gone.
+			NewApp(loadFunc, loadFunc).
+			Run(func(s0 *TestStruct, in struct {
+				s1 *TestStruct `gone:"test"`
+				s2 *TestStruct `gone:"test"`
+			}) {
+				assert.Equal(t, s0, &s)
+				assert.Equal(t, s0, in.s1)
+				assert.Equal(t, s0, in.s2)
+			})
+	})
+}
+
+type provided struct {
+	gone.Flag
+}
+
+type provider struct {
+	gone.Flag
+}
+
+func (s *provider) Provide() (*provided, error) {
+	return &provided{}, nil
+}
+
+type provider2 struct {
+	gone.Flag
+}
+
+func (s *provider2) Provide(tagConf string) (*provided, error) {
+	return &provided{}, nil
+}
+
+type provider3 struct {
+	gone.Flag
+	err error
+	c   any
+}
+
+func (s *provider3) GonerName() string {
+	return "test"
+}
+func (s *provider3) Provide(tagConf string, t reflect.Type) (any, error) {
+	return s.c, s.err
+}
+
+func TestGetComponentByName(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	keeper := mock.NewMockGonerKeeper(controller)
+
+	t.Run("not found", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(nil)
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Error(t, err)
+		assert.Nil(t, component)
+		assert.Contains(t, err.Error(), "not found")
+	})
+
+	t.Run("found component by name", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(&provided{})
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, err)
+		assert.NotNil(t, component)
+	})
+
+	t.Run("found NoneParamProvider", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(&provider{})
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, err)
+		assert.NotNil(t, component)
+	})
+
+	t.Run("found Provider", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(&provider2{})
+
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, err)
+		assert.NotNil(t, component)
+	})
+
+	t.Run("found NamedProvider", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			keeper.EXPECT().GetGonerByName("test").Return(&provider3{c: &provided{}})
+			component, err := GetComponentByName[*provided](keeper, "test")
+			assert.Nil(t, err)
+			assert.NotNil(t, component)
+		})
+		t.Run("error", func(t *testing.T) {
+			keeper.EXPECT().GetGonerByName("test").Return(&provider3{err: errors.New("test"), c: &provided{}})
+			component, err := GetComponentByName[*provided](keeper, "test")
+			assert.Error(t, err)
+			assert.Nil(t, component)
+		})
+	})
+	t.Run("found other type", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return("test")
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, component)
+		assert.NotNil(t, err)
+		assert.Contains(t, err.Error(), "not found compatible component")
 	})
 }

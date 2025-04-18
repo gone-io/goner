@@ -4,9 +4,9 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/redis v1.0.9
-	github.com/gone-io/goner/schedule v1.0.9
-	github.com/gone-io/goner/viper v1.0.9
+	github.com/gone-io/goner/redis v1.0.10
+	github.com/gone-io/goner/schedule v1.0.10
+	github.com/gone-io/goner/viper v1.0.10
 )
 
 replace (
@@ -16,7 +16,7 @@ replace (
 	github.com/gone-io/goner/viper => ../../viper
 )
 
-require github.com/gone-io/goner/g v1.0.9 // indirect
+require github.com/gone-io/goner/g v1.0.10 // indirect
 
 require (
 	github.com/bytedance/sonic v1.13.2 // indirect

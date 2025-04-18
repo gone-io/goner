@@ -1,0 +1,6 @@
+mcp:
+  name: demo
+  version: 1.0.0
+  withRecovery: true
+  withLogging: true
+  transportType: stdio

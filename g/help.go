@@ -3,6 +3,7 @@ package g
 import (
 	"github.com/gone-io/gone/v2"
 	"net"
+	"reflect"
 )
 
 func Recover(logger gone.Logger) {
@@ -69,4 +70,52 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 		}
 		return nil
 	})
+}
+
+var m = make(map[any]struct{})
+
+func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options ...gone.Option) gone.LoadFunc {
+	return func(loader gone.Loader) error {
+		if _, ok := m[&fn]; ok {
+			return nil
+		}
+		m[&fn] = struct{}{}
+
+		provider := gone.WrapFunctionProvider(fn)
+		return loader.Load(provider, options...)
+	}
+}
+
+func NamedThirdComponentLoadFunc[T any](name string, component T) gone.LoadFunc {
+	return SingLoadProviderFunc(func(tagConf string, param struct{}) (T, error) {
+		return component, nil
+	}, gone.Name(name))
+}
+
+func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) {
+	component := keeper.GetGonerByName(name)
+	if component == nil {
+		return *new(T), gone.NewInnerError("not found", gone.GonerNameNotFound)
+	}
+
+	if t, ok := component.(T); ok {
+		return t, nil
+	}
+
+	if g, ok := component.(gone.Provider[T]); ok {
+		return g.Provide(name)
+	}
+
+	if g, ok := component.(gone.NoneParamProvider[T]); ok {
+		return g.Provide()
+	}
+
+	if g, ok := component.(gone.NamedProvider); ok {
+		provide, err := g.Provide(name, reflect.TypeOf(new(T)).Elem())
+		if err != nil {
+			return *new(T), gone.ToError(err)
+		}
+		return provide.(T), nil
+	}
+	return *new(T), gone.NewInnerError("not found compatible component", gone.GonerNameNotFound)
 }

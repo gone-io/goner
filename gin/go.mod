@@ -16,7 +16,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 )
 
-require github.com/gone-io/goner/g v1.0.9
+require github.com/gone-io/goner/g v1.0.10
 
 replace github.com/gone-io/goner/g => ../g
 
