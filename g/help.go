@@ -1,11 +1,14 @@
 package g
 
 import (
-	"github.com/gone-io/gone/v2"
 	"net"
 	"reflect"
+
+	"github.com/gone-io/gone/v2"
 )
 
+// Recover captures and logs panics to prevent program crashes
+// logger: Logger for recording panic information
 func Recover(logger gone.Logger) {
 	if r := recover(); r != nil {
 		logger.Errorf(
@@ -16,6 +19,8 @@ func Recover(logger gone.Logger) {
 	}
 }
 
+// GetLocalIps gets all non-loopback IPv4 addresses of the local machine
+// Returns: List of all available IPv4 addresses
 func GetLocalIps() []net.IP {
 	if addrs, err := net.InterfaceAddrs(); err != nil {
 		panic(gone.ToErrorWithMsg(err, "cannot get ip address"))
@@ -30,12 +35,20 @@ func GetLocalIps() []net.IP {
 	}
 }
 
+// LoadOp struct encapsulates loading operations
+// goner: Component to be loaded
+// options: Loading options
+// f: Loading function
 type LoadOp struct {
 	goner   gone.Goner
 	options []gone.Option
 	f       gone.LoadFunc
 }
 
+// L creates a LoadOp for loading components
+// g: Component to be loaded
+// options: Loading options
+// Returns: New LoadOp instance
 func L(g gone.Goner, options ...gone.Option) *LoadOp {
 	return &LoadOp{
 		goner:   g,
@@ -43,12 +56,18 @@ func L(g gone.Goner, options ...gone.Option) *LoadOp {
 	}
 }
 
+// F creates a LoadOp containing a loading function
+// loadFunc: Custom loading function
+// Returns: New LoadOp instance
 func F(loadFunc gone.LoadFunc) *LoadOp {
 	return &LoadOp{
 		f: loadFunc,
 	}
 }
 
+// BuildOnceLoadFunc builds a loading function that executes only once
+// ops: List of LoadOps to execute
+// Returns: Loading function that ensures single execution
 func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 	return gone.OnceLoad(func(loader gone.Loader) error {
 		for _, op := range ops {
@@ -74,6 +93,12 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 
 var m = make(map[any]struct{})
 
+// SingLoadProviderFunc creates a loading function for singleton Provider
+// P: Provider's parameter type
+// T: Component type provided by Provider
+// fn: Function to create components
+// options: Loading options
+// Returns: Loading function that ensures single loading
 func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options ...gone.Option) gone.LoadFunc {
 	return func(loader gone.Loader) error {
 		if _, ok := m[&fn]; ok {
@@ -86,12 +111,22 @@ func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options 
 	}
 }
 
+// NamedThirdComponentLoadFunc creates a named third-party component loading function
+// T: Component type
+// name: Component name
+// component: Third-party component instance
+// Returns: Loading function for third-party components
 func NamedThirdComponentLoadFunc[T any](name string, component T) gone.LoadFunc {
 	return SingLoadProviderFunc(func(tagConf string, param struct{}) (T, error) {
 		return component, nil
 	}, gone.Name(name))
 }
 
+// GetComponentByName gets a component of specified type by name
+// T: Component type to get
+// keeper: Component manager
+// name: Component name
+// Returns: Found component instance and possible error
 func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) {
 	component := keeper.GetGonerByName(name)
 	if component == nil {
