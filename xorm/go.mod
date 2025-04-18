@@ -6,7 +6,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/gone-io/gone/mock/v2 v2.0.11
 	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/g v1.0.9
+	github.com/gone-io/goner/g v1.0.10
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/jtolds/gls v4.20.0+incompatible
 	github.com/spf13/cast v1.7.1

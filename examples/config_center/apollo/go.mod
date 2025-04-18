@@ -4,10 +4,10 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/apollo v1.0.9
+	github.com/gone-io/goner/apollo v1.0.10
 )
 
-require github.com/gone-io/goner/g v1.0.9 // indirect
+require github.com/gone-io/goner/g v1.0.10 // indirect
 
 replace github.com/gone-io/goner/viper => ../../../viper
 
@@ -20,7 +20,7 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/gone-io/goner/viper v1.0.9 // indirect
+	github.com/gone-io/goner/viper v1.0.10 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/magiconair/properties v1.8.10 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect

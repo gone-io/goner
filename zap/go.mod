@@ -9,7 +9,7 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
-require github.com/gone-io/goner/g v1.0.9
+require github.com/gone-io/goner/g v1.0.10
 
 replace github.com/gone-io/goner/g => ../g
 
