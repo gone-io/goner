@@ -117,5 +117,5 @@ func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) 
 		}
 		return provide.(T), nil
 	}
-	return *new(T), gone.NewInnerError("not found", gone.GonerNameNotFound)
+	return *new(T), gone.NewInnerError("not found compatible component", gone.GonerNameNotFound)
 }

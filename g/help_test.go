@@ -3,6 +3,7 @@ package g
 import (
 	"errors"
 	"github.com/gone-io/gone/v2"
+	"reflect"
 	"testing"
 
 	mock "github.com/gone-io/gone/mock/v2"
@@ -144,5 +145,96 @@ func TestNamedThirdComponentLoadFunc(t *testing.T) {
 				assert.Equal(t, s0, in.s1)
 				assert.Equal(t, s0, in.s2)
 			})
+	})
+}
+
+type provided struct {
+	gone.Flag
+}
+
+type provider struct {
+	gone.Flag
+}
+
+func (s *provider) Provide() (*provided, error) {
+	return &provided{}, nil
+}
+
+type provider2 struct {
+	gone.Flag
+}
+
+func (s *provider2) Provide(tagConf string) (*provided, error) {
+	return &provided{}, nil
+}
+
+type provider3 struct {
+	gone.Flag
+	err error
+	c   any
+}
+
+func (s *provider3) GonerName() string {
+	return "test"
+}
+func (s *provider3) Provide(tagConf string, t reflect.Type) (any, error) {
+	return s.c, s.err
+}
+
+func TestGetComponentByName(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	keeper := mock.NewMockGonerKeeper(controller)
+
+	t.Run("not found", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(nil)
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Error(t, err)
+		assert.Nil(t, component)
+		assert.Contains(t, err.Error(), "not found")
+	})
+
+	t.Run("found component by name", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(&provided{})
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, err)
+		assert.NotNil(t, component)
+	})
+
+	t.Run("found NoneParamProvider", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(&provider{})
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, err)
+		assert.NotNil(t, component)
+	})
+
+	t.Run("found Provider", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return(&provider2{})
+
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, err)
+		assert.NotNil(t, component)
+	})
+
+	t.Run("found NamedProvider", func(t *testing.T) {
+		t.Run("success", func(t *testing.T) {
+			keeper.EXPECT().GetGonerByName("test").Return(&provider3{c: &provided{}})
+			component, err := GetComponentByName[*provided](keeper, "test")
+			assert.Nil(t, err)
+			assert.NotNil(t, component)
+		})
+		t.Run("error", func(t *testing.T) {
+			keeper.EXPECT().GetGonerByName("test").Return(&provider3{err: errors.New("test"), c: &provided{}})
+			component, err := GetComponentByName[*provided](keeper, "test")
+			assert.Error(t, err)
+			assert.Nil(t, component)
+		})
+	})
+	t.Run("found other type", func(t *testing.T) {
+		keeper.EXPECT().GetGonerByName("test").Return("test")
+		component, err := GetComponentByName[*provided](keeper, "test")
+		assert.Nil(t, component)
+		assert.NotNil(t, err)
+		assert.Contains(t, err.Error(), "not found compatible component")
 	})
 }
