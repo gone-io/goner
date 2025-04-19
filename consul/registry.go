@@ -158,8 +158,6 @@ func (r *Registry) ttlHealthCheck(serviceID string) {
 
 func (r *Registry) Deregister(instance g.Service) error {
 	serviceID := getServiceId(instance)
-	if err := r.client.Agent().ServiceDeregister(serviceID); err != nil {
-		return gone.ToErrorWithMsg(err, "deregister service failed")
-	}
-	return nil
+	err := r.client.Agent().ServiceDeregister(serviceID)
+	return gone.ToErrorWithMsg(err, "deregister service failed")
 }
