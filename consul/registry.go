@@ -17,16 +17,9 @@ var _ g.ServiceDiscovery = (*Registry)(nil)
 type Registry struct {
 	gone.Flag
 
-	logger gone.Logger `gone:"*"`
-	client *api.Client `gone:"*"`
-
-	servicesMap map[string][]*api.AgentServiceRegistration
-	mu          sync.RWMutex // Mutex for thread safety
-}
-
-func (r *Registry) Init() (err error) {
-	r.servicesMap = make(map[string][]*api.AgentServiceRegistration)
-	return
+	logger gone.Logger  `gone:"*"`
+	client *api.Client  `gone:"*"`
+	mu     sync.RWMutex // Mutex for thread safety
 }
 
 const weightKey = "_weight"
@@ -101,17 +94,13 @@ func (r *Registry) Watch(serviceName string) (ch <-chan []g.Service, stop func()
 	}, nil
 }
 
-func getServiceId(instance g.Service) string {
-	return fmt.Sprintf("%s-%s:%d", instance.GetName(), instance.GetIP(), instance.GetPort())
-}
-
 func (r *Registry) Register(instance g.Service) error {
 	metadata := instance.GetMetadata()
 	if metadata == nil {
 		metadata = make(map[string]string)
 	}
 	metadata[weightKey] = fmt.Sprintf("%f", instance.GetWeight())
-	serviceID := getServiceId(instance)
+	serviceID := g.GetServiceId(instance)
 
 	registration := api.AgentServiceRegistration{
 		ID: serviceID, Name: instance.GetName(),
@@ -157,7 +146,7 @@ func (r *Registry) ttlHealthCheck(serviceID string) {
 }
 
 func (r *Registry) Deregister(instance g.Service) error {
-	serviceID := getServiceId(instance)
+	serviceID := g.GetServiceId(instance)
 	err := r.client.Agent().ServiceDeregister(serviceID)
 	return gone.ToErrorWithMsg(err, "deregister service failed")
 }

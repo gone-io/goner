@@ -1,6 +1,8 @@
 package g
 
 import (
+	"encoding/json"
+	"fmt"
 	"net"
 	"reflect"
 
@@ -153,4 +155,29 @@ func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) 
 		return provide.(T), nil
 	}
 	return *new(T), gone.NewInnerError("not found compatible component", gone.GonerNameNotFound)
+}
+
+func GetServiceId(instance Service) string {
+	return fmt.Sprintf("%s-%s:%d", instance.GetName(), instance.GetIP(), instance.GetPort())
+}
+
+func GetServerValue(instance Service) string {
+	v := map[string]any{
+		"name":     instance.GetName(),
+		"ip":       instance.GetIP(),
+		"port":     instance.GetPort(),
+		"metadata": instance.GetMetadata(),
+		"weight":   instance.GetWeight(),
+		"healthy":  instance.IsHealthy(),
+	}
+	marshal, _ := json.Marshal(v)
+	return string(marshal)
+}
+
+func ParseService(serverValue string) (Service, error) {
+	var svc service
+	if err := json.Unmarshal([]byte(serverValue), &svc); err != nil {
+		return nil, gone.ToErrorWithMsg(err, "parse service failed")
+	}
+	return &svc, nil
 }

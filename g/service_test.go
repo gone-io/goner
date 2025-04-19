@@ -30,12 +30,12 @@ func TestNewService(t *testing.T) {
 				weight:  1.0,
 			},
 			want: &service{
-				name:    "test",
-				ip:      "127.0.0.1",
-				port:    8080,
-				meta:    Metadata{},
-				healthy: true,
-				weight:  1.0,
+				Name:    "test",
+				Ip:      "127.0.0.1",
+				Port:    8080,
+				Meta:    Metadata{},
+				Healthy: true,
+				Weight:  1.0,
 			},
 		},
 	}
