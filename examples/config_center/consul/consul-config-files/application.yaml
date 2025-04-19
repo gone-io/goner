@@ -1,0 +1,5 @@
+# /config/application.yaml
+
+server:
+  name: config-demo
+  port: 9090
