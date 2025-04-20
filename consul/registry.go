@@ -68,12 +68,15 @@ func (r *Registry) Watch(serviceName string) (ch <-chan []g.Service, stop func()
 
 	c := make(chan []g.Service)
 	plan.Handler = func(u uint64, data any) {
-		instances, err := r.GetInstances(serviceName)
-		if err != nil {
-			r.logger.Errorf("get instances failed: %v", err)
-			return
-		}
-		c <- instances
+		_ = gone.SafeExecute(func() error {
+			instances, err := r.GetInstances(serviceName)
+			if err != nil {
+				r.logger.Errorf("get instances failed: %v", err)
+				return err
+			}
+			c <- instances
+			return nil
+		})
 	}
 
 	go func() {
