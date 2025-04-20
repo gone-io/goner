@@ -1,10 +1,11 @@
 package consul
 
 import (
+	"testing"
+
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestRegistryLoad(t *testing.T) {
@@ -33,7 +34,7 @@ func TestRegistryLoad(t *testing.T) {
 					assert.Nil(t, stop())
 				}()
 				go func() {
-					err := r.Deregister(service1)
+					var err = r.Deregister(service1)
 					assert.Nil(t, err)
 				}()
 

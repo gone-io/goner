@@ -21,11 +21,16 @@ func GetDefaultConf(config *api.Config) *api.Config {
 
 func ProvideConsulClient(_ string, param struct {
 	config *api.Config `gone:"config,consul"`
+	conf   *api.Config `gone:"consul.config" option:"allowNil"`
 }) (*api.Client, error) {
 	if client != nil {
 		return client, nil
 	}
 	var err error
+	if param.conf != nil {
+		param.config = param.conf
+	}
+
 	client, err = api.NewClient(GetDefaultConf(param.config))
 	if err != nil {
 		return nil, gone.ToErrorWithMsg(err, "can not create consul client")

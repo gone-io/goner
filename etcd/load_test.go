@@ -44,7 +44,7 @@ func TestRegistryLoad(t *testing.T) {
 					assert.Nil(t, stop())
 				}()
 				go func() {
-					err := r.Deregister(service1)
+					var err = r.Deregister(service1)
 					assert.Nil(t, err)
 				}()
 
