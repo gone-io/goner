@@ -2,6 +2,7 @@ package g
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gone-io/gone/v2"
 	"reflect"
 	"testing"
@@ -237,4 +238,48 @@ func TestGetComponentByName(t *testing.T) {
 		assert.NotNil(t, err)
 		assert.Contains(t, err.Error(), "not found compatible component")
 	})
+}
+
+func TestParseService(t *testing.T) {
+	type args struct {
+		serverValue string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    Service
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "success",
+			args: args{
+				serverValue: GetServerValue(NewService("test", "127.0.0.1", 8080, Metadata{"test": "test"}, true, 1)),
+			},
+			want: NewService("test", "127.0.0.1", 8080, Metadata{"test": "test"}, true, 1),
+			wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+				return assert.NoError(t, err)
+			},
+		},
+		{
+			name: "error",
+			args: args{
+				serverValue: `{"name":"test","ip":"127.0.0.1","port":8080,"meta":{"test":"test"},"weight":1,"healthy":true`,
+			},
+			wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+				assert.Error(t, err)
+				return false
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ParseService(tt.args.serverValue)
+			if !tt.wantErr(t, err, fmt.Sprintf("ParseService(%v)", tt.args.serverValue)) {
+				return
+			}
+
+			assert.Equalf(t, GetServerValue(tt.want), GetServerValue(got), "ParseService(%v)", tt.args.serverValue)
+			assert.Equal(t, GetServiceId(tt.want), GetServiceId(got), "ParseService(%v)", tt.args.serverValue)
+		})
+	}
 }

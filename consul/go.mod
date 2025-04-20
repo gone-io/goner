@@ -3,14 +3,15 @@ module github.com/gone-io/goner/consul
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/g v1.0.10
-	github.com/google/uuid v1.6.0
+	github.com/gone-io/gone/v2 v2.0.12
+	github.com/gone-io/goner/g v1.0.11
 	github.com/hashicorp/consul/api v1.32.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/spf13/cast v1.7.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 )
+
+replace github.com/gone-io/goner/g => ../g
 
 require (
 	github.com/armon/go-metrics v0.4.1 // indirect

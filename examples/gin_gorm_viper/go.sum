@@ -41,10 +41,10 @@ github.com/go-viper/mapstructure/v2 v2.2.1 h1:ZAaOCxANMuZx5RCeg0mBdEZk7DZasvvZIx
 github.com/go-viper/mapstructure/v2 v2.2.1/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
 github.com/goccy/go-json v0.10.5 h1:Fq85nIqj+gXn/S5ahsiTlK3TmC85qgirsdTP/+DeaC4=
 github.com/goccy/go-json v0.10.5/go.mod h1:oq7eo15ShAhp70Anwd5lgX2pLfOS3QCiwU/PULtXL6M=
-github.com/gone-io/gone/mock/v2 v2.0.11 h1:mhFBPFiCrxYS+ri0vksSARlalnAGk0gyB3Z7cLVnH5A=
-github.com/gone-io/gone/mock/v2 v2.0.11/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
-github.com/gone-io/gone/v2 v2.0.11 h1:gESrUYELNxJrTlZQF5zp/hBeoSCwTPszLbvZiA/IyoM=
-github.com/gone-io/gone/v2 v2.0.11/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
+github.com/gone-io/gone/mock/v2 v2.0.12 h1:Ph3wH4PtkcpbNCbwdq/rZ8rHr372frlj/JcYZfpuxxM=
+github.com/gone-io/gone/mock/v2 v2.0.12/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
+github.com/gone-io/gone/v2 v2.0.12 h1:S0fxifela5JfdshNsyhfnsKiZCFn97YYdJzO99AZy+4=
+github.com/gone-io/gone/v2 v2.0.12/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
 github.com/gone-io/goner v1.0.6 h1:7qSaQhbTJ9ES37KIiPKe97W3bSNRcPMiXLqdGz632zU=
 github.com/gone-io/goner v1.0.6/go.mod h1:eI7rGO64nuU3WznRJPPRz8ZQEGCiRqo4pCcSWm8l4wA=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=

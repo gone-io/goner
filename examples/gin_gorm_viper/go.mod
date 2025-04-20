@@ -3,11 +3,11 @@ module gin_gorm_viper
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.11
+	github.com/gone-io/gone/v2 v2.0.12
 	github.com/gone-io/goner v1.0.6
-	github.com/gone-io/goner/gin v1.0.10
-	github.com/gone-io/goner/gorm v1.0.10
-	github.com/gone-io/goner/gorm/mysql v1.0.10
+	github.com/gone-io/goner/gin v1.0.11
+	github.com/gone-io/goner/gorm v1.0.11
+	github.com/gone-io/goner/gorm/mysql v1.0.11
 	gorm.io/gorm v1.25.12
 )
 
@@ -37,10 +37,10 @@ require (
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gone-io/goner/g v1.0.10 // indirect
-	github.com/gone-io/goner/tracer v1.0.10 // indirect
-	github.com/gone-io/goner/viper v1.0.10 // indirect
-	github.com/gone-io/goner/zap v1.0.10 // indirect
+	github.com/gone-io/goner/g v1.0.11 // indirect
+	github.com/gone-io/goner/tracer v1.0.11 // indirect
+	github.com/gone-io/goner/viper v1.0.11 // indirect
+	github.com/gone-io/goner/zap v1.0.11 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

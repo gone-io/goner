@@ -25,46 +25,46 @@ type Service interface {
 
 func NewService(name, ip string, port int, meta Metadata, healthy bool, weight float64) Service {
 	return &service{
-		name:    name,
-		ip:      ip,
-		port:    port,
-		meta:    meta,
-		healthy: healthy,
-		weight:  weight,
+		Name:    name,
+		Ip:      ip,
+		Port:    port,
+		Meta:    meta,
+		Healthy: healthy,
+		Weight:  weight,
 	}
 }
 
 var _ Service = (*service)(nil)
 
 type service struct {
-	name    string
-	ip      string
-	port    int
-	meta    Metadata
-	healthy bool
-	weight  float64
+	Name    string   `json:"name"`
+	Ip      string   `json:"ip"`
+	Port    int      `json:"port"`
+	Meta    Metadata `json:"meta"`
+	Healthy bool     `json:"healthy"`
+	Weight  float64  `json:"weight"`
 }
 
 func (s *service) GetWeight() float64 {
-	return s.weight
+	return s.Weight
 }
 
 func (s *service) GetName() string {
-	return s.name
+	return s.Name
 }
 
 func (s *service) GetIP() string {
-	return s.ip
+	return s.Ip
 }
 
 func (s *service) GetPort() int {
-	return s.port
+	return s.Port
 }
 
 func (s *service) GetMetadata() Metadata {
-	return s.meta
+	return s.Meta
 }
 
 func (s *service) IsHealthy() bool {
-	return s.healthy
+	return s.Healthy
 }

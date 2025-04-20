@@ -1,10 +1,12 @@
 package g
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"github.com/gone-io/gone/v2"
 	"net"
 	"reflect"
-
-	"github.com/gone-io/gone/v2"
 )
 
 // Recover captures and logs panics to prevent program crashes
@@ -91,8 +93,6 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 	})
 }
 
-var m = make(map[any]struct{})
-
 // SingLoadProviderFunc creates a loading function for singleton Provider
 // P: Provider's parameter type
 // T: Component type provided by Provider
@@ -100,15 +100,7 @@ var m = make(map[any]struct{})
 // options: Loading options
 // Returns: Loading function that ensures single loading
 func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options ...gone.Option) gone.LoadFunc {
-	return func(loader gone.Loader) error {
-		if _, ok := m[&fn]; ok {
-			return nil
-		}
-		m[&fn] = struct{}{}
-
-		provider := gone.WrapFunctionProvider(fn)
-		return loader.Load(provider, options...)
-	}
+	return gone.BuildSingProviderLoadFunc(fn, options...)
 }
 
 // NamedThirdComponentLoadFunc creates a named third-party component loading function
@@ -117,9 +109,7 @@ func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options 
 // component: Third-party component instance
 // Returns: Loading function for third-party components
 func NamedThirdComponentLoadFunc[T any](name string, component T) gone.LoadFunc {
-	return SingLoadProviderFunc(func(tagConf string, param struct{}) (T, error) {
-		return component, nil
-	}, gone.Name(name))
+	return gone.BuildThirdComponentLoadFunc(component, gone.Name(name))
 }
 
 // GetComponentByName gets a component of specified type by name
@@ -153,4 +143,22 @@ func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) 
 		return provide.(T), nil
 	}
 	return *new(T), gone.NewInnerError("not found compatible component", gone.GonerNameNotFound)
+}
+
+func GetServiceId(instance Service) string {
+	return fmt.Sprintf("%s-%s:%d", instance.GetName(), instance.GetIP(), instance.GetPort())
+}
+
+func GetServerValue(instance Service) string {
+	marshal, _ := json.Marshal(instance)
+	return base64.StdEncoding.EncodeToString(marshal)
+}
+
+func ParseService(serverValue string) (Service, error) {
+	decodeString, _ := base64.StdEncoding.DecodeString(serverValue)
+	var svc service
+	if err := json.Unmarshal(decodeString, &svc); err != nil {
+		return nil, gone.ToErrorWithMsg(err, "parse service failed")
+	}
+	return &svc, nil
 }
