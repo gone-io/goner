@@ -76,10 +76,10 @@ func (r *Registry) doRegisterLease(ctx context.Context, service g.Service) error
 		value = g.GetServerValue(service)
 	)
 	if _, err = r.client.Put(ctx, key, value, etcd3.WithLease(grant.ID)); err != nil {
-		return gone.ToErrorWithMsg(err, fmt.Sprintf(`etcd put failed with key "%s", value "%s", lease "%d"`, key, value, grant.ID))
+		return gone.ToErrorWithMsg(err, fmt.Sprintf("etcd put failed with key \"%s\", value \"%s\", lease \"%d\"", key, value, grant.ID))
 	}
 
-	r.logger.Debugf(`etcd put success with key "%s", value "%s", lease "%d"`, key, value, grant.ID)
+	r.logger.Debugf("etcd put success with key \"%s\", value \"%s\", lease \"%d\"", key, value, grant.ID)
 	keepAliceCh, err := r.client.KeepAlive(context.Background(), grant.ID)
 	if err != nil {
 		return err
