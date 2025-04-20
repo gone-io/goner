@@ -253,7 +253,7 @@ func TestParseService(t *testing.T) {
 		{
 			name: "success",
 			args: args{
-				serverValue: `{"name":"test","ip":"127.0.0.1","port":8080,"meta":{"test":"test"},"weight":1,"healthy":true}`,
+				serverValue: GetServerValue(NewService("test", "127.0.0.1", 8080, Metadata{"test": "test"}, true, 1)),
 			},
 			want: NewService("test", "127.0.0.1", 8080, Metadata{"test": "test"}, true, 1),
 			wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {

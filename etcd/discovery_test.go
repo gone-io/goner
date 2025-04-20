@@ -2,6 +2,7 @@ package etcd
 
 import (
 	"fmt"
+	"github.com/gone-io/goner/g"
 	"github.com/stretchr/testify/assert"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	etcd3 "go.etcd.io/etcd/client/v3"
@@ -24,7 +25,7 @@ func Test_extractResponseToServices(t *testing.T) {
 					Kvs: []*mvccpb.KeyValue{
 						{
 							Key:   []byte("test"),
-							Value: []byte(`{"name":"test"}`),
+							Value: []byte(g.GetServerValue(g.NewService("test", "127.0.0.1", 8080, nil, true, 1))),
 						},
 					},
 				},

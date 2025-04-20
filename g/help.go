@@ -1,6 +1,7 @@
 package g
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/gone-io/gone/v2"
@@ -150,12 +151,13 @@ func GetServiceId(instance Service) string {
 
 func GetServerValue(instance Service) string {
 	marshal, _ := json.Marshal(instance)
-	return string(marshal)
+	return base64.StdEncoding.EncodeToString(marshal)
 }
 
 func ParseService(serverValue string) (Service, error) {
+	decodeString, _ := base64.StdEncoding.DecodeString(serverValue)
 	var svc service
-	if err := json.Unmarshal([]byte(serverValue), &svc); err != nil {
+	if err := json.Unmarshal(decodeString, &svc); err != nil {
 		return nil, gone.ToErrorWithMsg(err, "parse service failed")
 	}
 	return &svc, nil

@@ -84,7 +84,7 @@ func TestRegistry(t *testing.T) {
 			Kvs: []*mvccpb.KeyValue{
 				{
 					Key:   []byte("test"),
-					Value: []byte(`{"name":"test"`),
+					Value: []byte(``),
 				},
 			},
 		}, nil)
@@ -117,7 +117,7 @@ func TestRegistry(t *testing.T) {
 			Kvs: []*mvccpb.KeyValue{
 				{
 					Key:   []byte("test"),
-					Value: []byte(`{"name":"test"}`),
+					Value: []byte(g.GetServerValue(g.NewService("test", "127.0.0.1", 8080, nil, true, 1))),
 				},
 			},
 		}, nil)
