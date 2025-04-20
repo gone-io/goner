@@ -3,13 +3,13 @@ module github.com/gone-io/goner/zap
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.11
+	github.com/gone-io/gone/v2 v2.0.12
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/zap v1.27.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
-require github.com/gone-io/goner/g v1.0.10
+require github.com/gone-io/goner/g v1.0.11
 
 replace github.com/gone-io/goner/g => ../g
 

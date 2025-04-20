@@ -3,8 +3,8 @@ module github.com/gone-io/goner/etcd
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/g v0.0.0-00010101000000-000000000000
+	github.com/gone-io/gone/v2 v2.0.12
+	github.com/gone-io/goner/g v1.0.11-00010101000000-000000000000
 	go.etcd.io/etcd/client/v3 v3.5.21
 )
 

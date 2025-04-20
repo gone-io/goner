@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.0.11
-	github.com/gone-io/goner/viper/remote v1.0.10
+	github.com/gone-io/goner/viper/remote v1.0.11
 )
 
 replace (
@@ -31,7 +31,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/gone-io/goner/viper v1.0.10 // indirect
+	github.com/gone-io/goner/viper v1.0.11 // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect

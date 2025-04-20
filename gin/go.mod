@@ -6,7 +6,7 @@ require (
 	github.com/bytedance/sonic v1.13.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/goccy/go-json v0.10.5
-	github.com/gone-io/gone/v2 v2.0.11
+	github.com/gone-io/gone/v2 v2.0.12
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/pkg/errors v0.9.1
@@ -16,7 +16,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 )
 
-require github.com/gone-io/goner/g v1.0.10
+require github.com/gone-io/goner/g v1.0.11
 
 replace github.com/gone-io/goner/g => ../g
 
