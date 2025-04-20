@@ -34,6 +34,8 @@
 
 ### Service Registry
 - [nacos](./nacos) - A service registry component based on [Nacos](https://nacos.io/), providing service registration, discovery, and other features
+- [etcd](./etcd) - A service registry component based on [etcd](https://etcd.io/), providing service registration, discovery, and other features
+- [consul](./consul) - A service registry component based on [Consul](https://www.consul.io/), providing service registration, discovery, and other features
 
 #### RPC
 - [grpc](./grpc) - gRPC client and server wrapper, simplifying microservice development
