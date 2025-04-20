@@ -3,11 +3,9 @@ package g
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gone-io/gone/v2"
 	"net"
 	"reflect"
-	"strconv"
-
-	"github.com/gone-io/gone/v2"
 )
 
 // Recover captures and logs panics to prevent program crashes
@@ -151,16 +149,8 @@ func GetServiceId(instance Service) string {
 }
 
 func GetServerValue(instance Service) string {
-	v := map[string]any{
-		"name":    instance.GetName(),
-		"ip":      instance.GetIP(),
-		"port":    instance.GetPort(),
-		"meta":    instance.GetMetadata(),
-		"weight":  instance.GetWeight(),
-		"healthy": instance.IsHealthy(),
-	}
-	marshal, _ := json.Marshal(v)
-	return strconv.Quote(string(marshal))
+	marshal, _ := json.Marshal(instance)
+	return string(marshal)
 }
 
 func ParseService(serverValue string) (Service, error) {

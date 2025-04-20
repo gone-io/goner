@@ -27,6 +27,14 @@ jobs:
         go-version:
           - '1.24'
     services:
+      # Etcd service.
+      # docker run -d --name etcd -p 2379:2379 -e ALLOW_NONE_AUTHENTICATION=yes bitnami/etcd:3.4.24
+      etcd:
+        image: bitnami/etcd:3.4.24
+        env:
+          ALLOW_NONE_AUTHENTICATION: yes
+        ports:
+          - 2379:2379
       redis:
         image: redis
         ports:

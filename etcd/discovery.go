@@ -25,8 +25,7 @@ func extractResponseToServices(res *etcd3.GetResponse) ([]g.Service, error) {
 }
 
 func (r *Registry) GetInstances(serviceName string) ([]g.Service, error) {
-	kv := etcd3.NewKV(client)
-	res, err := kv.Get(context.Background(), serviceName, etcd3.WithPrefix())
+	res, err := r.client.Get(context.Background(), serviceName, etcd3.WithPrefix())
 	if err != nil {
 		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf(`etcd get failed with key "%s"`, serviceName))
 	}
