@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"reflect"
+	"strconv"
 
 	"github.com/gone-io/gone/v2"
 )
@@ -159,7 +160,7 @@ func GetServerValue(instance Service) string {
 		"healthy": instance.IsHealthy(),
 	}
 	marshal, _ := json.Marshal(v)
-	return string(marshal)
+	return strconv.Quote(string(marshal))
 }
 
 func ParseService(serverValue string) (Service, error) {
