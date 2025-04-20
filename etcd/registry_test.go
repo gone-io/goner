@@ -6,6 +6,7 @@ import (
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"github.com/stretchr/testify/assert"
+	"go.etcd.io/etcd/api/v3/mvccpb"
 	etcd3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/mock/gomock"
 	"testing"
@@ -70,6 +71,68 @@ func TestRegistry(t *testing.T) {
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), "test")
 		})
+	})
+
+	t.Run("GetInstances Get error", func(t *testing.T) {
+		kv.EXPECT().Get(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, errors.New("test"))
+		_, err := r.GetInstances("test")
+		assert.Error(t, err)
+	})
+
+	t.Run("GetInstances extractResponseToServices err", func(t *testing.T) {
+		kv.EXPECT().Get(gomock.Any(), gomock.Any(), gomock.Any()).Return(&etcd3.GetResponse{
+			Kvs: []*mvccpb.KeyValue{
+				{
+					Key:   []byte("test"),
+					Value: []byte(`{"name":"test"`),
+				},
+			},
+		}, nil)
+		_, err := r.GetInstances("test")
+		assert.Error(t, err)
+	})
+
+	t.Run("Watch connect error", func(t *testing.T) {
+		kv.EXPECT().Get(gomock.Any(), gomock.Any()).Return(nil, errors.New("test"))
+		_, _, err := r.Watch("test")
+		assert.Error(t, err)
+	})
+
+	t.Run("watch error", func(t *testing.T) {
+		watcher := NewMockWatcher(controller)
+		var ch etcd3.WatchChan
+		watcher.EXPECT().Watch(gomock.Any(), gomock.Any(), gomock.Any()).Return(ch)
+		watcher.EXPECT().RequestProgress(gomock.Any()).Return(errors.New("test"))
+		_, _, err := r.watch("test", watcher)
+		assert.Error(t, err)
+	})
+
+	t.Run("watch success", func(t *testing.T) {
+		watcher := NewMockWatcher(controller)
+		var ch = make(chan etcd3.WatchResponse)
+		watcher.EXPECT().Watch(gomock.Any(), gomock.Any(), gomock.Any()).Return(ch)
+		watcher.EXPECT().RequestProgress(gomock.Any()).Return(nil)
+		watcher.EXPECT().Close().Return(nil)
+		kv.EXPECT().Get(gomock.Any(), gomock.Any(), gomock.Any()).Return(&etcd3.GetResponse{
+			Kvs: []*mvccpb.KeyValue{
+				{
+					Key:   []byte("test"),
+					Value: []byte(`{"name":"test"}`),
+				},
+			},
+		}, nil)
+
+		sCh, stop, err := r.watch("test", watcher)
+		assert.Nil(t, err)
+		defer stop()
+		assert.NotNil(t, sCh)
+		go func() {
+			ch <- etcd3.WatchResponse{}
+		}()
+		services := <-sCh
+		assert.Len(t, services, 1)
+		assert.Equal(t, "test", services[0].GetName())
+
 	})
 
 }

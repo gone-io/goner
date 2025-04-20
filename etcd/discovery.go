@@ -41,14 +41,15 @@ func (r *Registry) Watch(serviceName string) (<-chan []g.Service, func() error, 
 	defer cancel()
 
 	// Test connection first.
-	if _, err := client.Get(ctx, "ping"); err != nil {
+	if _, err := r.client.Get(ctx, "ping"); err != nil {
 		return nil, nil, gone.ToErrorWithMsg(err, "failed to connect to etcd")
 	}
+	return r.watch(serviceName, etcd3.NewWatcher(r.client))
+}
+
+func (r *Registry) watch(serviceName string, watcher etcd3.Watcher) (<-chan []g.Service, func() error, error) {
 	wCtx, wCancel := context.WithCancel(context.Background())
-
-	watcher := etcd3.NewWatcher(client)
 	watchCh := watcher.Watch(wCtx, serviceName, etcd3.WithPrefix(), etcd3.WithRev(0))
-
 	if err := watcher.RequestProgress(context.Background()); err != nil {
 		wCancel()
 		return nil, nil, gone.ToErrorWithMsg(err, "failed to request progress")

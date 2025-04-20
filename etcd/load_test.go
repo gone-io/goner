@@ -19,7 +19,10 @@ func TestRegistryLoad(t *testing.T) {
 
 		gone.
 			NewApp(RegistryLoad).
-			Run(func(r *Registry) {
+			Run(func(r *Registry, in struct {
+				r *Registry `gone:"*"`
+			}) {
+				assert.Equal(t, r, in.r)
 
 				serviceName := "x-test.svc"
 
