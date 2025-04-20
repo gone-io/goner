@@ -34,6 +34,8 @@
 
 ### 注册中心
 - [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能
+- [etcd](./etcd)] - 基于 [etcd](https://etcd.io/) 的注册中心组件，提供服务注册、发现等功能
+- [consul](./consul) - 基于 [consul](https://www.consul.io/) 的注册中心组件，提供服务注册、发现
 
 #### RPC
 - [grpc](./grpc) - gRPC 客户端和服务端封装，简化微服务开发
