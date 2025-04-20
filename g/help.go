@@ -93,8 +93,6 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 	})
 }
 
-var m = make(map[any]struct{})
-
 // SingLoadProviderFunc creates a loading function for singleton Provider
 // P: Provider's parameter type
 // T: Component type provided by Provider
@@ -102,15 +100,7 @@ var m = make(map[any]struct{})
 // options: Loading options
 // Returns: Loading function that ensures single loading
 func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options ...gone.Option) gone.LoadFunc {
-	return func(loader gone.Loader) error {
-		if _, ok := m[&fn]; ok {
-			return nil
-		}
-		m[&fn] = struct{}{}
-
-		provider := gone.WrapFunctionProvider(fn)
-		return loader.Load(provider, options...)
-	}
+	return gone.BuildSingProviderLoadFunc(fn, options...)
 }
 
 // NamedThirdComponentLoadFunc creates a named third-party component loading function
@@ -119,9 +109,7 @@ func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options 
 // component: Third-party component instance
 // Returns: Loading function for third-party components
 func NamedThirdComponentLoadFunc[T any](name string, component T) gone.LoadFunc {
-	return SingLoadProviderFunc(func(tagConf string, param struct{}) (T, error) {
-		return component, nil
-	}, gone.Name(name))
+	return gone.BuildThirdComponentLoadFunc(component, gone.Name(name))
 }
 
 // GetComponentByName gets a component of specified type by name
@@ -163,12 +151,12 @@ func GetServiceId(instance Service) string {
 
 func GetServerValue(instance Service) string {
 	v := map[string]any{
-		"name":     instance.GetName(),
-		"ip":       instance.GetIP(),
-		"port":     instance.GetPort(),
-		"metadata": instance.GetMetadata(),
-		"weight":   instance.GetWeight(),
-		"healthy":  instance.IsHealthy(),
+		"name":    instance.GetName(),
+		"ip":      instance.GetIP(),
+		"port":    instance.GetPort(),
+		"meta":    instance.GetMetadata(),
+		"weight":  instance.GetWeight(),
+		"healthy": instance.IsHealthy(),
 	}
 	marshal, _ := json.Marshal(v)
 	return string(marshal)
