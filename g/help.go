@@ -1,9 +1,6 @@
 package g
 
 import (
-	"encoding/base64"
-	"encoding/json"
-	"fmt"
 	"github.com/gone-io/gone/v2"
 	"net"
 	"reflect"
@@ -145,20 +142,13 @@ func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) 
 	return *new(T), gone.NewInnerError("not found compatible component", gone.GonerNameNotFound)
 }
 
-func GetServiceId(instance Service) string {
-	return fmt.Sprintf("%s-%s:%d", instance.GetName(), instance.GetIP(), instance.GetPort())
-}
+var appMap = make(map[string]*gone.Application)
 
-func GetServerValue(instance Service) string {
-	marshal, _ := json.Marshal(instance)
-	return base64.StdEncoding.EncodeToString(marshal)
-}
-
-func ParseService(serverValue string) (Service, error) {
-	decodeString, _ := base64.StdEncoding.DecodeString(serverValue)
-	var svc service
-	if err := json.Unmarshal(decodeString, &svc); err != nil {
-		return nil, gone.ToErrorWithMsg(err, "parse service failed")
+func GetOrCreateApp(name string, loadFuncs ...gone.LoadFunc) (app *gone.Application) {
+	var ok bool
+	if app, ok = appMap[name]; !ok {
+		app = gone.NewApp(loadFuncs...)
+		appMap[name] = app
 	}
-	return &svc, nil
+	return app
 }
