@@ -1,0 +1,29 @@
+services:
+  api:
+    image: web-server
+#    platform: linux/amd64
+    restart: on-failure
+    build:
+      context: .
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+
+    healthcheck: # 添加健康检测
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/api/health-check" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+
+
+  mysql:
+    image: mysql:8.3
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: demo
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./scripts/mysql/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
