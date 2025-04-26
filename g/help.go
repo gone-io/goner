@@ -144,7 +144,11 @@ func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) 
 
 var appMap = make(map[string]*gone.Application)
 
-func GetOrCreateApp(name string, loadFuncs ...gone.LoadFunc) (app *gone.Application) {
+// App creates or retrieves an application instance with the specified name and loading functions
+// name: Application name
+// loadFuncs: Loading functions
+// Returns: Application instance
+func App(name string, loadFuncs ...gone.LoadFunc) (app *gone.Application) {
 	var ok bool
 	if app, ok = appMap[name]; !ok {
 		app = gone.NewApp(loadFuncs...)
