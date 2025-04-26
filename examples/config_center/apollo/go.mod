@@ -3,7 +3,7 @@ module examples/config_center/appllo
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.12
+	github.com/gone-io/gone/v2 v2.0.14
 	github.com/gone-io/goner/apollo v1.0.11
 )
 

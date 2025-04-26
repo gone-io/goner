@@ -1,6 +1,7 @@
 package g
 
 import (
+	"fmt"
 	"github.com/gone-io/gone/v2"
 	"net"
 	"reflect"
@@ -64,11 +65,32 @@ func F(loadFunc gone.LoadFunc) *LoadOp {
 	}
 }
 
+var m = make(map[gone.Loader]map[string]struct{})
+
+func isNotFirstLoaded(loader gone.Loader, key string) bool {
+	var opsMap map[string]struct{}
+	var ok bool
+	if opsMap, ok = m[loader]; !ok {
+		opsMap = make(map[string]struct{})
+		m[loader] = opsMap
+	}
+	if _, ok = opsMap[key]; !ok {
+		opsMap[key] = struct{}{}
+		return false
+	}
+	return true
+}
+
 // BuildOnceLoadFunc builds a loading function that executes only once
 // ops: List of LoadOps to execute
 // Returns: Loading function that ensures single execution
 func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
-	return gone.OnceLoad(func(loader gone.Loader) error {
+	k := fmt.Sprintf("%#v", ops)
+	return func(loader gone.Loader) error {
+		if isNotFirstLoaded(loader, k) {
+			return nil
+		}
+
 		for _, op := range ops {
 			if op.goner != nil {
 				err := loader.Load(
@@ -87,7 +109,7 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 			}
 		}
 		return nil
-	})
+	}
 }
 
 // SingLoadProviderFunc creates a loading function for singleton Provider

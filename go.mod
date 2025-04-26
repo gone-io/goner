@@ -3,8 +3,8 @@ module github.com/gone-io/goner
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/mock/v2 v2.0.12
-	github.com/gone-io/gone/v2 v2.0.12
+	github.com/gone-io/gone/mock/v2 v2.0.13
+	github.com/gone-io/gone/v2 v2.0.14
 	github.com/gone-io/goner/g v1.0.11
 	github.com/gone-io/goner/gin v1.0.11
 	github.com/gone-io/goner/tracer v1.0.11

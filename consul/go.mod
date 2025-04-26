@@ -3,7 +3,7 @@ module github.com/gone-io/goner/consul
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.12
+	github.com/gone-io/gone/v2 v2.0.14
 	github.com/gone-io/goner/g v1.0.11
 	github.com/hashicorp/consul/api v1.32.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
