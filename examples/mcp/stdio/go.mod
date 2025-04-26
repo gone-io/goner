@@ -12,7 +12,7 @@ require (
 	github.com/gone-io/gone/v2 v2.0.12
 	github.com/gone-io/goner/mcp v1.0.11
 	github.com/gone-io/goner/viper v1.0.11
-	github.com/mark3labs/mcp-go v0.21.1
+	github.com/mark3labs/mcp-go v0.23.1
 )
 
 require (
