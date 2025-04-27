@@ -5,10 +5,14 @@ go 1.24.1
 //desc: simple example
 
 require (
-	github.com/gone-io/gone/v2 v2.0.12
-	github.com/gone-io/goner/g v1.0.11
-	github.com/gone-io/goner/viper v1.0.11
+	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/goner/g v1.1.0
+	github.com/gone-io/goner/viper v1.1.0
 )
+
+replace github.com/gone-io/goner/g => ../../g
+
+replace github.com/gone-io/goner/viper => ../../viper
 
 require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect

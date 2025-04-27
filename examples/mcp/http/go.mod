@@ -10,8 +10,8 @@ replace github.com/gone-io/goner/viper => ../../../viper
 
 require (
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner/mcp v1.0.11
-	github.com/gone-io/goner/viper v1.0.11
+	github.com/gone-io/goner/mcp v1.1.0
+	github.com/gone-io/goner/viper v1.1.0
 	github.com/mark3labs/mcp-go v0.23.1
 )
 
@@ -19,7 +19,7 @@ require (
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/gone-io/goner/g v1.0.11 // indirect
+	github.com/gone-io/goner/g v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/magiconair/properties v1.8.9 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect

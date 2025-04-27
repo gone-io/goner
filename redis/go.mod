@@ -13,7 +13,7 @@ require (
 	go.uber.org/mock v0.5.1
 )
 
-require github.com/gone-io/goner/g v1.0.11
+require github.com/gone-io/goner/g v1.1.0
 
 replace github.com/gone-io/goner/g => ../g
 

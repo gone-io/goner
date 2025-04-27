@@ -17,7 +17,7 @@ require (
 
 require (
 	github.com/gone-io/gone/mock/v2 v2.1.0
-	github.com/gone-io/goner/g v1.0.11
+	github.com/gone-io/goner/g v1.1.0
 )
 
 replace github.com/gone-io/goner/g => ../g
