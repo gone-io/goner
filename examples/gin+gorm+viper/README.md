@@ -1,4 +1,4 @@
-[//]: # (simple web demo using gin, gorm, viper, mysql)
+[//]: # (desc: simple web demo using gin, gorm, viper, mysql)
 <p>
     English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
 </p>
