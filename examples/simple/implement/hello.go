@@ -1,9 +1,9 @@
 package implement
 
 import (
+	"examples/simple/service"
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"simple/service"
 )
 
 var _ service.Service = (*serviceImpl)(nil)

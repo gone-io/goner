@@ -1,4 +1,4 @@
-module mcp/stdio
+module examples/mcp/stdio
 
 go 1.24.1
 

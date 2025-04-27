@@ -2,10 +2,10 @@ package user
 
 import (
 	"encoding/base64"
+	"examples/gin_xorm_viper/internal/pkg/utils"
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/xorm"
-	"template_module/internal/pkg/utils"
 	"time"
 )
 

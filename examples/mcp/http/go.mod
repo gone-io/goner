@@ -1,4 +1,4 @@
-module mcp/http
+module examples/mcp/http
 
 go 1.24.1
 

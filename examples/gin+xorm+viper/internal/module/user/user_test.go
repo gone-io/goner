@@ -1,13 +1,13 @@
 package user
 
 import (
+	"examples/gin_xorm_viper/internal"
+	"examples/gin_xorm_viper/internal/interface/entity"
+	"examples/gin_xorm_viper/internal/interface/mock"
 	_ "github.com/go-sql-driver/mysql" //导入mysql驱动
 	"github.com/gone-io/gone/v2"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
-	"template_module/internal"
-	"template_module/internal/interface/entity"
-	"template_module/internal/interface/mock"
 	"testing"
 )
 

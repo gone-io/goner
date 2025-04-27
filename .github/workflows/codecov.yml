@@ -2,17 +2,15 @@ name: Test and coverage
 
 on:
   push:
-    paths:
-      - '**.go'
-      - 'go.mod'
-      - 'go.sum'
-      - '.github/workflows/codecov.yml'
+    paths-ignore:
+      - 'examples/**'
+      - '**.md'
+      - '**.yaml'
   pull_request:
-    paths:
-      - '**.go'
-      - 'go.mod'
-      - 'go.sum'
-      - '.github/workflows/codecov.yml'
+    paths-ignore:
+      - 'examples/**'
+      - '**.md'
+      - '**.yaml'
 
 # 设置工作流的权限为只读
 permissions:

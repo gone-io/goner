@@ -1,10 +1,10 @@
 package module
 
 import (
+	"examples/gin_xorm_viper/internal/interface/entity"
+	"examples/gin_xorm_viper/internal/module/user"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/xorm"
-	"template_module/internal/interface/entity"
-	"template_module/internal/module/user"
 )
 
 type dbSys struct {

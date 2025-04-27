@@ -1,11 +1,11 @@
 package user
 
 import (
+	"examples/gin_xorm_viper/internal/interface/entity"
+	"examples/gin_xorm_viper/internal/interface/service"
+	"examples/gin_xorm_viper/internal/pkg/e"
+	"examples/gin_xorm_viper/internal/pkg/utils"
 	"github.com/gone-io/goner/xorm"
-	"template_module/internal/interface/entity"
-	"template_module/internal/interface/service"
-	"template_module/internal/pkg/e"
-	"template_module/internal/pkg/utils"
 
 	"github.com/gone-io/gone/v2"
 )
