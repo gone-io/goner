@@ -1,5 +1,12 @@
 package g
 
+import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"github.com/gone-io/gone/v2"
+)
+
 // Metadata represents a map of key-value pairs for storing service instance metadata
 type Metadata map[string]string
 
@@ -67,4 +74,22 @@ func (s *service) GetMetadata() Metadata {
 
 func (s *service) IsHealthy() bool {
 	return s.Healthy
+}
+
+func GetServiceId(instance Service) string {
+	return fmt.Sprintf("%s-%s:%d", instance.GetName(), instance.GetIP(), instance.GetPort())
+}
+
+func GetServerValue(instance Service) string {
+	marshal, _ := json.Marshal(instance)
+	return base64.StdEncoding.EncodeToString(marshal)
+}
+
+func ParseService(serverValue string) (Service, error) {
+	decodeString, _ := base64.StdEncoding.DecodeString(serverValue)
+	var svc service
+	if err := json.Unmarshal(decodeString, &svc); err != nil {
+		return nil, gone.ToErrorWithMsg(err, "parse service failed")
+	}
+	return &svc, nil
 }

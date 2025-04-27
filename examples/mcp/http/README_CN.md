@@ -1,3 +1,9 @@
+[//]: # (desc: MCP 服务使用 HTTP 通道)
+
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
 # Gone MCP HTTP Demo
 
 这个示例展示了如何使用 Gone MCP 组件构建基于 HTTP 的客户端和服务端应用。

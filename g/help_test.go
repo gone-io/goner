@@ -283,3 +283,29 @@ func TestParseService(t *testing.T) {
 		})
 	}
 }
+
+func TestApp(t *testing.T) {
+	type args struct {
+		name      string
+		loadFuncs []gone.LoadFunc
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantApp *gone.Application
+	}{
+		{
+			name: "success",
+			args: args{
+				name:      "test",
+				loadFuncs: []gone.LoadFunc{},
+			},
+			wantApp: App("test"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.wantApp, App(tt.args.name, tt.args.loadFuncs...), "App(%v, %v)", tt.args.name, tt.args.loadFuncs)
+		})
+	}
+}

@@ -10,7 +10,15 @@ import (
 
 var newClient = elasticsearch.NewClient
 
-var load = gone.OnceLoad(func(loader gone.Loader) error {
+// Load registers a singleton Elasticsearch client provider with the gone loader.
+// It ensures only one client instance is created and reused across the application.
+//
+// Parameters:
+//   - loader: The gone.Loader instance used for dependency injection
+//
+// Returns:
+//   - error: Any error encountered during client creation or registration
+func Load(loader gone.Loader) error {
 	var single *elasticsearch.Client
 
 	getSingleEs := func(
@@ -29,24 +37,19 @@ var load = gone.OnceLoad(func(loader gone.Loader) error {
 	}
 	provider := gone.WrapFunctionProvider(getSingleEs)
 	return loader.Load(provider)
-})
+}
 
-// Load registers a singleton Elasticsearch client provider with the gone loader.
-// It ensures only one client instance is created and reused across the application.
+var newTypedClient = elasticsearch.NewTypedClient
+
+// LoadTypedClient registers a singleton TypedClient provider with the gone loader.
+// TypedClient provides a more type-safe way to interact with Elasticsearch.
 //
 // Parameters:
 //   - loader: The gone.Loader instance used for dependency injection
 //
 // Returns:
 //   - error: Any error encountered during client creation or registration
-func Load(loader gone.Loader) error {
-
-	return load(loader)
-}
-
-var newTypedClient = elasticsearch.NewTypedClient
-
-var loadTypedClient = gone.OnceLoad(func(loader gone.Loader) error {
+func LoadTypedClient(loader gone.Loader) error {
 	var single *elasticsearch.TypedClient
 
 	getSingleEs := func(
@@ -65,16 +68,4 @@ var loadTypedClient = gone.OnceLoad(func(loader gone.Loader) error {
 	}
 	provider := gone.WrapFunctionProvider(getSingleEs)
 	return loader.Load(provider)
-})
-
-// LoadTypedClient registers a singleton TypedClient provider with the gone loader.
-// TypedClient provides a more type-safe way to interact with Elasticsearch.
-//
-// Parameters:
-//   - loader: The gone.Loader instance used for dependency injection
-//
-// Returns:
-//   - error: Any error encountered during client creation or registration
-func LoadTypedClient(loader gone.Loader) error {
-	return loadTypedClient(loader)
 }

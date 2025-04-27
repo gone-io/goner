@@ -119,10 +119,10 @@ github.com/golang/protobuf v1.4.2/go.mod h1:oDoupMAO8OvCJWAcko0GGGIgR6R6ocIYbsSw
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/golang/protobuf v1.5.4 h1:i7eJL8qZTpSEXOPTxNKhASYpMn+8e5Q6AdndVa1dWek=
 github.com/golang/protobuf v1.5.4/go.mod h1:lnTiLA8Wa4RWRcIUkrtSVa5nRhsEGBg48fD6rSs7xps=
-github.com/gone-io/gone/mock/v2 v2.0.12 h1:Ph3wH4PtkcpbNCbwdq/rZ8rHr372frlj/JcYZfpuxxM=
-github.com/gone-io/gone/mock/v2 v2.0.12/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
-github.com/gone-io/gone/v2 v2.0.12 h1:S0fxifela5JfdshNsyhfnsKiZCFn97YYdJzO99AZy+4=
-github.com/gone-io/gone/v2 v2.0.12/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
+github.com/gone-io/gone/mock/v2 v2.1.0 h1:lFV6pfqGoJX6C6N/XPd3MniEkB+QoNkrB5KXvJl4CGY=
+github.com/gone-io/gone/mock/v2 v2.1.0/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
+github.com/gone-io/gone/v2 v2.1.0 h1:UH/QK7j9RVvEd0vqEFR+6Viil/5KbOeqNH6tfv+I6vg=
+github.com/gone-io/gone/v2 v2.1.0/go.mod h1:0sq/CIesYji/YSNE71m8sSe8EDIXRtio3NOasb4w45A=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=

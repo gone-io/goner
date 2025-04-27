@@ -2,6 +2,7 @@ package gin
 
 import (
 	"errors"
+	"github.com/gone-io/gone/mock/v2"
 	"github.com/gone-io/gone/v2"
 	"net/http/httptest"
 	"reflect"
@@ -23,8 +24,8 @@ func Test_proxy_Proxy(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
-	mockFuncInjector := NewMockFuncInjector(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 
@@ -52,8 +53,8 @@ func Test_proxy_ProxyForMiddleware(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
-	mockFuncInjector := NewMockFuncInjector(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 
@@ -81,8 +82,8 @@ func Test_proxy_proxyOne_GoneContext(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
-	mockFuncInjector := NewMockFuncInjector(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 
@@ -129,8 +130,8 @@ func Test_proxy_proxyOne_GinContext(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
-	mockFuncInjector := NewMockFuncInjector(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 
@@ -177,8 +178,8 @@ func Test_proxy_proxyOne_NoContext(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
-	mockFuncInjector := NewMockFuncInjector(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 
@@ -225,10 +226,10 @@ func Test_proxy_buildProxyFn(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
 
-	mockFuncInjector := NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 
@@ -287,8 +288,8 @@ func Test_proxy_buildProxyFn_Error(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
-	mockFuncInjector := NewMockFuncInjector(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 
@@ -331,8 +332,8 @@ func Test_proxy_buildProxyFn_BindError(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
-	mockFuncInjector := NewMockFuncInjector(controller)
+	mockLogger := mock.NewMockLogger(controller)
+	mockFuncInjector := mock.NewMockFuncInjector(controller)
 	mockResponser := NewMockResponser(controller)
 	mockInjector := NewMockHttInjector(controller)
 

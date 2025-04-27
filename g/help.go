@@ -1,8 +1,6 @@
 package g
 
 import (
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"net"
@@ -67,11 +65,32 @@ func F(loadFunc gone.LoadFunc) *LoadOp {
 	}
 }
 
+var m = make(map[gone.Loader]map[string]struct{})
+
+func isNotFirstLoaded(loader gone.Loader, key string) bool {
+	var opsMap map[string]struct{}
+	var ok bool
+	if opsMap, ok = m[loader]; !ok {
+		opsMap = make(map[string]struct{})
+		m[loader] = opsMap
+	}
+	if _, ok = opsMap[key]; !ok {
+		opsMap[key] = struct{}{}
+		return false
+	}
+	return true
+}
+
 // BuildOnceLoadFunc builds a loading function that executes only once
 // ops: List of LoadOps to execute
 // Returns: Loading function that ensures single execution
 func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
-	return gone.OnceLoad(func(loader gone.Loader) error {
+	k := fmt.Sprintf("%#v", ops)
+	return func(loader gone.Loader) error {
+		if isNotFirstLoaded(loader, k) {
+			return nil
+		}
+
 		for _, op := range ops {
 			if op.goner != nil {
 				err := loader.Load(
@@ -90,7 +109,7 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 			}
 		}
 		return nil
-	})
+	}
 }
 
 // SingLoadProviderFunc creates a loading function for singleton Provider
@@ -99,6 +118,7 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 // fn: Function to create components
 // options: Loading options
 // Returns: Loading function that ensures single loading
+// Deprecated since v2.1.0, use gone.BuildSingProviderLoadFunc instead:
 func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options ...gone.Option) gone.LoadFunc {
 	return gone.BuildSingProviderLoadFunc(fn, options...)
 }
@@ -145,20 +165,17 @@ func GetComponentByName[T any](keeper gone.GonerKeeper, name string) (T, error) 
 	return *new(T), gone.NewInnerError("not found compatible component", gone.GonerNameNotFound)
 }
 
-func GetServiceId(instance Service) string {
-	return fmt.Sprintf("%s-%s:%d", instance.GetName(), instance.GetIP(), instance.GetPort())
-}
+var appMap = make(map[string]*gone.Application)
 
-func GetServerValue(instance Service) string {
-	marshal, _ := json.Marshal(instance)
-	return base64.StdEncoding.EncodeToString(marshal)
-}
-
-func ParseService(serverValue string) (Service, error) {
-	decodeString, _ := base64.StdEncoding.DecodeString(serverValue)
-	var svc service
-	if err := json.Unmarshal(decodeString, &svc); err != nil {
-		return nil, gone.ToErrorWithMsg(err, "parse service failed")
+// App creates or retrieves an application instance with the specified name and loading functions
+// name: Application name
+// loadFuncs: Loading functions
+// Returns: Application instance
+func App(name string, loadFuncs ...gone.LoadFunc) (app *gone.Application) {
+	var ok bool
+	if app, ok = appMap[name]; !ok {
+		app = gone.NewApp(loadFuncs...)
+		appMap[name] = app
 	}
-	return &svc, nil
+	return app
 }

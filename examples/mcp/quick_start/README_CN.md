@@ -1,3 +1,9 @@
+[//]: # (desc: MCP 服务 快速入门示例)
+
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
 # Gone MCP 快速入门示例
 
 这是一个基于 Gone MCP 组件的快速入门示例，展示了如何创建一个简单的 MCP 工具服务器和客户端。通过这个示例，你可以快速了解和掌握 Gone MCP 组件的基本使用方法。

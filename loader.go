@@ -9,21 +9,17 @@ import (
 	zap "github.com/gone-io/goner/zap"
 )
 
-var baseLoad = g.BuildOnceLoadFunc(
-	g.F(tracer.Load),
-	g.F(viper.Load),
-	g.F(zap.Load),
-)
-
 func BaseLoad(loader gone.Loader) error {
-	return baseLoad(loader)
+	return g.BuildOnceLoadFunc(
+		g.F(tracer.Load),
+		g.F(viper.Load),
+		g.F(zap.Load),
+	)(loader)
 }
 
-var ginLoad = g.BuildOnceLoadFunc(
-	g.F(BaseLoad),
-	g.F(gin.Load),
-)
-
 func GinLoad(loader gone.Loader) error {
-	return ginLoad(loader)
+	return g.BuildOnceLoadFunc(
+		g.F(BaseLoad),
+		g.F(gin.Load),
+	)(loader)
 }

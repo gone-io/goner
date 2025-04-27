@@ -1,0 +1,30 @@
+### Register
+POST {{host}}/api/users/register
+content-type: application/json
+
+{
+  "username": "dapeng",
+  "password": "123456"
+}
+
+### Login
+POST {{host}}/api/users/login
+content-type: application/json
+
+{
+  "username": "dapeng",
+  "password": "123456"
+}
+
+> {% client.global.set("auth_token", response.body.data.token); %}
+
+
+
+### Get my profile
+GET {{host}}/api/users/me
+Authorization: Bearer {{auth_token}}
+
+
+### Logout
+POST {{host}}/api/users/logout
+Authorization: Bearer {{auth_token}}

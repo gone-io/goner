@@ -1,73 +1,79 @@
-# Gone框架 Nacos配置中心示例
-- [Gone框架 Nacos配置中心示例](#gone框架-nacos配置中心示例)
-  - [项目概述](#项目概述)
-  - [环境准备](#环境准备)
-    - [启动环境](#启动环境)
-    - [配置nacos](#配置nacos)
-      - [default.yaml配置](#defaultyaml配置)
-  - [代码实现](#代码实现)
-    - [主要代码逻辑](#主要代码逻辑)
-    - [配置绑定](#配置绑定)
-    - [运行项目](#运行项目)
+[//]: # (desc: Nacos Configuration Center Example)
+
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# Gone Framework Nacos Configuration Center Example
+- [Gone Framework Nacos Configuration Center Example](#gone-framework-nacos-configuration-center-example)
+  - [Project Overview](#project-overview)
+  - [Environment Setup](#environment-setup)
+    - [Starting Environment](#starting-environment)
+    - [Configuring Nacos](#configuring-nacos)
+      - [default.yaml Configuration](#defaultyaml-configuration)
+  - [Code Implementation](#code-implementation)
+    - [Main Code Logic](#main-code-logic)
+    - [Configuration Binding](#configuration-binding)
+    - [Running the Project](#running-the-project)
 
 
-## 项目概述
+## Project Overview
 
-本项目展示了如何在Gone框架中使用Nacos作为配置中心，实现动态配置管理功能。通过Nacos配置中心，我们可以：
+This project demonstrates how to use Nacos as a configuration center in the Gone framework to implement dynamic configuration management. Through the Nacos configuration center, we can:
 
-- 集中管理应用配置
-- 支持动态配置更新
-- 支持多种配置格式（JONS、YAML、Properties、TOML等）
-- 配置分组管理
+- Centrally manage application configurations
+- Support dynamic configuration updates
+- Support multiple configuration formats (JSON, YAML, Properties, TOML, etc.)
+- Configuration group management
 
-## 环境准备
+## Environment Setup
 
-### 启动环境
+### Starting Environment
 
-项目使用Docker Compose启动Nacos服务，执行以下命令启动：
+The project uses Docker Compose to start the Nacos service. Execute the following command to start:
 
 ```bash
 docker-compose up -d
 ```
 
-Nacos服务将在以下端口启动：
-- 8848：HTTP接口端口
-- 9848：gRPC接口端口
+Nacos service will start on the following ports:
+- 8848: HTTP interface port
+- 9848: gRPC interface port
 
-### 配置nacos
+### Configuring Nacos
 
-#### default.yaml配置
-在项目的config目录下创建default.yaml文件，用于配置Nacos客户端连接信息：
+#### default.yaml Configuration
+Create a default.yaml file in the project's config directory to configure Nacos client connection information:
 
 ```yaml
 nacos:
   client:
-    namespaceId: public  # 命名空间ID
+    namespaceId: public  # Namespace ID
   server:
-    ipAddr: "127.0.0.1"  # Nacos服务器地址
-    contextPath: /nacos  # 上下文路径
-    port: 8848          # 服务端口
-    scheme: http        # 连接协议
-  dataId: user-center   # 配置文件的数据ID
-  watch: true          # 是否监听配置变更
-  useLocalConfIfKeyNotExist: true  # 当配置不存在时是否使用本地配置
-  groups:              # 配置分组列表
-    - group: DEFAULT_GROUP  # 默认分组
-      format: properties   # 配置格式：支持json、yaml、properties、toml
-    - group: database      # 数据库配置分组
-      format: yaml        # 配置格式
+    ipAddr: "127.0.0.1"  # Nacos server address
+    contextPath: /nacos  # Context path
+    port: 8848          # Server port
+    scheme: http        # Connection protocol
+  dataId: user-center   # Configuration file data ID
+  watch: true          # Whether to monitor configuration changes
+  useLocalConfIfKeyNotExist: true  # Use local configuration when key doesn't exist
+  groups:              # Configuration group list
+    - group: DEFAULT_GROUP  # Default group
+      format: properties   # Configuration format: supports json, yaml, properties, toml
+    - group: database      # Database configuration group
+      format: yaml        # Configuration format
 ```
 
-在默认的名字空间（public）下增加下面两个配置文件：
+Add the following two configuration files under the default namespace (public):
 
-1. DEFAULT_GROUP.properties - 默认分组配置
+1. DEFAULT_GROUP.properties - Default group configuration
 ```properties
 server.name=config-demo
 server.port=9090
 ```
 ![default-group.png](images/default-group.png)
 
-2. database.yaml - 数据库配置组
+2. database.yaml - Database configuration group
 ```yaml
 database:
   username: config-demo
@@ -76,45 +82,45 @@ database:
 ![database-group.png](images/database-group.png)
 
 
-## 代码实现
+## Code Implementation
 
-### 主要代码逻辑
+### Main Code Logic
 
-项目使用Gone框架的Nacos组件来加载和管理配置。主要代码实现如下：
+The project uses Gone framework's Nacos component to load and manage configurations. The main code implementation is as follows:
 
 ```go
 func main() {
     gone.
-        NewApp(nacos.Load).  // 加载Nacos配置中心组件
+        NewApp(nacos.Load).  // Load Nacos configuration center component
         Run(func(params struct {
-            serverName string `gone:"config,server.name"`    // 绑定server.name配置
-            serverPort int    `gone:"config,server.port"`    // 绑定server.port配置
+            serverName string `gone:"config,server.name"`    // Bind server.name configuration
+            serverPort int    `gone:"config,server.port"`    // Bind server.port configuration
             
-            dbUserName string `gone:"config,database.username"` // 绑定数据库用户名
-            dbUserPass string `gone:"config,database.password"` // 绑定数据库密码
+            dbUserName string `gone:"config,database.username"` // Bind database username
+            dbUserPass string `gone:"config,database.password"` // Bind database password
             
-            database *Database `gone:"config,database"`  // 绑定整个database配置块
+            database *Database `gone:"config,database"`  // Bind entire database configuration block
         }) {
-            // 使用配置值
+            // Use configuration values
             fmt.Printf("serverName=%s, serverPort=%d\n", params.serverName, params.serverPort)
             fmt.Printf("database: %#+v\n", *params.database)
         })
 }
 ```
 
-### 配置绑定
+### Configuration Binding
 
-- 使用`gone:"config,key"` tag标记配置项
-- 支持基本类型和结构体绑定
-- 支持配置热更新，配置变更时会自动更新到应用中
+- Use `gone:"config,key"` tag to mark configuration items
+- Support basic types and struct binding
+- Support hot configuration updates, configuration changes will automatically update to the application
 
-### 运行项目
+### Running the Project
 
-1. 确保Nacos服务已启动
-2. 确保配置已导入Nacos
-3. 运行项目：
+1. Ensure Nacos service is started
+2. Ensure configurations are imported into Nacos
+3. Run the project:
 ```bash
 go run main.go
 ```
 
-项目将启动并输出配置信息，当在Nacos控制台修改配置时，应用会自动获取最新的配置值。
+The project will start and output configuration information. When configurations are modified in the Nacos console, the application will automatically retrieve the latest configuration values.

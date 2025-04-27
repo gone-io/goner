@@ -20,7 +20,6 @@ type clientRegister struct {
 	grpcOptions []grpc.DialOption  `gone:"*"`
 	tracer      g.Tracer           `gone:"*" option:"allowNil"`
 	discovery   g.ServiceDiscovery `gone:"*" option:"allowNil"`
-	balancer    g.LoadBalancer     `gone:"*" option:"allowNil"`
 
 	connections map[string]*grpc.ClientConn
 	rb          resolver.Builder

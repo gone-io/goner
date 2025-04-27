@@ -3,13 +3,11 @@ module github.com/gone-io/goner/gorm/clickhouse
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.12
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/stretchr/testify v1.10.0
 	gorm.io/driver/clickhouse v0.6.1
 	gorm.io/gorm v1.25.12
 )
-
-require github.com/gone-io/goner/g v1.0.11
 
 replace github.com/gone-io/goner/g => ../../g
 

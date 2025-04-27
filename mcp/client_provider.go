@@ -75,7 +75,8 @@ func newSseClientByInjectTransport(m map[string]string, keeper gone.GonerKeeper)
 
 // type=$[stdio|sse|transport],param=$[stdioCommand|sseBaseUrl,transportInjectedName],configKey=$[configKey]
 var clientMap = make(map[string]*client.Client)
-var clientProvider = gone.WrapFunctionProvider(func(
+
+func clientProvide(
 	tagConf string,
 	param struct {
 		keeper gone.GonerKeeper `gone:"*"`
@@ -104,4 +105,4 @@ var clientProvider = gone.WrapFunctionProvider(func(
 	}
 	clientMap[tagConf] = c
 	return
-})
+}

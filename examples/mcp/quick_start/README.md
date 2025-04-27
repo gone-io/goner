@@ -1,3 +1,10 @@
+[//]: # (desc: MCP server quick start example)
+
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+
 # Gone MCP Quick Start Example
 
 This is a quick start example based on the Gone MCP component, demonstrating how to create a simple MCP tool server and client. Through this example, you can quickly understand and master the basic usage of the Gone MCP component.

@@ -1,49 +1,55 @@
-# Gone框架 HTTP服务发现示例
+[//]: # (desc: http service discovery example using gin)
 
-## 项目概述
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-本示例展示了如何在Gone框架中使用服务发现功能进行HTTP通信。示例包含一个服务端和一个客户端，服务端注册到Nacos服务发现中心，客户端通过服务名称而非具体IP地址来访问服务端。
+# Gone Framework HTTP Service Discovery Example
 
-## 功能特点
+## Project Overview
 
-- 演示基于Nacos的服务注册与发现
-- 展示HTTP客户端如何通过服务名称访问服务
-- 支持自动负载均衡（当有多个服务实例时）
-- 完全集成Gone框架的依赖注入特性
+This example demonstrates how to use service discovery for HTTP communication in the Gone framework. The example includes a server and a client, where the server registers with the Nacos service discovery center, and the client accesses the server using a service name rather than a specific IP address.
 
-## 环境准备
+## Features
 
-### 启动Nacos服务
+- Demonstrates Nacos-based service registration and discovery
+- Shows how HTTP clients can access services using service names
+- Supports automatic load balancing (when multiple service instances are available)
+- Fully integrates with Gone framework's dependency injection features
 
-本示例使用Docker Compose来启动Nacos服务：
+## Environment Setup
+
+### Starting Nacos Service
+
+This example uses Docker Compose to start the Nacos service:
 
 ```bash
-# 在项目根目录下执行
+# Execute in the project root directory
 docker-compose up -d nacos
 ```
 
-这将启动一个Nacos服务实例，监听在8848端口。
+This will start a Nacos service instance listening on port 8848.
 
-## 代码结构
+## Code Structure
 
 ```
 ./
-├── client/         # HTTP客户端示例
-│   └── main.go     # 客户端主程序
-├── config/         # 配置文件目录
-│   └── default.yaml # 默认配置
-├── docker-compose.yaml # Docker环境配置
-├── go.mod          # Go模块定义
-├── logs/           # 日志目录
-└── server/         # HTTP服务端示例
-    └── main.go     # 服务端主程序
+├── client/         # HTTP client example
+│   └── main.go     # Client main program
+├── config/         # Configuration directory
+│   └── default.yaml # Default configuration
+├── docker-compose.yaml # Docker environment configuration
+├── go.mod          # Go module definition
+├── logs/           # Log directory
+└── server/         # HTTP server example
+    └── main.go     # Server main program
 ```
 
-## 代码实现
+## Implementation
 
-### 服务端实现
+### Server Implementation
 
-服务端（`server/main.go`）使用Gone框架的Gin组件创建HTTP服务，并通过Nacos组件注册到服务发现中心：
+The server (`server/main.go`) uses Gone framework's Gin component to create an HTTP service and registers it with the service discovery center through the Nacos component:
 
 ```go
 func main() {
@@ -54,7 +60,7 @@ func main() {
 }
 ```
 
-服务端定义了一个简单的HTTP接口：
+The server defines a simple HTTP interface:
 
 ```go
 func (c *HelloController) Mount() gin.MountError {
@@ -67,9 +73,9 @@ func (c *HelloController) Mount() gin.MountError {
 }
 ```
 
-### 客户端实现
+### Client Implementation
 
-客户端（`client/main.go`）使用Gone框架的urllib组件和balancer组件，通过服务名称访问服务端：
+The client (`client/main.go`) uses Gone framework's urllib component and balancer component to access the server through the service name:
 
 ```go
 func main() {
@@ -81,7 +87,7 @@ func main() {
 			urllib.Load,
 		).
 		Run(func(client urllib.Client, logger gone.Logger) {
-			// 通过服务名称访问服务
+			// Access service through service name
 			res, err := client.
 				R().
 				SetSuccessResult(&data).
@@ -91,64 +97,64 @@ func main() {
 }
 ```
 
-## 配置说明
+## Configuration
 
-配置文件（`config/default.yaml`）包含以下关键配置：
+The configuration file (`config/default.yaml`) contains the following key configurations:
 
 ```yaml
 nacos:
   client:
-    # Nacos客户端配置
+    # Nacos client configuration
     namespaceId: public
     # ...
   server:
-    # Nacos服务端地址配置
+    # Nacos server address configuration
     ipAddr: "127.0.0.1"
     port: 8848
     # ...
   service:
-    # 服务发现相关配置
+    # Service discovery related configuration
     group: DEFAULT_GROUP
     clusterName: default
 
-# 服务端配置
+# Server configuration
 server:
-    port: 0  # 使用随机端口
-    service-name: user-center  # 服务名称
+    port: 0  # Use random port
+    service-name: user-center  # Service name
 ```
 
-## 运行示例
+## Running the Example
 
-### 1. 启动Nacos服务
+### 1. Start Nacos Service
 
 ```bash
 docker-compose up -d nacos
 ```
 
-### 2. 启动服务端
+### 2. Start the Server
 
 ```bash
 cd server
 go run main.go
 ```
 
-### 3. 启动客户端
+### 3. Start the Client
 
 ```bash
 cd client
 go run main.go
 ```
 
-客户端将发送10次请求到服务端，并打印响应结果。
+The client will send 10 requests to the server and print the response results.
 
-## 关键点说明
+## Key Points
 
-1. **服务注册**：服务端启动时会自动注册到Nacos服务发现中心
-2. **服务发现**：客户端通过服务名称（`user-center`）而非IP地址访问服务
-3. **负载均衡**：当有多个服务实例时，客户端会自动进行负载均衡
-4. **零配置端口**：服务端使用`port: 0`配置随机端口，避免端口冲突
+1. **Service Registration**: The server automatically registers with the Nacos service discovery center upon startup
+2. **Service Discovery**: The client accesses services through service names (`user-center`) rather than IP addresses
+3. **Load Balancing**: When multiple service instances are available, the client automatically performs load balancing
+4. **Zero-Config Port**: The server uses `port: 0` configuration for random port assignment, avoiding port conflicts
 
-## 扩展阅读
+## Further Reading
 
-- [Gone框架文档](https://github.com/gone-io/gone)
-- [Nacos服务发现文档](https://nacos.io/zh-cn/docs/v2/guide/user/service-discovery.html)
+- [Gone Framework Documentation](https://github.com/gone-io/gone)
+- [Nacos Service Discovery Documentation](https://nacos.io/en/docs/v2/guide/user/service-discovery.html)

@@ -1,3 +1,9 @@
+[//]: # (desc: MCP server example with standard input/output)
+
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
 # Gone MCP Stdio Example
 
 This is a stdio communication example based on the Gone MCP component, demonstrating how to create MCP tool server and client using standard input/output (stdio) method. Through this example, you can learn how to use Gone MCP component in inter-process communication scenarios.

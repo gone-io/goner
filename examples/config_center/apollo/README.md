@@ -1,100 +1,105 @@
-# Apollo 配置中心示例
-- [Apollo 配置中心示例](#apollo-配置中心示例)
-  - [环境要求](#环境要求)
-  - [快速开始](#快速开始)
-    - [1. 启动Apollo服务](#1-启动apollo服务)
-    - [2. 创建示例配置](#2-创建示例配置)
-    - [3. 运行示例程序](#3-运行示例程序)
-  - [示例说明](#示例说明)
-    - [代码示例](#代码示例)
-  - [配置文件说明](#配置文件说明)
-  - [目录结构](#目录结构)
-  - [参考资料](#参考资料)
+[//]: # (desc: Apollo Configuration Center Example)
 
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-本示例演示了如何在Gone框架中使用Apollo配置中心组件，实现配置的动态获取和实时更新功能。
+# Apollo Configuration Center Example
+- [Apollo Configuration Center Example](#apollo-configuration-center-example)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start](#quick-start)
+    - [1. Start Apollo Service](#1-start-apollo-service)
+    - [2. Create Sample Configuration](#2-create-sample-configuration)
+    - [3. Run the Example Program](#3-run-the-example-program)
+  - [Example Description](#example-description)
+    - [Code Example](#code-example)
+  - [Configuration File Description](#configuration-file-description)
+  - [Directory Structure](#directory-structure)
+  - [References](#references)
 
-## 环境要求
+This example demonstrates how to use the Apollo configuration center component in the Gone framework to implement dynamic configuration retrieval and real-time update functionality.
 
-- Go 1.21 或更高版本
-- Docker 和 Docker Compose（用于启动Apollo服务）
+## Prerequisites
 
-## 快速开始
+- Go 1.24 or higher
+- Docker and Docker Compose (for running Apollo service)
 
-### 1. 启动Apollo服务
+## Quick Start
 
-本示例提供了一个完整的Apollo服务环境，包含了所有必需的组件。使用Docker Compose可以快速启动整个环境：
+### 1. Start Apollo Service
+
+This example provides a complete Apollo service environment with all necessary components. You can quickly start the entire environment using Docker Compose:
 
 ```bash
-# 启动Apollo服务
+# Start Apollo service
 docker-compose up -d
 ```
 
-服务启动后，可以通过以下地址访问Apollo管理界面：
+After the service starts, you can access the Apollo management interface at:
 - Portal: http://localhost:8070
-- 默认用户名/密码: apollo/admin
+- Default username/password: apollo/admin
 
-### 2. 创建示例配置
+### 2. Create Sample Configuration
 
-1. 登录Apollo Portal
-2. 创建应用`user-center`（应用ID需与配置文件中的`apollo.appId`一致）
+1. Log in to Apollo Portal
+2. Create application `user-center` (application ID must match `apollo.appId` in the configuration file)
 
-   ![创建应用](./images/1.create-application.png)
+   ![Create Application](./images/1.create-application.png)
 
-3. 创建两个命名空间：
-   - `application`（默认命名空间）
-   - `database.yaml`（自定义命名空间，YAML格式）
+3. Create two namespaces:
+   - `application` (default namespace)
+   - `database.yaml` (custom namespace, YAML format)
 
-   ![设置默认命名空间](./images/2.set-default-namespace.png)
+   ![Set Default Namespace](./images/2.set-default-namespace.png)
 
-   ![创建数据库命名空间](./images/3.create-database-namespace.png)
+   ![Create Database Namespace](./images/3.create-database-namespace.png)
 
-4. 在`application`命名空间中添加以下配置项：
+4. Add the following configuration items in the `application` namespace:
    ```properties
    server.name = config-demo
    server.port = 9090
    ```
 
-5. 在`database.yaml`命名空间中添加以下配置项：
+5. Add the following configuration items in the `database.yaml` namespace:
    ```yaml
    database:
      username: config-demo
      password: config-demo-password
    ```
 
-   ![编辑和发布数据库命名空间](./images/4.edit-and-release-database-ns.png)
+   ![Edit and Release Database Namespace](./images/4.edit-and-release-database-ns.png)
 
-6. 发布配置（点击「发布」按钮）
+6. Release the configuration (click the "Release" button)
 
-   ![设置密钥](./images/5.set-secret.png)
+   ![Set Secret](./images/5.set-secret.png)
 
-> 提示：本示例在`config-files`目录中提供了预设的配置文件，可以直接导入到Apollo中。
+> Tip: This example provides preset configuration files in the `config-files` directory that can be directly imported into Apollo.
 
-### 3. 运行示例程序
+### 3. Run the Example Program
 
 ```bash
 go run main.go
 ```
 
-程序将输出配置值，并每10秒刷新一次，以展示配置的动态更新功能。
+The program will output configuration values and refresh every 10 seconds to demonstrate the dynamic update functionality.
 
-## 示例说明
+## Example Description
 
-本示例演示了以下功能：
+This example demonstrates the following features:
 
-1. 基本配置读取
-   - 通过`gone:"config,key"` tag注入配置
-   - 支持基本类型（string、int等）和结构体类型
+1. Basic Configuration Reading
+   - Inject configuration using `gone:"config,key"` tag
+   - Support basic types (string, int, etc.) and struct types
 
-2. 配置动态更新
-   - 使用指针类型的配置项支持动态更新
-   - 修改Apollo中的配置后，程序会自动获取最新值
+2. Dynamic Configuration Updates
+   - Support dynamic updates for pointer type configuration items
+   - Program automatically retrieves the latest values after modifying configurations in Apollo
 
-3. 多命名空间支持
-   - 同时从多个命名空间读取配置
-   - 支持不同格式的配置（Properties和YAML）
+3. Multi-namespace Support
+   - Read configurations from multiple namespaces simultaneously
+   - Support different configuration formats (Properties and YAML)
 
-### 代码示例
+### Code Example
 
 ```go
 type Database struct {
@@ -126,40 +131,40 @@ func main() {
 }
 ```
 
-## 配置文件说明
+## Configuration File Description
 
-示例中的Apollo配置项（位于`config/default.yaml`）：
+Apollo configuration items in the example (located in `config/default.yaml`):
 
 ```yaml
 apollo:
-  appId: user-center           # Apollo应用ID
-  cluster: default             # 集群名称
-  ip: http://127.0.0.1:8080    # Apollo配置中心地址
-  namespace: application,database.yaml  # 命名空间（多个用逗号分隔）
-  secret: 1ad569dfbf42400385ac1ebd0b5100b0  # 访问密钥
-  isBackupConfig: false        # 是否开启备份配置
-  watch: true                  # 是否监听配置变更
+  appId: user-center           # Apollo application ID
+  cluster: default             # Cluster name
+  ip: http://127.0.0.1:8080    # Apollo configuration center address
+  namespace: application,database.yaml  # Namespaces (comma-separated for multiple)
+  secret: 1ad569dfbf42400385ac1ebd0b5100b0  # Access key
+  isBackupConfig: false        # Whether to enable backup configuration
+  watch: true                  # Whether to watch for configuration changes
 ```
 
-## 目录结构
+## Directory Structure
 
 ```
 .
-├── README.md           # 本文档
-├── config/             # 本地配置文件目录
-│   └── default.yaml    # Apollo客户端配置
-├── config-files/       # 预设的Apollo配置文件
-│   ├── application.properties  # 应用配置（默认命名空间）
-│   └── database.yaml   # 数据库配置（自定义命名空间）
-├── docker-compose.yml  # Apollo服务Docker编排文件
-├── images/             # 操作指南截图
-├── go.mod              # Go模块定义
-├── main.go             # 示例程序入口
-└── sql/                # Apollo数据库初始化脚本
+├── README.md           # This document
+├── config/             # Local configuration file directory
+│   └── default.yaml    # Apollo client configuration
+├── config-files/       # Preset Apollo configuration files
+│   ├── application.properties  # Application configuration (default namespace)
+│   └── database.yaml   # Database configuration (custom namespace)
+├── docker-compose.yml  # Apollo service Docker compose file
+├── images/             # Operation guide screenshots
+├── go.mod              # Go module definition
+├── main.go             # Example program entry
+└── sql/                # Apollo database initialization scripts
 ```
 
-## 参考资料
+## References
 
-- [Gone Apollo组件文档](https://github.com/gone-io/goner/tree/main/apollo)
-- [Apollo官方文档](https://www.apolloconfig.com/)
-- [Gone框架文档](https://github.com/gone-io/gone)
+- [Gone Apollo Component Documentation](https://github.com/gone-io/goner/tree/main/apollo)
+- [Apollo Official Documentation](https://www.apolloconfig.com/)
+- [Gone Framework Documentation](https://github.com/gone-io/gone)

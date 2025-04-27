@@ -1,6 +1,8 @@
 package gin
 
 import (
+	"github.com/gone-io/gone/mock/v2"
+	gMock "github.com/gone-io/goner/g/mock"
 	"net/http"
 	"testing"
 	"time"
@@ -27,7 +29,7 @@ func Test_server_initListener_WithCMux(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockCMux := NewMockCmux(controller)
+	mockCMux := gMock.NewMockCmux(controller)
 	mockListener := NewMockListener(controller)
 
 	// Set up expectations
@@ -78,7 +80,7 @@ func Test_server_mount(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockController := NewMockController(controller)
 
 	// Set up expectations
@@ -101,7 +103,7 @@ func Test_server_mount_Error(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockController := NewMockController(controller)
 
 	// Set up expectations
@@ -126,7 +128,7 @@ func Test_server_Start(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockHandler := NewMockHandler(controller)
 
 	// Set up expectations
@@ -157,7 +159,7 @@ func Test_server_Stop(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// Set up expectations
 	mockLogger.EXPECT().Warnf(gomock.Any()).AnyTimes()
@@ -184,7 +186,7 @@ func Test_server_Stop_NilServer(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// Set up expectations
 	mockLogger.EXPECT().Warnf(gomock.Any()).AnyTimes()
@@ -205,7 +207,7 @@ func Test_server_processServeError(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// Set up expectations for normal error
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).Times(1)
@@ -230,7 +232,7 @@ func Test_server_processServeError_Stopping(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// Set up expectations for warning
 	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any()).Times(1)

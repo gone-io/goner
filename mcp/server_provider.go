@@ -1,6 +1,7 @@
 package goneMcp
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -167,11 +168,11 @@ func (s *serverProvider) Provide(tagConf string) (*server.MCPServer, error) {
 
 		// there is a data trace for sseServer.Start writing `srv` and sseServer.Shutdown read `srv`,
 		// look for https://github.com/mark3labs/mcp-go/issues/166
-		//s.beforeStop(func() {
-		//	if err := sseServer.Shutdown(context.Background()); err != nil {
-		//		s.logger.Errorf("mcp: shutdown sse server err: %v", err)
-		//	}
-		//})
+		s.beforeStop(func() {
+			if err := sseServer.Shutdown(context.Background()); err != nil {
+				s.logger.Errorf("mcp: shutdown sse server err: %v", err)
+			}
+		})
 
 		s.m[key] = mcpServer
 		return mcpServer, nil

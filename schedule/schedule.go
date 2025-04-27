@@ -8,14 +8,6 @@ import (
 	"time"
 )
 
-var load = gone.OnceLoad(func(loader gone.Loader) error {
-	return loader.Load(&schedule{})
-})
-
-func Load(loader gone.Loader) error {
-	return load(loader)
-}
-
 type schedule struct {
 	gone.Flag
 

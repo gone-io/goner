@@ -1,20 +1,11 @@
 package goner
 
 import (
-	mock "github.com/gone-io/gone/mock/v2"
-	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
+	"github.com/gone-io/gone/v2"
 	"testing"
 )
 
 func TestGinLoad(t *testing.T) {
-	controller := gomock.NewController(t)
-	defer controller.Finish()
-
-	loader := mock.NewMockLoader(controller)
-	loader.EXPECT().Loaded(gomock.Any()).Return(false).AnyTimes()
-	loader.EXPECT().Load(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
-	loader.EXPECT().Load(gomock.Any(), gomock.Any()).AnyTimes()
-	err := GinLoad(loader)
-	assert.Nil(t, err)
+	gone.NewApp(BaseLoad).Run()
+	gone.NewApp(GinLoad).Run()
 }

@@ -12,11 +12,10 @@ func TestLoad(t *testing.T) {
 	defer controller.Finish()
 
 	loader := mock.NewMockLoader(controller)
-	loader.EXPECT().Loaded(gomock.Any()).Return(false)
-	loader.EXPECT().Load(gomock.Any()).Return(nil)
-	loader.EXPECT().Load(gomock.Any()).Return(nil)
-	loader.EXPECT().Load(gomock.Any()).Return(nil)
-	loader.EXPECT().Load(gomock.Any(), gomock.Any()).Return(nil)
+	loader.EXPECT().MustLoad(gomock.Any()).Return(loader)
+	loader.EXPECT().MustLoad(gomock.Any()).Return(loader)
+	loader.EXPECT().MustLoad(gomock.Any()).Return(loader)
+	loader.EXPECT().MustLoad(gomock.Any(), gomock.Any()).Return(loader)
 
 	err := Load(loader)
 	assert.Nil(t, err)

@@ -1,3 +1,9 @@
+[//]: # (desc: MCP server use http transport)
+
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
 # Gone MCP HTTP Demo
 
 This example demonstrates how to use the Gone MCP component to build HTTP-based client and server applications.
