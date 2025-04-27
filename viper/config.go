@@ -59,7 +59,10 @@ func (c *configure) Get(key string, v any, defaultVal string) error {
 func (c *configure) get(key string, value any, defaultVale string) error {
 	v := c.conf.Get(key)
 	if v == nil || v == "" {
-		return gone.SetValue(reflect.ValueOf(value), value, defaultVale)
+		if defaultVale != "" {
+			return gone.SetValue(reflect.ValueOf(value), value, defaultVale)
+		}
+		return nil
 	}
 	return gone.ToError(c.conf.UnmarshalKey(key, value))
 }
