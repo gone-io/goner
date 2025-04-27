@@ -1,4 +1,4 @@
-module github.com/gone-io/goner/examples/openai
+module examples/openai
 
 go 1.24.1
 

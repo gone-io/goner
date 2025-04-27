@@ -3,6 +3,6 @@
 package main
 
 import (
-	_ "simple"
-	_ "simple/implement"
+	_ "examples/simple"
+	_ "examples/simple/implement"
 )

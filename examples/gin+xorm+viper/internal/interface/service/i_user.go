@@ -1,6 +1,6 @@
 package service
 
-import "template_module/internal/interface/entity"
+import "examples/gin_xorm_viper/internal/interface/entity"
 
 type IUserLogin interface {
 	Register(registerParam *entity.RegisterParam) (*entity.LoginResult, error)

@@ -3,10 +3,10 @@
 package main
 
 import (
-	_ "template_module"
-	_ "template_module/internal/controller"
-	_ "template_module/internal/module"
-	_ "template_module/internal/module/dependent"
-	_ "template_module/internal/module/user"
-	_ "template_module/internal/router"
+	_ "examples/gin_xorm_viper"
+	_ "examples/gin_xorm_viper/internal/controller"
+	_ "examples/gin_xorm_viper/internal/module"
+	_ "examples/gin_xorm_viper/internal/module/dependent"
+	_ "examples/gin_xorm_viper/internal/module/user"
+	_ "examples/gin_xorm_viper/internal/router"
 )

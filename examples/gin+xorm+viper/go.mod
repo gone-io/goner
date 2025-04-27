@@ -1,4 +1,4 @@
-module template_module
+module examples/gin_xorm_viper
 
 go 1.24.1
 

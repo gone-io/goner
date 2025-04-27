@@ -1,4 +1,4 @@
-module http_use_discovery
+module examples/http_use_discovery
 
 go 1.24.1
 

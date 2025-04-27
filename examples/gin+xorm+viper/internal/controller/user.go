@@ -1,11 +1,11 @@
 package controller
 
 import (
+	"examples/gin_xorm_viper/internal/interface/entity"
+	"examples/gin_xorm_viper/internal/interface/service"
+	"examples/gin_xorm_viper/internal/pkg/utils"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/gin"
-	"template_module/internal/interface/entity"
-	"template_module/internal/interface/service"
-	"template_module/internal/pkg/utils"
 )
 
 type userCtr struct {

@@ -4,9 +4,9 @@
 package mock
 
 import (
+	entity "examples/gin_xorm_vi
 	"github.com/gone-io/gone/v2"
 	reflect "reflect"
-	entity "template_module/internal/interface/entity"
 
 	gomock "go.uber.org/mock/gomock"
 )

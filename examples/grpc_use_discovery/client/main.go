@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
+	"examples/grpc_use_discovery/proto"
 	"github.com/gone-io/gone/v2"
 	gone_grpc "github.com/gone-io/goner/grpc"
 	"github.com/gone-io/goner/nacos"
 	"github.com/gone-io/goner/viper"
 	"google.golang.org/grpc"
-	"grpc_use_discovery/proto"
 	"log"
 	"time"
 )

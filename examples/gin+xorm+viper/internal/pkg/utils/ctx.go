@@ -1,10 +1,10 @@
 package utils
 
 import (
+	"examples/gin_xorm_viper/internal/pkg/e"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/gin"
 	"strings"
-	"template_module/internal/pkg/e"
 )
 
 const UserIdKey = "user-id"

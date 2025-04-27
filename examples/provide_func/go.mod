@@ -1,4 +1,4 @@
-module provide_func
+module examples/provide_func
 
 go 1.24.1
 

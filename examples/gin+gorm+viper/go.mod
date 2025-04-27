@@ -1,17 +1,18 @@
-module gin_gorm_viper
+module examples/gin_gorm_viper
 
 go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner v1.0.6
+	github.com/gone-io/goner v1.1.0
 	github.com/gone-io/goner/gin v1.1.0
 	github.com/gone-io/goner/gorm v1.1.0
 	github.com/gone-io/goner/gorm/mysql v1.1.0
-	gorm.io/gorm v1.25.12
+	gorm.io/gorm v1.26.0
 )
 
 replace (
+	github.com/gone-io/goner => ../../
 	github.com/gone-io/goner/g => ../../g
 	github.com/gone-io/goner/gin => ../../gin
 	github.com/gone-io/goner/gorm => ../../gorm

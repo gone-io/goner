@@ -1,8 +1,8 @@
 package main
 
 import (
+	"examples/simple/service"
 	"github.com/gone-io/gone/v2"
-	"simple/service"
 )
 
 func main() {

@@ -3,6 +3,6 @@
 package main
 
 import (
-	_ "mcp/http/server/functional_add"
-	_ "mcp/http/server/goner_define"
+	_ "examples/mcp/http/server/functional_add"
+	_ "examples/mcp/http/server/goner_define"
 )

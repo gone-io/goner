@@ -1,4 +1,4 @@
-module simple
+module examples/simple
 
 go 1.24.1
 

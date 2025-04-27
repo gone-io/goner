@@ -1,4 +1,4 @@
-module urllib_example
+module examples/urllib
 
 go 1.24.1
 

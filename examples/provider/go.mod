@@ -1,4 +1,4 @@
-module provider
+module examples/provider
 
 go 1.24.1
 
