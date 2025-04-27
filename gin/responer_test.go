@@ -2,6 +2,7 @@ package gin
 
 import (
 	"errors"
+	"github.com/gone-io/gone/mock/v2"
 	"net/http"
 	"strings"
 	"testing"
@@ -133,7 +134,7 @@ func Test_responser_Failed_WrappedData(t *testing.T) {
 
 	// 创建模拟的 XContext 和 Logger
 	mockContext := NewMockXContext(controller)
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{
@@ -199,7 +200,7 @@ func Test_responser_Failed_NonWrappedData(t *testing.T) {
 
 	// 创建模拟的 XContext 和 Logger
 	mockContext := NewMockXContext(controller)
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{
@@ -233,7 +234,7 @@ func Test_responser_ProcessResults_Error(t *testing.T) {
 	// 创建模拟的 XContext, ResponseWriter 和 Logger
 	mockContext := NewMockXContext(controller)
 	mockWriter := NewMockResponseWriter(controller)
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{
@@ -260,7 +261,7 @@ func Test_responser_ProcessResults_Channel(t *testing.T) {
 
 	// 创建模拟的 XContext 和 Logger
 	mockContext := NewMockXContext(controller)
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{
@@ -309,7 +310,7 @@ func Test_responser_ProcessResults_Reader(t *testing.T) {
 
 	// 创建模拟的 XContext 和 Logger
 	mockContext := NewMockXContext(controller)
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{
@@ -348,7 +349,7 @@ func Test_responser_ProcessResults_NormalData(t *testing.T) {
 
 	// 创建模拟的 XContext 和 Logger
 	mockContext := NewMockXContext(controller)
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{
@@ -418,7 +419,7 @@ func Test_responser_processChan(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟的 Logger
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{

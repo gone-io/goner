@@ -3,7 +3,7 @@ module gin_gorm_viper
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.14
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner v1.0.6
 	github.com/gone-io/goner/gin v1.0.11
 	github.com/gone-io/goner/gorm v1.0.11

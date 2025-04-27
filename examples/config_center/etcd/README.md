@@ -1,35 +1,41 @@
-# Gone框架 Etcd配置中心示例
+[//]: # (desc: Etcd Configuration Center Example)
 
-- [Gone框架 Etcd配置中心示例](#gone框架-etcd配置中心示例)
-  - [项目概述](#项目概述)
-  - [环境准备](#环境准备)
-    - [启动环境](#启动环境)
-  - [配置文件结构](#配置文件结构)
-    - [本地配置文件](#本地配置文件)
-    - [Etcd中的配置文件](#etcd中的配置文件)
-  - [代码实现](#代码实现)
-  - [运行示例](#运行示例)
-    - [1. 导入配置到Etcd](#1-导入配置到etcd)
-    - [2. 运行示例程序](#2-运行示例程序)
-    - [3. 测试配置动态更新](#3-测试配置动态更新)
-  - [配置优先级](#配置优先级)
-  - [总结](#总结)
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# Gone Framework Etcd Configuration Center Example
+
+- [Gone Framework Etcd Configuration Center Example](#gone-framework-etcd-configuration-center-example)
+  - [Overview](#overview)
+  - [Environment Setup](#environment-setup)
+    - [Starting the Environment](#starting-the-environment)
+  - [Configuration File Structure](#configuration-file-structure)
+    - [Local Configuration File](#local-configuration-file)
+    - [Configuration Files in Etcd](#configuration-files-in-etcd)
+  - [Code Implementation](#code-implementation)
+  - [Running the Example](#running-the-example)
+    - [1. Import Configuration to Etcd](#1-import-configuration-to-etcd)
+    - [2. Run the Example Program](#2-run-the-example-program)
+    - [3. Test Dynamic Configuration Updates](#3-test-dynamic-configuration-updates)
+  - [Configuration Priority](#configuration-priority)
+  - [Summary](#summary)
 
 
-本示例展示了如何使用Gone框架与Etcd配置中心集成，实现配置的集中管理和动态更新。
+This example demonstrates how to integrate the Gone framework with Etcd configuration center to achieve centralized configuration management and dynamic updates.
 
-## 项目概述
+## Overview
 
-本示例演示了以下功能：
+This example demonstrates the following features:
 
-- 使用Gone框架从Etcd配置中心读取配置
-- 配置的自动监听和动态更新
-- 结构化配置注入
-- 本地配置与远程配置的混合使用
+- Using Gone framework to read configurations from Etcd configuration center
+- Automatic configuration monitoring and dynamic updates
+- Structured configuration injection
+- Mixed use of local and remote configurations
 
-## 环境准备
+## Environment Setup
 
-本示例使用Docker Compose启动Etcd服务和Etcd管理界面(etcdkeeper)：
+This example uses Docker Compose to start Etcd service and Etcd management interface (etcdkeeper):
 
 ```yaml
 services:
@@ -51,19 +57,19 @@ services:
       - Etcd
 ```
 
-### 启动环境
+### Starting the Environment
 
 ```bash
 docker-compose up -d
 ```
 
-启动后可以通过 http://localhost:12000 访问etcdkeeper管理界面。
+After startup, you can access the etcdkeeper management interface at http://localhost:12000.
 
-## 配置文件结构
+## Configuration File Structure
 
-### 本地配置文件
+### Local Configuration File
 
-`config/default.yaml` 包含Viper远程配置的设置和本地配置：
+`config/default.yaml` contains Viper remote configuration settings and local configuration:
 
 ```yaml
 viper.remote:
@@ -89,17 +95,17 @@ key:
   not-existed-in-etcd: 1000
 ```
 
-配置说明：
-- `watch: true` - 启用配置变更监听
-- `watchDuration: 5s` - 监听间隔为5秒
-- `useLocalConfIfKeyNotExist: true` - 当远程配置中不存在某个键时，使用本地配置
-- 配置了两个Etcd配置源：`/config/application.yaml`和`/config/database.yaml`
+Configuration explanation:
+- `watch: true` - Enable configuration change monitoring
+- `watchDuration: 5s` - Monitoring interval is 5 seconds
+- `useLocalConfIfKeyNotExist: true` - Use local configuration when a key doesn't exist in remote configuration
+- Configured two Etcd configuration sources: `/config/application.yaml` and `/config/database.yaml`
 
-### Etcd中的配置文件
+### Configuration Files in Etcd
 
-需要将`etcd-config-files`目录下的配置文件导入到Etcd中：
+Configuration files from the `etcd-config-files` directory need to be imported into Etcd:
 
-**application.yaml**：
+**application.yaml**:
 ```yaml
 # /config/application.yaml
 
@@ -107,7 +113,7 @@ server.name: config-demo
 server.port: 9090
 ```
 
-**database.yaml**：
+**database.yaml**:
 ```yaml
 # /config/database.yaml
 
@@ -116,9 +122,9 @@ database:
   password: config-demo-password
 ```
 
-## 代码实现
+## Code Implementation
 
-主程序`main.go`展示了如何使用Gone框架注入配置：
+The main program `main.go` demonstrates how to inject configurations using the Gone framework:
 
 ```go
 package main
@@ -159,40 +165,40 @@ func main() {
 }
 ```
 
-代码说明：
+Code explanation:
 
-1. 通过`remote.Load`加载远程配置组件
-2. 使用`gone:"config,xxx"`标签注入配置项：
-   - 基本类型配置：`serverName`、`serverPort`等
-   - 结构体配置：`database`
-   - 本地配置：`key.not-existed-in-etcd`（仅存在于本地配置中）
-3. 程序每10秒打印一次数据库配置，用于演示配置动态更新
+1. Load remote configuration component through `remote.Load`
+2. Use `gone:"config,xxx"` tags to inject configuration items:
+   - Basic type configurations: `serverName`, `serverPort`, etc.
+   - Struct configuration: `database`
+   - Local configuration: `key.not-existed-in-etcd` (exists only in local configuration)
+3. The program prints database configuration every 10 seconds to demonstrate dynamic configuration updates
 
-## 运行示例
+## Running the Example
 
-### 1. 导入配置到Etcd
+### 1. Import Configuration to Etcd
 
-使用etcdkeeper（http://localhost:12000）将`etcd-config-files`目录下的配置文件导入到Etcd中：
+Use etcdkeeper (http://localhost:12000) to import configuration files from the `etcd-config-files` directory into Etcd:
 
-- 创建`/config/application.yaml`键，值为application.yaml的内容
-- 创建`/config/database.yaml`键，值为database.yaml的内容
+- Create key `/config/application.yaml` with the content of application.yaml
+- Create key `/config/database.yaml` with the content of database.yaml
 
-### 2. 运行示例程序
+### 2. Run the Example Program
 
 ```bash
 go run main.go
 ```
 
-### 3. 测试配置动态更新
+### 3. Test Dynamic Configuration Updates
 
-1. 运行程序后，通过etcdkeeper修改`/config/database.yaml`中的配置
-2. 观察程序输出，约5秒后配置将自动更新
+1. After running the program, modify the configuration in `/config/database.yaml` through etcdkeeper
+2. Observe the program output, configuration will automatically update after about 5 seconds
 
-## 配置优先级
+## Configuration Priority
 
-1. 远程配置（Etcd）优先级高于本地配置
-2. 当远程配置中不存在某个键时，会使用本地配置（由`useLocalConfIfKeyNotExist: true`控制）
+1. Remote configuration (Etcd) has higher priority than local configuration
+2. When a key doesn't exist in remote configuration, local configuration will be used (controlled by `useLocalConfIfKeyNotExist: true`)
 
-## 总结
+## Summary
 
-本示例展示了Gone框架如何与Etcd配置中心集成，实现配置的集中管理和动态更新。通过简单的配置和少量代码，即可实现强大的配置管理功能，为微服务架构提供灵活的配置解决方案。
+This example demonstrates how the Gone framework integrates with Etcd configuration center to achieve centralized configuration management and dynamic updates. Through simple configuration and minimal code, powerful configuration management functionality can be implemented, providing a flexible configuration solution for microservice architecture.

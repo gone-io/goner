@@ -8,29 +8,19 @@ import (
 
 const Strategy = "strategy"
 
-var load = g.BuildOnceLoadFunc(
-	g.L(&balancer{}),
-	g.L(&strategy.RoundRobinStrategy{}, gone.Name(Strategy)),
-)
-
 func Load(loader gone.Loader) error {
-	return load(loader)
+	loader.
+		MustLoad(&balancer{}).
+		MustLoad(&strategy.RoundRobinStrategy{}, gone.Name(Strategy))
+	return nil
 }
-
-var loadRandomStrategy = g.BuildOnceLoadFunc(
-	g.L(&strategy.RandomStrategy{}, gone.Name(Strategy), gone.ForceReplace()),
-)
 
 func LoadRandomStrategy(loader gone.Loader) error {
-	return loadRandomStrategy(loader)
+	return loader.Load(&strategy.RandomStrategy{}, gone.Name(Strategy), gone.ForceReplace())
 }
 
-var loadWeightStrategy = g.BuildOnceLoadFunc(
-	g.L(&strategy.WeightStrategy{}, gone.Name(Strategy), gone.ForceReplace()),
-)
-
 func LoadWeightStrategy(loader gone.Loader) error {
-	return loadWeightStrategy(loader)
+	return loader.Load(&strategy.WeightStrategy{}, gone.Name(Strategy), gone.ForceReplace())
 }
 
 func LoadCustomerStrategy[T interface {

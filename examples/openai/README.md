@@ -1,27 +1,33 @@
-# Gone OpenAI 示例
+[//]: # (desc: OpenAI model client integration)
 
-本示例展示了如何在 Gone 框架中使用 OpenAI 客户端。包含了单客户端和多客户端的使用场景，以及基本的聊天补全功能实现。
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-## 功能特点
+# Gone OpenAI Example
 
-- 演示单个 OpenAI 客户端的基本使用
-- 演示多个客户端（OpenAI、百度、阿里云）的配置和使用
-- 包含错误处理示例
-- 使用 Gone 框架的依赖注入特性
+This example demonstrates how to use the OpenAI client in the Gone framework. It includes scenarios for both single-client and multi-client usage, as well as basic chat completion functionality implementation.
 
-## 配置说明
+## Features
 
-示例使用 `config/default.yaml` 配置文件来设置 OpenAI 客户端参数：
+- Demonstrates basic usage of a single OpenAI client
+- Shows configuration and usage of multiple clients (OpenAI, Baidu, Aliyun)
+- Includes error handling examples
+- Utilizes Gone framework's dependency injection features
+
+## Configuration
+
+The example uses `config/default.yaml` configuration file to set OpenAI client parameters:
 
 ```yaml
 openai:
-  apiToken: "your-api-key"       # 你的 OpenAI API 密钥
-  baseUrl: ""                    # 可选：自定义 API 基础 URL
-  orgID: ""                      # 可选：组织 ID
-  APIType: "openai"              # API 类型：openai, azure, anthropic
-  APIVersion: ""                 # API 版本（Azure 必需）
-  assistantVersion: ""           # 可选：助手 API 版本
-  proxyUrl: ""                   # 可选：HTTP 代理 URL
+  apiToken: "your-api-key"       # Your OpenAI API key
+  baseUrl: ""                    # Optional: Custom API base URL
+  orgID: ""                      # Optional: Organization ID
+  APIType: "openai"              # API type: openai, azure, anthropic
+  APIVersion: ""                 # API version (Required for Azure)
+  assistantVersion: ""           # Optional: Assistant API version
+  proxyUrl: ""                   # Optional: HTTP proxy URL
 
 baidu:
   apiToken: "baidu-api-key"
@@ -32,44 +38,44 @@ aliyun:
   baseUrl: "https://aliyun-api-endpoint"
 ```
 
-## 运行示例
+## Running the Example
 
-1. 确保已安装 Go 1.20 或更高版本
-2. 克隆仓库并进入示例目录
-3. 在 `config/default.yaml` 中配置你的 API 密钥
-4. 运行示例程序：
+1. Ensure Go 1.20 or higher is installed
+2. Clone the repository and navigate to the example directory
+3. Configure your API key in `config/default.yaml`
+4. Run the example program:
 
 ```bash
 go run main.go
 ```
 
-## 代码说明
+## Code Overview
 
-- `main.go`: 包含了单客户端和多客户端使用的示例代码
-- `config/default.yaml`: 配置文件，包含了客户端配置信息
+- `main.go`: Contains example code for single-client and multi-client usage
+- `config/default.yaml`: Configuration file containing client settings
 
-### 单客户端示例
+### Single Client Example
 
 ```go
 type singleAIUser struct {
     gone.Flag
-    client *openai.Client `gone:"*"` // 默认客户端
+    client *openai.Client `gone:"*"` // Default client
 }
 ```
 
-### 多客户端示例
+### Multi-Client Example
 
 ```go
 type multiAIUser struct {
     gone.Flag
-    defaultClient *openai.Client `gone:"*"`           // 默认客户端
-    baiduClient   *openai.Client `gone:"*,baidu"`    // 百度客户端
-    aliyunClient  *openai.Client `gone:"*,aliyun"`   // 阿里云客户端
+    defaultClient *openai.Client `gone:"*"`           // Default client
+    baiduClient   *openai.Client `gone:"*,baidu"`    // Baidu client
+    aliyunClient  *openai.Client `gone:"*,aliyun"`   // Aliyun client
 }
 ```
 
-## 注意事项
+## Notes
 
-- 运行示例前请确保已正确配置 API 密钥
-- 多客户端示例中的百度和阿里云客户端仅作演示用途
-- 建议参考 [Gone OpenAI 集成文档](https://github.com/gone-io/goner/tree/main/openai) 了解更多用法
+- Ensure API keys are properly configured before running the example
+- Baidu and Aliyun clients in the multi-client example are for demonstration purposes only
+- For more usage details, refer to the [Gone OpenAI Integration Documentation](https://github.com/gone-io/goner/tree/main/openai)

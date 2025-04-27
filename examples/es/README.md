@@ -1,43 +1,49 @@
-# 使用 github.com/gone-io/goner/es 示例
+[//]: # (desc: elastic example project)
 
-## 环境准备
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-### 1. 本地部署 Elasticsearch
+# Elasticsearch Example
 
-使用官方提供的快速部署脚本：
+## Environment Setup
+
+### 1. Local Elasticsearch Deployment
+
+Use the official quick deployment script:
 
 ```bash
 curl -fsSL https://elastic.co/start-local | sh
 ```
 
-脚本会自动下载并启动最新版本的 Elasticsearch。启动成功后，可以通过 http://localhost:9200 访问。
+The script will automatically download and start the latest version of Elasticsearch. Once started, you can access it at http://localhost:9200.
 
-### 2. 配置 API Key
+### 2. Configure API Key
 
-1. 访问 Elasticsearch 控制台，创建 API Key
-2. 将生成的 API Key 复制到配置文件 `config/default.yaml` 中：
+1. Access the Elasticsearch console and create an API Key
+2. Copy the generated API Key to the configuration file `config/default.yaml`:
 
-![API Key 配置](images/img.png)
+![API Key Configuration](images/img.png)
 
-配置文件示例：
+Configuration file example:
 ```yaml
 es:
-  addresses: http://localhost:9200   # Elasticsearch 节点地址
-  aPIKey: "your-api-key-here"      # 将这里替换为你的 API Key
+  addresses: http://localhost:9200   # Elasticsearch node address
+  aPIKey: "your-api-key-here"      # Replace this with your API Key
 ```
 
-## 运行示例
+## Running Examples
 
-本示例提供了两种使用方式的演示：低级 API 和完全类型化 API。
+This example demonstrates two usage approaches: Low-level API and Fully-typed API.
 
-### 1. 低级 API 示例
+### 1. Low-level API Example
 
-运行命令：
+Run the command:
 ```bash
 go run ./low-level/main.go 
 ```
 
-执行结果：
+Execution result:
 ```log
 2025/03/26 16:22:16 created result: [200 OK] {"acknowledged":true,"shards_acknowledged":true,"index":"my_index"}
 2025/03/26 16:22:16 Index result: [201 Created] {"_index":"my_index","_id":"KH6L0ZUBb_HhHUd_hFDu","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"_seq_no":0,"_primary_term":1}
@@ -45,20 +51,20 @@ go run ./low-level/main.go
 2025/03/26 16:22:16 Delete result: [200 OK] {"acknowledged":true}
 ```
 
-示例演示了以下操作：
-1. 创建索引
-2. 添加文档
-3. 查询文档
-4. 删除索引
+The example demonstrates the following operations:
+1. Create an index
+2. Add a document
+3. Query a document
+4. Delete an index
 
-### 2. 完全类型化 API 示例
+### 2. Fully-typed API Example
 
-运行命令：
+Run the command:
 ```bash
 go run ./fully-typed/main.go
 ```
 
-执行结果：
+Execution result:
 ```log
 2025/03/26 16:23:01 created result: &create.Response{Acknowledged:true, Index:"my_index", ShardsAcknowledged:true}
 2025/03/26 16:23:01 Index result: &index.Response{ForcedRefresh:(*bool)(nil), Id_:"KX6M0ZUBb_HhHUd_NVAG", Index_:"my_index", PrimaryTerm_:(*int64)(0x1400000f038), Result:result.Result{Name:"created"}, SeqNo_:(*int64)(0x1400000f030), Shards_:types.ShardStatistics{Failed:0x0, Failures:[]types.ShardFailure(nil), Skipped:(*uint)(nil), Successful:0x1, Total:0x2}, Version_:1}
@@ -66,13 +72,13 @@ go run ./fully-typed/main.go
 2025/03/26 16:23:01 Delete result: &delete.Response{Acknowledged:true, Shards_:(*types.ShardStatistics)(nil)}
 ```
 
-完全类型化 API 提供了更好的类型安全性和 IDE 支持，推荐在生产环境中使用。
+The Fully-typed API provides better type safety and IDE support, recommended for production use.
 
-## 常见问题
+## Common Issues
 
-1. 如果遇到连接问题，请确保：
-   - Elasticsearch 服务已正常启动
-   - API Key 配置正确
-   - 防火墙未阻止相关端口
+1. If you encounter connection issues, please ensure:
+   - Elasticsearch service is running properly
+   - API Key is configured correctly
+   - Firewall is not blocking the relevant ports
 
-2. 如需了解更多配置选项，请参考 `es/README_CN.md` 文档。
+2. For more configuration options, please refer to the `es/README.md` documentation.

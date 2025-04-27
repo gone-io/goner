@@ -118,6 +118,7 @@ func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
 // fn: Function to create components
 // options: Loading options
 // Returns: Loading function that ensures single loading
+// Deprecated since v2.1.0, use gone.BuildSingProviderLoadFunc instead:
 func SingLoadProviderFunc[P any, T any](fn gone.FunctionProvider[P, T], options ...gone.Option) gone.LoadFunc {
 	return gone.BuildSingProviderLoadFunc(fn, options...)
 }

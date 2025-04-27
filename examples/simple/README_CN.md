@@ -1,3 +1,9 @@
+[//]: # (desc: 简单示例，使用viper提供配置读取)
+
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
 # Gone Simple 示例
 
 ## 项目概述

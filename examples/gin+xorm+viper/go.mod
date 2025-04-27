@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/go-sql-driver/mysql v1.9.2
-	github.com/gone-io/gone/v2 v2.0.14
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner/g v1.0.11
 	github.com/gone-io/goner/gin v1.0.11
 	github.com/gone-io/goner/tracer v1.0.11

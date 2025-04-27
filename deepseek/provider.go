@@ -51,37 +51,33 @@ func (c Config) ToDeepseekOptions(httpDoer g.HTTPDoer) []deepseek.Option {
 
 var clientMap sync.Map
 
-var (
-	provider = gone.WrapFunctionProvider(func(tagConf string, param struct {
-		configure gone.Configure `gone:"configure"`
-		httpDoer  g.HTTPDoer     `gone:"deepseek-proxies" option:"allowNil"`
-	}) (*deepseek.Client, error) {
-		if value, ok := clientMap.Load(tagConf); ok {
-			return value.(*deepseek.Client), nil
-		}
+func Provide(tagConf string, param struct {
+	configure gone.Configure `gone:"configure"`
+	httpDoer  g.HTTPDoer     `gone:"deepseek-proxies" option:"allowNil"`
+}) (*deepseek.Client, error) {
+	if value, ok := clientMap.Load(tagConf); ok {
+		return value.(*deepseek.Client), nil
+	}
 
-		var prefix = "deepseek"
-		_, keys := gone.TagStringParse(tagConf)
-		if len(keys) > 0 && keys[0] != "" {
-			prefix = strings.TrimSpace(keys[0])
-		}
-		var config Config
-		err := param.configure.Get(prefix, &config, "")
-		if err != nil {
-			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", prefix))
-		}
+	var prefix = "deepseek"
+	_, keys := gone.TagStringParse(tagConf)
+	if len(keys) > 0 && keys[0] != "" {
+		prefix = strings.TrimSpace(keys[0])
+	}
+	var config Config
+	err := param.configure.Get(prefix, &config, "")
+	if err != nil {
+		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", prefix))
+	}
 
-		client, err := deepseek.NewClientWithOptions(config.AuthToken, config.ToDeepseekOptions(param.httpDoer)...)
-		if err != nil {
-			return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("NewClientWithOptions by %s config err", prefix))
-		}
-		clientMap.Store(tagConf, client)
-		return client, nil
-	})
-
-	load = g.BuildOnceLoadFunc(g.L(provider))
-)
+	client, err := deepseek.NewClientWithOptions(config.AuthToken, config.ToDeepseekOptions(param.httpDoer)...)
+	if err != nil {
+		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("NewClientWithOptions by %s config err", prefix))
+	}
+	clientMap.Store(tagConf, client)
+	return client, nil
+}
 
 func Load(loader gone.Loader) error {
-	return load(loader)
+	return loader.Load(gone.WrapFunctionProvider(Provide))
 }

@@ -1,3 +1,9 @@
+[//]: # (desc: MCP 服务 使用 标准输入输出的例子)
+
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
 # Gone MCP Stdio 示例
 
 这是一个基于 Gone MCP 组件的 stdio 通信示例，展示了如何使用标准输入输出（stdio）方式创建 MCP 工具服务器和客户端。通过这个示例，你可以了解如何在需要进程间通信的场景中使用 Gone MCP 组件。

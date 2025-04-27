@@ -1,3 +1,8 @@
+[//]: # (simple web demo， 使用 gin, gorm, viper, mysql)
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
 # Gone框架 Gin+GORM+Viper 集成示例
 
 本示例展示了如何使用Gone框架与Gin、GORM和Viper组件集成，实现一个简单的Web应用程序。

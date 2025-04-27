@@ -9,8 +9,7 @@ func ClientLoad(loader gone.Loader) error {
 	return g.SingLoadProviderFunc(ProvideEtecd3Client)(loader)
 }
 
-var load = g.BuildOnceLoadFunc(g.F(ClientLoad), g.L(&Registry{}))
-
 func RegistryLoad(loader gone.Loader) error {
-	return load(loader)
+	loader.MustLoad(&Registry{})
+	return ClientLoad(loader)
 }

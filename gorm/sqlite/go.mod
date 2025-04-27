@@ -3,7 +3,7 @@ module github.com/gone-io/goner/gorm/sqlite
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.14
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner/viper v1.0.11
 	github.com/stretchr/testify v1.10.0
 	gorm.io/driver/sqlite v1.5.7

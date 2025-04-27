@@ -1,4 +1,6 @@
-<p align="left">
+[//]: # (desc: web demo: use gin, xorm, viper and xorm)
+
+<p>
    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
 </p>
 

@@ -14,10 +14,10 @@ github.com/go-faster/errors v0.7.1/go.mod h1:5ySTjWFiphBs07IKuiL69nxdfd5+fzh1u7F
 github.com/gogo/protobuf v1.3.2/go.mod h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/golang/snappy v0.0.1/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
-github.com/gone-io/gone/mock/v2 v2.0.13 h1:xrSGnf/0H9ZpMQay1laeLqgCKx71iUhMfxh2NwntrPA=
-github.com/gone-io/gone/mock/v2 v2.0.13/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
-github.com/gone-io/gone/v2 v2.0.14 h1:yEL76JWvW2b90s/UMSVbHSkv0q04Z4fEF/RHGZtIhs0=
-github.com/gone-io/gone/v2 v2.0.14/go.mod h1:pcy8mL3Ql16RLcDoK++jjHXu2ZCvddpKQSgw1JeSnc4=
+github.com/gone-io/gone/mock/v2 v2.1.0 h1:lFV6pfqGoJX6C6N/XPd3MniEkB+QoNkrB5KXvJl4CGY=
+github.com/gone-io/gone/mock/v2 v2.1.0/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
+github.com/gone-io/gone/v2 v2.1.0 h1:UH/QK7j9RVvEd0vqEFR+6Viil/5KbOeqNH6tfv+I6vg=
+github.com/gone-io/gone/v2 v2.1.0/go.mod h1:0sq/CIesYji/YSNE71m8sSe8EDIXRtio3NOasb4w45A=
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=

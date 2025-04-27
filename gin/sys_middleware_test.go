@@ -2,6 +2,7 @@ package gin
 
 import (
 	"bytes"
+	"github.com/gone-io/gone/mock/v2"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -140,7 +141,7 @@ func Test_SysMiddleware_process(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// Create a test context
 	w := httptest.NewRecorder()
@@ -180,7 +181,7 @@ func Test_SysMiddleware_recover(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockResponser := NewMockResponser(controller)
 
 	// Create a test context
@@ -214,7 +215,7 @@ func Test_SysMiddleware_log(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// Test cases for different log formats
 	tests := []struct {

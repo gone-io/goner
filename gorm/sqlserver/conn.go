@@ -2,7 +2,6 @@ package sqlserver
 
 import (
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/g"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 )
@@ -27,8 +26,6 @@ func (d *dial) Init() error {
 	return nil
 }
 
-var load = g.BuildOnceLoadFunc(g.L(&dial{}, gone.IsDefault(new(gorm.Dialector))))
-
 func Load(loader gone.Loader) error {
-	return load(loader)
+	return loader.Load(&dial{}, gone.IsDefault(new(gorm.Dialector)))
 }

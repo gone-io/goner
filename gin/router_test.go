@@ -1,6 +1,7 @@
 package gin
 
 import (
+	"github.com/gone-io/gone/mock/v2"
 	"net/http"
 	"testing"
 
@@ -19,7 +20,7 @@ func Test_router_Init(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Set up expectations
@@ -44,7 +45,7 @@ func Test_router_GetGinRouter(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Create router instance and initialize it
@@ -66,7 +67,7 @@ func Test_router_getR(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Create router instance and initialize it
@@ -94,7 +95,7 @@ func Test_router_Use(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Set up expectations
@@ -119,7 +120,7 @@ func Test_router_Group(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Set up expectations
@@ -145,7 +146,7 @@ func Test_router_Handle(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Set up expectations
@@ -170,7 +171,7 @@ func Test_router_HTTP_Methods(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Set up expectations
@@ -211,7 +212,7 @@ func Test_router_Any(t *testing.T) {
 	defer controller.Finish()
 
 	// Create mock objects
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 	mockProxy := NewMockHandleProxyToGin(controller)
 
 	// Set up expectations

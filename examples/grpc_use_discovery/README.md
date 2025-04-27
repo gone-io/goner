@@ -1,81 +1,87 @@
-# Gone框架 gRPC服务发现示例
+[//]: # (desc: Example of gRPC with Service Discovery)
 
-## 项目概述
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-本示例展示了如何在Gone框架中使用服务发现功能进行gRPC通信。示例包含一个服务端和一个客户端，服务端注册到Nacos服务发现中心，客户端通过服务名称而非具体IP地址来访问服务端。
+# Gone Framework gRPC Service Discovery Example
 
-## 功能特点
+## Project Overview
 
-- 演示基于Nacos的gRPC服务注册与发现
-- 展示gRPC客户端如何通过服务名称访问服务
-- 支持自动负载均衡（当有多个服务实例时）
-- 完全集成Gone框架的依赖注入特性
+This example demonstrates how to use service discovery functionality with gRPC communication in the Gone framework. The example includes a server and a client, where the server registers with the Nacos service discovery center, and the client accesses the server using a service name rather than a specific IP address.
 
-## 项目结构
+## Features
+
+- Demonstrates gRPC service registration and discovery based on Nacos
+- Shows how gRPC clients can access services using service names
+- Supports automatic load balancing (when multiple service instances are available)
+- Fully integrates with Gone framework's dependency injection features
+
+## Project Structure
 
 ```
 .
-├── client/             # 客户端代码
-│   └── main.go         # 客户端入口文件
-├── config/             # 配置文件目录
-│   └── default.yaml    # 默认配置文件
-├── docker-compose.yaml # Docker环境配置文件
-├── go.mod              # Go模块定义
-├── logs/               # 日志目录
-├── proto/              # 协议定义目录
-│   ├── hello.pb.go     # 生成的协议代码
-│   ├── hello.proto     # 协议定义文件
-│   └── hello_grpc.pb.go# 生成的gRPC代码
-└── server/             # 服务端代码
-    └── main.go         # 服务端入口文件
+├── client/             # Client code
+│   └── main.go         # Client entry file
+├── config/             # Configuration directory
+│   └── default.yaml    # Default configuration file
+├── docker-compose.yaml # Docker environment configuration
+├── go.mod              # Go module definition
+├── logs/               # Log directory
+├── proto/              # Protocol definition directory
+│   ├── hello.pb.go     # Generated protocol code
+│   ├── hello.proto     # Protocol definition file
+│   └── hello_grpc.pb.go# Generated gRPC code
+└── server/             # Server code
+    └── main.go         # Server entry file
 ```
 
-## 工作原理
+## How It Works
 
-### 服务发现流程
+### Service Discovery Flow
 
-1. 服务端启动时，通过Nacos注册中心注册自己的服务信息（服务名、IP地址、端口等）
-2. 客户端启动时，通过服务名称向Nacos查询服务地址
-3. Nacos返回服务的地址信息给客户端
-4. 客户端使用获取到的地址信息建立gRPC连接
-5. 当服务端实例发生变化时，客户端能够自动感知并更新连接
+1. When the server starts, it registers its service information (service name, IP address, port, etc.) with the Nacos registry center
+2. When the client starts, it queries Nacos for the service address using the service name
+3. Nacos returns the service address information to the client
+4. The client establishes a gRPC connection using the obtained address information
+5. When server instances change, the client automatically detects and updates connections
 
-### 关键组件
+### Key Components
 
-- **服务端**：实现gRPC服务并注册到Nacos
-- **客户端**：通过服务名称发现服务并建立连接
-- **Nacos**：提供服务注册与发现功能
-- **gRPC**：提供高性能的RPC通信
+- **Server**: Implements gRPC service and registers with Nacos
+- **Client**: Discovers and connects to services using service names
+- **Nacos**: Provides service registration and discovery functionality
+- **gRPC**: Provides high-performance RPC communication
 
-## 配置说明
+## Configuration Guide
 
-### 服务端配置
+### Server Configuration
 
-服务端在`config/default.yaml`中配置：
+Server configuration in `config/default.yaml`:
 
 ```yaml
 server:
   grpc:
-    port: 0  # 使用0表示随机端口
-    service-name: user-center  # 服务名称
+    port: 0  # Use 0 for random port
+    service-name: user-center  # Service name
 ```
 
-### 客户端配置
+### Client Configuration
 
-客户端通过依赖注入配置服务连接：
+Client configures service connection through dependency injection:
 
 ```go
-// 使用方法1：通过配置文件中的服务名称连接
+// Method 1: Connect using service name from configuration file
 clientConn *grpc.ClientConn `gone:"*,config=grpc.service.hello.address"`
 
-// 使用方法2：配置和地址一起使用，配置优先
+// Method 2: Use both configuration and address, configuration takes precedence
 //clientConn1 *grpc.ClientConn `gone:"*,config=grpc.service.hello.address,address=127.0.0.1:9091"`
 
-// 使用方法3：直接指定地址（不推荐，硬编码）
+// Method 3: Directly specify address (not recommended, hardcoded)
 //clientConn2 *grpc.ClientConn `gone:"*,address=127.0.0.1:9091"`
 ```
 
-### Nacos配置
+### Nacos Configuration
 
 ```yaml
 nacos:
@@ -95,79 +101,79 @@ nacos:
     clusterName: default
 ```
 
-## 运行示例
+## Running the Example
 
-### 前置条件
+### Prerequisites
 
-- 安装Docker和Docker Compose
-- 安装Go 1.16+
+- Docker and Docker Compose installed
+- Go 1.16+
 
-### 启动Nacos
+### Start Nacos
 
 ```bash
 docker-compose up -d nacos
 ```
 
-### 启动服务端
+### Start the Server
 
 ```bash
 cd server
 go run main.go
 ```
 
-### 启动客户端
+### Start the Client
 
 ```bash
 cd client
 go run main.go
 ```
 
-### 预期输出
+### Expected Output
 
-客户端输出示例：
+Client output example:
 ```
 2023/xx/xx xx:xx:xx say result: Hello gone
 2023/xx/xx xx:xx:xx say result: Hello gone
 ...
 ```
 
-服务端输出示例：
+Server output example:
 ```
 2023/xx/xx xx:xx:xx Received: gone
 2023/xx/xx xx:xx:xx Received: gone
 ...
 ```
 
-## 代码解析
+## Code Analysis
 
-### 服务端实现
+### Server Implementation
 
 ```go
 type server struct {
 	gone.Flag
-	proto.UnimplementedHelloServer              // 嵌入UnimplementedHelloServer
-	grpcServer                     *grpc.Server `gone:"*"` // 注入grpc.Server
+	proto.UnimplementedHelloServer              // Embed UnimplementedHelloServer
+	grpcServer                     *grpc.Server `gone:"*"` // Inject grpc.Server
 }
 
 func (s *server) Init() {
-	proto.RegisterHelloServer(s.grpcServer, s) //注册服务
+	proto.RegisterHelloServer(s.grpcServer, s) // Register service
 }
 
-// Say 实现协议中定义的服务
+// Say implements the service defined in the protocol
 func (s *server) Say(ctx context.Context, in *proto.SayRequest) (*proto.SayResponse, error) {
 	log.Printf("Received: %v", in.GetName())
 	return &proto.SayResponse{Message: "Hello " + in.GetName()}, nil
 }
 ```
 
-### 客户端实现
+### Client Implementation
 
 ```go
 type helloClient struct {
 	gone.Flag
-	proto.HelloClient // 使用方法1：嵌入HelloClient
+	proto.HelloClient // Method 1: Embed HelloClient
 
-	// 通过服务名称注入连接
+	// Inject connection using service name
 	clientConn *grpc.ClientConn `gone:"*,config=grpc.service.hello.address"`
 }
 
@@ -176,8 +182,8 @@ func (c *helloClient) Init() {
 }
 ```
 
-## 扩展阅读
+## Further Reading
 
-- [Gone框架文档](https://github.com/gone-io/gone)
-- [Nacos服务发现文档](https://nacos.io/zh-cn/docs/v2/guide/user/service-discovery.html)
-- [gRPC官方文档](https://grpc.io/docs/)
+- [Gone Framework Documentation](https://github.com/gone-io/gone)
+- [Nacos Service Discovery Documentation](https://nacos.io/en/docs/v2/guide/user/service-discovery.html)
+- [gRPC Official Documentation](https://grpc.io/docs/)

@@ -1,93 +1,99 @@
-# Consul 配置中心示例
-- [Consul 配置中心示例](#consul-配置中心示例)
-  - [项目结构](#项目结构)
-  - [前置条件](#前置条件)
-  - [快速开始](#快速开始)
-    - [1. 启动 Consul 服务](#1-启动-consul-服务)
-    - [2. 上传配置到 Consul](#2-上传配置到-consul)
-    - [3. 运行示例程序](#3-运行示例程序)
-  - [配置文件说明](#配置文件说明)
-    - [default.yaml](#defaultyaml)
-    - [application.yaml](#applicationyaml)
-    - [database.yaml](#databaseyaml)
-  - [代码示例](#代码示例)
-  - [配置变更监听](#配置变更监听)
-  - [注意事项](#注意事项)
-  - [相关链接](#相关链接)
+[//]: # (desc: Consul Configuration Center Example)
 
+<p align="left">
+   English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
+# Consul Configuration Center Example
 
-本示例展示了如何使用 Consul 作为配置中心，通过 Gone 框架的 viper 组件从 Consul 读取配置信息。
+- [Consul Configuration Center Example](#consul-configuration-center-example)
+    - [Project Structure](#project-structure)
+    - [Prerequisites](#prerequisites)
+    - [Quick Start](#quick-start)
+        - [1. Start Consul Service](#1-start-consul-service)
+        - [2. Upload Configuration to Consul](#2-upload-configuration-to-consul)
+        - [3. Run the Example Program](#3-run-the-example-program)
+    - [Configuration File Description](#configuration-file-description)
+        - [default.yaml](#defaultyaml)
+        - [application.yaml](#applicationyaml)
+        - [database.yaml](#databaseyaml)
+    - [Code Example](#code-example)
+    - [Configuration Change Monitoring](#configuration-change-monitoring)
+    - [Notes](#notes)
+    - [Related Links](#related-links)
 
-## 项目结构
+This example demonstrates how to use Consul as a configuration center and read configuration information from Consul
+using the viper component of the Gone framework.
+
+## Project Structure
 
 ```
 .
-├── config/                    # 本地配置目录
-│   └── default.yaml          # 默认配置文件，包含 Consul 连接信息
-├── consul-config-files/      # 将要上传到 Consul 的配置文件
-│   ├── application.yaml      # 应用配置
-│   └── database.yaml         # 数据库配置
-├── docker-compose.yaml       # 用于启动 Consul 服务的 Docker Compose 配置
-├── go.mod                    # Go 模块定义
-└── main.go                   # 示例程序入口
+├── config/                    # Local configuration directory
+│   └── default.yaml          # Default configuration file, including Consul connection information
+├── consul-config-files/      # Configuration files to be uploaded to Consul
+│   ├── application.yaml      # Application configuration
+│   └── database.yaml         # Database configuration
+├── docker-compose.yaml       # Docker Compose configuration for starting Consul service
+├── go.mod                    # Go module definition
+└── main.go                   # Example program entry
 ```
 
-## 前置条件
+## Prerequisites
 
-- 安装 Docker 和 Docker Compose
-- 安装 Go 1.16 或更高版本
+- Docker and Docker Compose installed
+- Go 1.16 or higher installed
 
-## 快速开始
+## Quick Start
 
-### 1. 启动 Consul 服务
+### 1. Start Consul Service
 
-使用 Docker Compose 启动 Consul 服务：
+Use Docker Compose to start the Consul service:
 
 ```bash
 docker-compose up -d
 ```
 
-这将启动一个 Consul 服务器，并在本地主机上暴露 8500 端口。
+This will start a Consul server and expose port 8500 on the local host.
 
-### 2. 上传配置到 Consul
+### 2. Upload Configuration to Consul
 
-访问 Consul UI：http://localhost:8500
+Access the Consul UI: http://localhost:8500
 
-在 Consul UI 中，创建以下键值对：
+In the Consul UI, create the following key-value pairs:
 
-- 键: `config/application.yaml`，值: 复制 `consul-config-files/application.yaml` 的内容
+- Key: `config/application.yaml`, Value: Copy the content of `consul-config-files/application.yaml`
 
 ![create-application-yaml](.assets/create-application-yaml.png)
 
-- 键: `config/database.yaml`，值: 复制 `consul-config-files/database.yaml` 的内容
+- Key: `config/database.yaml`, Value: Copy the content of `consul-config-files/database.yaml`
 
 ![create-database-yaml](.assets/create-database-yaml.png)
 
-或者，您可以使用 Consul CLI 或 API 上传配置。
+Alternatively, you can use the Consul CLI or API to upload the configuration.
 
-### 3. 运行示例程序
+### 3. Run the Example Program
 
 ```bash
 go run main.go
 ```
 
-## 配置文件说明
+## Configuration File Description
 
 ### default.yaml
 
 ```yaml
 viper.remote:
-  type: yaml                    # 配置文件类型
-  watch: true                   # 是否监听配置变更
-  watchDuration: 5s             # 监听间隔
-  useLocalConfIfKeyNotExist: true  # 如果远程键不存在，使用本地配置
+  type: yaml                    # Configuration file type
+  watch: true                   # Whether to listen for configuration changes
+  watchDuration: 5s             # Listening interval
+  useLocalConfIfKeyNotExist: true  # Use local configuration if remote key does not exist
   providers:
-    - provider: consul          # 使用 Consul 作为配置提供者
-      configType: yaml          # 配置文件类型
-      endpoint: http://localhost:8500  # Consul 服务地址
-      path: /config/application.yaml   # 配置路径
-      keyring:                  # 密钥环（可选）
+    - provider: consul          # Use Consul as the configuration provider
+      configType: yaml          # Configuration file type
+      endpoint: http://localhost:8500  # Consul service address
+      path: /config/application.yaml   # Configuration path
+      keyring:                  # Keyring (optional)
 
     - provider: consul
       configType: yaml
@@ -116,7 +122,7 @@ database:
   password: config-demo-password
 ```
 
-## 代码示例
+## Code Example
 
 ```go
 package main
@@ -135,7 +141,7 @@ type Database struct {
 
 func main() {
 	gone.
-		NewApp(remote.Load).  // 使用 remote.Load 加载远程配置
+		NewApp(remote.Load). // Use remote.Load to load remote configuration
 		Run(func(params struct {
 			serverName string `gone:"config,server.name"`
 			serverPort int    `gone:"config,server.port"`
@@ -147,7 +153,7 @@ func main() {
 
 			key string `gone:"config,key.not-existed-in-etcd"`
 		}) {
-			fmt.Printf("serverName=%s, serverPort=%d, dbUserName=%s, dbUserPass=%s, key=%s\n", 
+			fmt.Printf("serverName=%s, serverPort=%d, dbUserName=%s, dbUserPass=%s, key=%s\n",
 				params.serverName, params.serverPort, params.dbUserName, params.dbUserPass, params.key)
 
 			for i := 0; i < 10; i++ {
@@ -158,18 +164,22 @@ func main() {
 }
 ```
 
-## 配置变更监听
+## Configuration Change Monitoring
 
-本示例中启用了配置变更监听功能（`watch: true`），当您在 Consul 中修改配置后，应用程序会自动获取最新的配置值。示例程序每 10 秒打印一次数据库配置，您可以在运行过程中修改 Consul 中的配置，然后观察输出变化。
+This example enables configuration change monitoring (`watch: true`). When you modify the configuration in Consul, the
+application will automatically retrieve the latest configuration values. The example program prints the database
+configuration every 10 seconds, allowing you to observe changes in the output after modifying the Consul configuration
+during runtime.
 
-## 注意事项
+## Notes
 
-1. 确保 Consul 服务正常运行，且能够通过配置的 endpoint 访问。
-2. 如果配置中心不可用，且 `useLocalConfIfKeyNotExist` 设置为 true，系统将尝试使用本地配置。
-3. 生产环境中，建议配置 Consul 的认证和 TLS。
+1. Ensure that the Consul service is running normally and accessible through the configured endpoint.
+2. If the configuration center is unavailable and `useLocalConfIfKeyNotExist` is set to true, the system will attempt to
+   use the local configuration.
+3. In production environments, it is recommended to configure Consul authentication and TLS.
 
-## 相关链接
+## Related Links
 
-- [Gone 框架](https://github.com/gone-io/gone)
-- [Goner Viper/remote 组件](../../../viper/remote)
-- [Consul 官方文档](https://www.consul.io/docs)
+- [Gone Framework](https://github.com/gone-io/gone)
+- [Goner Viper/remote Component](../../../viper/remote)
+- [Consul Official Documentation](https://www.consul.io/docs)

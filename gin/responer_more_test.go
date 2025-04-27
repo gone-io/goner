@@ -1,6 +1,7 @@
 package gin
 
 import (
+	"github.com/gone-io/gone/mock/v2"
 	"net/http"
 	"testing"
 
@@ -91,7 +92,7 @@ func Test_responser_processChan_DifferentTypes(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟的 Logger
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{
@@ -206,7 +207,7 @@ func Test_responser_processChan_WriteError(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟的 Logger
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建 responser 实例
 	r := &responser{

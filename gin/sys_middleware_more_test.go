@@ -2,6 +2,8 @@ package gin
 
 import (
 	"bytes"
+	"github.com/gone-io/gone/mock/v2"
+	gMock "github.com/gone-io/goner/g/mock"
 	"net/http/httptest"
 	"testing"
 	"time"
@@ -17,7 +19,7 @@ func Test_SysMiddleware_Process_TraceId(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockTracer := NewMockTracer(controller)
+	mockTracer := gMock.NewMockTracer(controller)
 
 	// 创建测试上下文
 	w := httptest.NewRecorder()
@@ -80,7 +82,7 @@ func Test_SysMiddleware_requestLog_Scenarios(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 测试场景1: 完整的请求日志
 	w := httptest.NewRecorder()
@@ -204,7 +206,7 @@ func Test_SysMiddleware_responseLog_Scenarios(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 测试场景1: 完整的响应日志
 	w := httptest.NewRecorder()
@@ -285,7 +287,7 @@ func Test_SysMiddleware_stat(t *testing.T) {
 	defer controller.Finish()
 
 	// 创建模拟对象
-	mockLogger := NewMockLogger(controller)
+	mockLogger := mock.NewMockLogger(controller)
 
 	// 创建测试上下文
 	w := httptest.NewRecorder()

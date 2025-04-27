@@ -6,7 +6,7 @@ require (
 	github.com/bytedance/sonic v1.13.2
 	github.com/goccy/go-json v0.10.5
 	github.com/gomodule/redigo v1.9.2
-	github.com/gone-io/gone/v2 v2.0.14
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.10.0

@@ -1,4 +1,6 @@
-<p align="left">
+[//]: # (desc: web demo: 使用 gin、xorm、viper 和 xorm)
+
+<p>
     <a href="README.md">English</a>&nbsp ｜&nbsp 中文
 </p>
 

@@ -90,7 +90,7 @@ func Test_serverProvider_Init(t *testing.T) {
 		}()
 
 		gone.
-			NewApp(serverLoad).
+			NewApp(ServerLoad).
 			Load(&iTool{}).
 			Load(&iPrompt{}).
 			Load(&iResource{}).
@@ -116,7 +116,7 @@ func Test_serverProvider_Init(t *testing.T) {
 		}()
 
 		gone.
-			NewApp(serverLoad).
+			NewApp(ServerLoad).
 			Load(&iTool{}).
 			Load(&iPrompt{}).
 			Load(&iResource{}).
@@ -233,7 +233,7 @@ func Test_serverProvider_Provide(t *testing.T) {
 				defer tt.before()()
 			}
 			gone.
-				NewApp(serverLoad).
+				NewApp(ServerLoad).
 				Loads(func(loader gone.Loader) error {
 					if tt.loader != nil {
 						return tt.loader(loader)
