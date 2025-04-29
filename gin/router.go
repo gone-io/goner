@@ -3,6 +3,8 @@ package gin
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"net/http"
 )
 
@@ -15,12 +17,14 @@ type router struct {
 	r  gin.IRouter
 	*gin.Engine
 
-	htmlTpl string `gone:"config,server.html-tpl-pattern"`
-	mode    string `gone:"config,server.mode,default=release"`
+	htmlTpl     string `gone:"config,server.html-tpl-pattern"`
+	mode        string `gone:"config,server.mode,default=release"`
+	serviceName string `gone:"config,server.service-name=gin"`
 
-	log              gone.Logger `gone:"*"`
+	log              gone.Logger          `gone:"*"`
+	middlewares      []Middleware         `gone:"*"`
+	isOtelLogLoaded  g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
 	HandleProxyToGin `gone:"gone-gin-proxy"`
-	middlewares      []Middleware `gone:"*"`
 }
 
 type logWriter struct {
@@ -45,6 +49,10 @@ func (r *router) GonerName() string {
 func (r *router) Init() error {
 	gin.SetMode(r.mode)
 	r.Engine = gin.New()
+
+	if r.isOtelLogLoaded {
+		r.Engine.Use(otelgin.Middleware(r.serviceName))
+	}
 
 	//use middlewares
 	if wares := r.getMiddlewaresFunc(); len(wares) > 0 {
