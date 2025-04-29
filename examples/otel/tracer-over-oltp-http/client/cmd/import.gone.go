@@ -3,5 +3,5 @@
 package main
 
 import (
-	_ "examples/otel/tracer/client"
+	_ "github.com/gone-io/goner/otel/tracer/http/client"
 )

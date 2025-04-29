@@ -7,6 +7,7 @@ import (
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 type ctr struct {
@@ -24,7 +25,9 @@ func (c *ctr) Mount() (err g.MountError) {
 			Name string `json:"name"`
 		} `gone:"http,body"`
 	}) string {
-		x, span := tracer.Start(ctx, "hello")
+		//println(ctx.Value("X-Trace-Id"))
+		//println(ctx.Request.Context().Value("X-Trace-Id"))
+		x, span := tracer.Start(ctx.Request.Context(), "hello")
 		defer span.End()
 
 		return SayHello(x, i.req.Name)
@@ -36,5 +39,6 @@ func SayHello(context context.Context, name string) string {
 	tracer := otel.Tracer(tracerName)
 	_, span := tracer.Start(context, "say-hello")
 	defer span.End()
+	span.SetAttributes(attribute.Key("SayHelloName").String(name))
 	return fmt.Sprintf("hello, %s", name)
 }

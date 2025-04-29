@@ -13,10 +13,11 @@ import (
 
 type providerHelper struct {
 	gone.Flag
-	resource      *resource.Resource `gone:"*" option:"allowNil"`
-	traceExporter trace.SpanExporter `gone:"*" option:"allowNil"`
-	afterStop     gone.AfterStop     `gone:"*"`
-	logger        gone.Logger        `gone:"*"`
+	resource       *resource.Resource        `gone:"*" option:"allowNil"`
+	traceExporter  trace.SpanExporter        `gone:"*" option:"allowNil"`
+	afterStop      gone.AfterStop            `gone:"*"`
+	logger         gone.Logger               `gone:"*"`
+	resourceGetter otelHelper.ResourceGetter `gone:"*"`
 }
 
 func (s *providerHelper) Init() (err error) {
@@ -38,6 +39,12 @@ func (s *providerHelper) Init() (err error) {
 	}
 	if s.resource != nil {
 		options = append(options, trace.WithResource(s.resource))
+	} else {
+		res, err := s.resourceGetter.Get()
+		if err != nil {
+			return gone.ToErrorWithMsg(err, "can not get resource")
+		}
+		options = append(options, trace.WithResource(res))
 	}
 	traceProvider := trace.NewTracerProvider(options...)
 	otel.SetTracerProvider(traceProvider)

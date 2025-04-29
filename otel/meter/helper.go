@@ -13,11 +13,12 @@ import (
 
 type providerHelper struct {
 	gone.Flag
-	resource  *resource.Resource `gone:"*" option:"allowNil"`
-	exporter  metric.Exporter    `gone:"*" option:"allowNil"`
-	reader    metric.Reader      `gone:"*" option:"allowNil"`
-	afterStop gone.AfterStop     `gone:"*"`
-	logger    gone.Logger        `gone:"*"`
+	resource       *resource.Resource        `gone:"*" option:"allowNil"`
+	exporter       metric.Exporter           `gone:"*" option:"allowNil"`
+	reader         metric.Reader             `gone:"*" option:"allowNil"`
+	afterStop      gone.AfterStop            `gone:"*"`
+	logger         gone.Logger               `gone:"*"`
+	resourceGetter otelHelper.ResourceGetter `gone:"*"`
 }
 
 func (s *providerHelper) Init() (err error) {
@@ -42,6 +43,12 @@ func (s *providerHelper) Init() (err error) {
 
 	if s.resource != nil {
 		options = append(options, metric.WithResource(s.resource))
+	} else {
+		res, err := s.resourceGetter.Get()
+		if err != nil {
+			return gone.ToErrorWithMsg(err, "can not get resource")
+		}
+		options = append(options, metric.WithResource(res))
 	}
 
 	meterProvider := metric.NewMeterProvider(options...)

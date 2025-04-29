@@ -14,10 +14,11 @@ import (
 type helper struct {
 	gone.Flag
 
-	resource  *resource.Resource `gone:"*" option:"allowNil"`
-	exporter  log.Exporter       `gone:"*" option:"allowNil"`
-	logger    gone.Logger        `gone:"*"`
-	afterStop gone.AfterStop     `gone:"*"`
+	resource       *resource.Resource        `gone:"*" option:"allowNil"`
+	exporter       log.Exporter              `gone:"*" option:"allowNil"`
+	logger         gone.Logger               `gone:"*"`
+	afterStop      gone.AfterStop            `gone:"*"`
+	resourceGetter otelHelper.ResourceGetter `gone:"*"`
 }
 
 func (s *helper) Init() (err error) {
@@ -36,6 +37,12 @@ func (s *helper) Init() (err error) {
 
 	if s.resource != nil {
 		options = append(options, log.WithResource(s.resource))
+	} else {
+		res, err := s.resourceGetter.Get()
+		if err != nil {
+			return gone.ToErrorWithMsg(err, "can not get resource")
+		}
+		options = append(options, log.WithResource(res))
 	}
 
 	provider := log.NewLoggerProvider(options...)
