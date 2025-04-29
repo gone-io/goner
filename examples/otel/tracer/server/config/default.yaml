@@ -1,0 +1,6 @@
+
+otel:
+  tracer:
+    http:
+      endpoint: localhost:4318
+      insecure: true
