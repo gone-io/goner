@@ -179,3 +179,11 @@ func App(name string, loadFuncs ...gone.LoadFunc) (app *gone.Application) {
 	}
 	return app
 }
+
+func Must[T any](fn func(T) error) func(T) {
+	return func(t T) {
+		if err := fn(t); err != nil {
+			panic(err)
+		}
+	}
+}
