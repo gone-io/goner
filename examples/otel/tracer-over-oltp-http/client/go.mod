@@ -1,4 +1,4 @@
-module github.com/gone-io/goner/otel/tracer/http/client
+module examples/otel/tracer/oltp/http/client
 
 go 1.24.1
 
@@ -17,6 +17,7 @@ replace (
 	github.com/gone-io/goner/otel/tracer => ../../../../otel/tracer
 	github.com/gone-io/goner/otel/tracer/http => ../../../../otel/tracer/http
 	github.com/gone-io/goner/urllib => ../../../../urllib
+	github.com/gone-io/goner/viper => ../../../../viper
 )
 
 require (

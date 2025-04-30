@@ -18,6 +18,7 @@ replace (
 	github.com/gone-io/goner/otel => ../../../../otel
 	github.com/gone-io/goner/otel/tracer => ../../../../otel/tracer
 	github.com/gone-io/goner/otel/tracer/http => ../../../../otel/tracer/http
+	github.com/gone-io/goner/viper => ../../../../viper
 )
 
 require (

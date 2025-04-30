@@ -1,7 +1,7 @@
 
 otel:
   service:
-    name: "hello-client"
+    name: "http-hello-client"
     version: "1.0.0"
   tracer:
     http:

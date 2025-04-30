@@ -1,7 +1,7 @@
 
 otel:
   service:
-    name: "hello-server"
+    name: "http-hello-server"
     version: "1.0.0"
   tracer:
     http:
