@@ -1,0 +1,13 @@
+server:
+  grpc:
+    port: 50051
+
+
+otel:
+  service:
+    name: "grpc-hello-server"
+    version: "1.0.0"
+  tracer:
+    http:
+      endpoint: localhost:4317
+      insecure: true
