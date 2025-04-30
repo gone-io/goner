@@ -3,23 +3,23 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/resolver"
-	"reflect"
-
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/resolver"
 )
 
 type clientRegister struct {
 	gone.Flag
-	logger      gone.Logger        `gone:"*"`
-	clients     []Client           `gone:"*"`
-	grpcOptions []grpc.DialOption  `gone:"*"`
-	tracer      g.Tracer           `gone:"*" option:"allowNil"`
-	discovery   g.ServiceDiscovery `gone:"*" option:"allowNil"`
+	logger             gone.Logger          `gone:"*"`
+	clients            []Client             `gone:"*"`
+	grpcOptions        []grpc.DialOption    `gone:"*"`
+	tracer             g.Tracer             `gone:"*" option:"allowNil"`
+	discovery          g.ServiceDiscovery   `gone:"*" option:"allowNil"`
+	isOtelTracerLoaded g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
 
 	connections map[string]*grpc.ClientConn
 	rb          resolver.Builder
@@ -62,6 +62,9 @@ func (s *clientRegister) createConn(address string) (conn *grpc.ClientConn, err 
 	if s.insecure {
 		options = append(options, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
+	if s.isOtelTracerLoaded {
+		options = append(options, grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
+	}
 
 	if s.rb != nil {
 		options = append(options,
@@ -77,24 +80,20 @@ func (s *clientRegister) createConn(address string) (conn *grpc.ClientConn, err 
 }
 
 // getConn 根据不同的地址创建 grpc.ClientConn
-func (s *clientRegister) getConn(address string) (conn *grpc.ClientConn, err error) {
+func (s *clientRegister) getConn(address string) (conn *grpc.ClientConn) {
 	conn = s.connections[address]
 	if conn == nil {
-		if conn, err = s.createConn(address); err != nil {
-			return nil, gone.ToError(err)
-		}
+		var err error
+		conn, err = s.createConn(address)
+		g.PanicIfErr(gone.ToErrorWithMsg(err, fmt.Sprintf("gRPC createConn for %s", address)))
 		s.connections[address] = conn
 	}
 	return
 }
 
-func (s *clientRegister) register(client Client) error {
-	conn, err := s.getConn(client.Address())
-	if err != nil {
-		return err
-	}
+func (s *clientRegister) register(client Client) {
+	conn := s.getConn(client.Address())
 	client.Stub(conn)
-	return nil
 }
 
 // Provide 根据不同的配置创建 grpc.ClientConn
@@ -102,31 +101,26 @@ func (s *clientRegister) Provide(tagConf string) (*grpc.ClientConn, error) {
 	m, _ := gone.TagStringParse(tagConf)
 	address := m["address"]
 	if configKey, ok := m["config"]; ok {
-		if err := s.configure.Get(configKey, &address, address); err != nil {
-			return nil, gone.ToError(err)
-		}
+		err := s.configure.Get(configKey, &address, address)
+		g.PanicIfErr(gone.ToErrorWithMsg(err, "get address from configure err"))
 	}
 	if address == "" {
 		return nil, gone.ToError("address is empty")
 	}
-	return s.getConn(address)
+	return s.getConn(address), nil
 }
 
 func (s *clientRegister) Start() error {
 	for _, c := range s.clients {
-		s.logger.Infof("register gRPC client %v on address %v\n", reflect.ValueOf(c).Type().String(), c.Address())
-		if err := s.register(c); err != nil {
-			return err
-		}
+		s.logger.Infof("register gRPC client %T on address %v", c, c.Address())
+		s.register(c)
 	}
 	return nil
 }
 
 func (s *clientRegister) Stop() error {
 	for _, conn := range s.connections {
-		if err := conn.Close(); err != nil {
-			return err
-		}
+		g.ErrorPrinter(s.logger, conn.Close(), "close gRPC client err")
 	}
 	return nil
 }

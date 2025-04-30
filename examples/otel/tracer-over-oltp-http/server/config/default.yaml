@@ -1,0 +1,9 @@
+
+otel:
+  service:
+    name: "http-hello-server"
+    version: "1.0.0"
+  tracer:
+    http:
+      endpoint: localhost:4318
+      insecure: true

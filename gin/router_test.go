@@ -29,14 +29,12 @@ func Test_router_Init(t *testing.T) {
 
 	// Create router instance
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
 	}
 
-	// Test Init method
-	err := r.Init()
-	assert.Nil(t, err)
+	r.Init()
 	assert.NotNil(t, r.Engine)
 }
 
@@ -50,9 +48,11 @@ func Test_router_GetGinRouter(t *testing.T) {
 
 	// Create router instance and initialize it
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
+		isOtelLogLoaded:  true,
+		htmlTpl:          "./testdata/html/*.html",
 	}
 	r.Init()
 
@@ -72,7 +72,7 @@ func Test_router_getR(t *testing.T) {
 
 	// Create router instance and initialize it
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
 	}
@@ -104,7 +104,7 @@ func Test_router_Use(t *testing.T) {
 
 	// Create router instance and initialize it
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
 	}
@@ -129,7 +129,7 @@ func Test_router_Group(t *testing.T) {
 
 	// Create router instance and initialize it
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
 	}
@@ -155,7 +155,7 @@ func Test_router_Handle(t *testing.T) {
 
 	// Create router instance and initialize it
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
 	}
@@ -180,7 +180,7 @@ func Test_router_HTTP_Methods(t *testing.T) {
 
 	// Create router instance and initialize it
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
 	}
@@ -221,7 +221,7 @@ func Test_router_Any(t *testing.T) {
 
 	// Create router instance and initialize it
 	r := &router{
-		log:              mockLogger,
+		logger:           mockLogger,
 		HandleProxyToGin: mockProxy,
 		mode:             "test",
 	}
@@ -267,4 +267,32 @@ func Test_router_getMiddlewaresFunc(t *testing.T) {
 	// Test getMiddlewaresFunc method
 	funcs := r.getMiddlewaresFunc()
 	assert.Equal(t, 1, len(funcs))
+}
+
+func Test_debugWriter(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	logger := mock.NewMockLogger(controller)
+	logger.EXPECT().Debugf(gomock.Any(), gomock.Any()).DoAndReturn(func(format string, args ...any) {
+		assert.Equal(t, []byte("test"), args[0])
+	})
+
+	writer := debugWriter(logger)
+	n, err := writer.Write([]byte("test"))
+	assert.Nil(t, err)
+	assert.Equal(t, 4, n)
+}
+
+func Test_errorWriter(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	logger := mock.NewMockLogger(controller)
+	logger.EXPECT().Errorf(gomock.Any(), gomock.Any()).DoAndReturn(func(format string, args ...any) {
+		assert.Equal(t, []byte("test"), args[0])
+	})
+
+	writer := errorWriter(logger)
+	n, err := writer.Write([]byte("test"))
+	assert.Nil(t, err)
+	assert.Equal(t, 4, n)
 }

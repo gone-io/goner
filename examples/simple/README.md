@@ -46,7 +46,7 @@ This is a minimal example project for the Gone framework, demonstrating its basi
 First, install the Gone framework's configuration component:
 
 ```bash
-gonectr install github.com/gone-io/goner/viper
+gonectl install github.com/gone-io/goner/viper
 ```
 
 ### 2. Run the Project
@@ -54,7 +54,7 @@ gonectr install github.com/gone-io/goner/viper
 Execute in the project root directory:
 
 ```bash
-gonectr run ./cmd
+gonectl run ./cmd
 ```
 
 ### 3. Expected Output

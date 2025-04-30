@@ -2,6 +2,8 @@ package grpc
 
 import (
 	"context"
+	"github.com/gone-io/gone/mock/v2"
+	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc"
 	"testing"
 
@@ -109,4 +111,30 @@ func TestServer_Provide(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_server_recoveryInterceptor(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	logger := mock.NewMockLogger(controller)
+	s := server{
+		logger: logger,
+	}
+
+	t.Run("panic", func(t *testing.T) {
+		logger.EXPECT().Errorf(gomock.Any(), gomock.Any())
+		resp, err := s.recoveryInterceptor(context.Background(), nil, nil, func(ctx context.Context, req interface{}) (interface{}, error) {
+			panic("panic")
+		})
+		assert.Nil(t, resp)
+		assert.Error(t, err)
+	})
+	t.Run("normal", func(t *testing.T) {
+		resp, err := s.recoveryInterceptor(context.Background(), nil, nil, func(ctx context.Context, req interface{}) (interface{}, error) {
+			return "test", nil
+		})
+		assert.Equal(t, "test", resp)
+		assert.NoError(t, err)
+	})
 }

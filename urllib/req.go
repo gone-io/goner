@@ -1,27 +1,60 @@
 package urllib
 
 import (
+	"context"
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"github.com/imroc/req/v3"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
+	"net/http"
+	"net/http/httptrace"
 	"path/filepath"
 )
 
 type r struct {
 	gone.Flag
 	*req.Client
-	tracer g.Tracer       `gone:"*" option:"allowNil"`
-	lb     g.LoadBalancer `gone:"*" option:"allowNil"`
-	logger gone.Logger    `gone:"*"`
+	logger          gone.Logger          `gone:"*"`
+	tracer          g.Tracer             `gone:"*" option:"allowNil"`
+	lb              g.LoadBalancer       `gone:"*" option:"allowNil"`
+	isOtelLogLoaded g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
 
 	innerServicePattern string `gone:"config,urllib.inner-service-pattern=*"`
 	requestIdKey        string `gone:"config,urllib.req.x-request-id-key=X-Request-Id"`
 	tracerIdKey         string `gone:"config,urllib.req.x-trace-id-key=X-Trace-Id"`
 }
 
+var tracerName = "urllib"
+
 func (r *r) trip(rt req.RoundTripper) req.RoundTripFunc {
+	tracer := otel.Tracer(tracerName)
+
 	return func(req *req.Request) (resp *req.Response, err error) {
+		var ctx context.Context
+		var span trace.Span
+		if r.isOtelLogLoaded {
+			ctx, span = tracer.Start(req.Context(), fmt.Sprintf("%s %s", req.Method, req.URL.Path))
+			defer span.End()
+
+			span.SetAttributes(
+				attribute.String("http.url", req.URL.String()),
+				attribute.String("http.method", req.Method),
+				attribute.String("http.req.header", req.HeaderToString()),
+			)
+			if len(req.Body) > 0 {
+				span.SetAttributes(
+					attribute.String("http.req.body", string(req.Body)),
+				)
+			}
+			req.SetContext(ctx)
+		}
+
 		matched, err := filepath.Match(r.innerServicePattern, req.URL.Host)
 		if err != nil {
 			r.logger.Errorf("match inner service err: %v", err.Error())
@@ -48,18 +81,40 @@ func (r *r) trip(rt req.RoundTripper) req.RoundTripFunc {
 		}
 
 		resp, err = rt.RoundTrip(req)
+
+		if span != nil && r.isOtelLogLoaded {
+			if err != nil {
+				span.RecordError(err)
+				span.SetStatus(codes.Error, err.Error())
+			}
+			if resp.Response != nil {
+				span.SetAttributes(
+					attribute.Int("http.status_code", resp.StatusCode),
+					attribute.String("http.resp.header", resp.HeaderToString()),
+					attribute.String("http.resp.body", resp.String()),
+				)
+			}
+		}
 		return
 	}
 }
 
 func (r *r) Init() error {
-	r.Client = req.C()
-	r.Client.WrapRoundTripFunc(r.trip)
+	r.Client = r.C()
 	return nil
 }
 
 func (r *r) C() *req.Client {
-	c := req.C()
-	c.WrapRoundTripFunc(r.trip)
-	return c
+	client := req.C()
+	if r.isOtelLogLoaded {
+		client.Transport.WrapRoundTripFunc(func(rt http.RoundTripper) req.HttpRoundTripFunc {
+			return otelhttp.NewTransport(rt,
+				otelhttp.WithClientTrace(func(ctx context.Context) *httptrace.ClientTrace {
+					return otelhttptrace.NewClientTrace(ctx)
+				}),
+			).RoundTrip
+		})
+	}
+	client.WrapRoundTripFunc(r.trip)
+	return client
 }

@@ -3,6 +3,7 @@ package gin
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"reflect"
 )
 
@@ -13,21 +14,8 @@ type Context struct {
 
 type ResponseWriter = gin.ResponseWriter
 
-type HandlerFunc any
-
-type IRoutes interface {
-	Use(...HandlerFunc) IRoutes
-
-	Handle(string, string, ...HandlerFunc) IRoutes
-	Any(string, ...HandlerFunc) IRoutes
-	GET(string, ...HandlerFunc) IRoutes
-	POST(string, ...HandlerFunc) IRoutes
-	DELETE(string, ...HandlerFunc) IRoutes
-	PATCH(string, ...HandlerFunc) IRoutes
-	PUT(string, ...HandlerFunc) IRoutes
-	OPTIONS(string, ...HandlerFunc) IRoutes
-	HEAD(string, ...HandlerFunc) IRoutes
-}
+type HandlerFunc = g.HandlerFunc
+type IRoutes = g.IRoutes
 
 type IRouter interface {
 	IRoutes
@@ -49,14 +37,9 @@ type RouterGroupName string
 
 type OriginContent = gin.Context
 
-type MountError error
+type MountError = g.MountError
 
-// Controller interface, implemented by business code, used to mount and handle routes
-// For usage reference [example code](https://gitlab.openviewtech.com/gone/gone-example/-/tree/master/gone-app)
-type Controller interface {
-	// Mount Route mount interface, this interface will be called before the service starts, the implementation of this function should usually return `nil`
-	Mount() MountError
-}
+type Controller = g.Controller
 
 // HandleProxyToGin Proxy, provides a proxy function to convert `gone.HandlerFunc` to `gin.HandlerFunc`
 // Inject `gin.HandleProxyToGin` using Id: sys-gone-proxy (`gin.SystemGoneProxy`)

@@ -46,7 +46,7 @@
 首先安装 Gone 框架的配置组件：
 
 ```bash
-gonectr install github.com/gone-io/goner/viper
+gonectl install github.com/gone-io/goner/viper
 ```
 
 ### 2. 运行项目
@@ -54,7 +54,7 @@ gonectr install github.com/gone-io/goner/viper
 在项目根目录下执行：
 
 ```bash
-gonectr run ./cmd
+gonectl run ./cmd
 ```
 
 ### 3. 预期输出

@@ -190,19 +190,16 @@ func TestClientRegister_CreateConn(t *testing.T) {
 
 func TestClientRegister_GetConn(t *testing.T) {
 	tests := []struct {
-		name          string
-		address       string
-		expectedError bool
+		name    string
+		address string
 	}{
 		{
-			name:          "获取已缓存的连接",
-			address:       ":0",
-			expectedError: false,
+			name:    "获取已缓存的连接",
+			address: ":0",
 		},
 		{
-			name:          "创建新连接",
-			address:       ":1",
-			expectedError: false,
+			name:    "创建新连接",
+			address: ":1",
 		},
 	}
 
@@ -214,22 +211,14 @@ func TestClientRegister_GetConn(t *testing.T) {
 			}
 
 			// 第一次获取连接
-			conn1, err := register.getConn(tt.address)
-			if tt.expectedError {
-				assert.Error(t, err)
-				assert.Nil(t, conn1)
-				return
-			}
-			assert.NoError(t, err)
+			conn1 := register.getConn(tt.address)
+			defer conn1.Close()
+
 			assert.NotNil(t, conn1)
 
 			// 第二次获取相同地址的连接
-			conn2, err := register.getConn(tt.address)
-			assert.NoError(t, err)
+			conn2 := register.getConn(tt.address)
 			assert.Equal(t, conn1, conn2, "应返回缓存的连接实例")
-
-			// 清理
-			conn1.Close()
 		})
 	}
 }

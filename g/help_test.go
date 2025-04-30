@@ -309,3 +309,120 @@ func TestApp(t *testing.T) {
 		})
 	}
 }
+
+func TestResultError(t *testing.T) {
+	type args[T any] struct {
+		t   *T
+		err error
+		msg string
+	}
+	type testCase[T any] struct {
+		name    string
+		args    args[T]
+		want    *T
+		wantErr assert.ErrorAssertionFunc
+	}
+	type X struct {
+	}
+	tests := []testCase[X]{
+		{
+			name: "success",
+			args: args[X]{
+				t:   new(X),
+				err: nil,
+				msg: "test",
+			},
+			want: new(X),
+			wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+				return assert.NoError(t, err)
+			},
+		},
+		{
+			name: "error",
+			args: args[X]{
+				t:   new(X),
+				err: errors.New("test"),
+				msg: "test",
+			},
+			want: nil,
+			wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+				return assert.Error(t, err)
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ResultError(tt.args.t, tt.args.err, tt.args.msg)
+			if !tt.wantErr(t, err, fmt.Sprintf("ResultError(%v, %v, %v)", tt.args.t, tt.args.err, tt.args.msg)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "ResultError(%v, %v, %v)", tt.args.t, tt.args.err, tt.args.msg)
+		})
+	}
+}
+
+func TestPanicIfErr(t *testing.T) {
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name      string
+		args      args
+		wantPanic bool
+	}{
+		{
+			name: "success",
+			args: args{
+				err: nil,
+			},
+			wantPanic: false,
+		},
+		{
+			name: "error",
+			args: args{
+				err: errors.New("test"),
+			},
+			wantPanic: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if r := recover(); r != nil {
+					assert.True(t, tt.wantPanic, "PanicIfErr(%v) panic", tt.args.err)
+				} else {
+					assert.False(t, tt.wantPanic, "PanicIfErr(%v) not panic", tt.args.err)
+				}
+			}()
+			PanicIfErr(tt.args.err)
+		})
+	}
+}
+
+func TestErrorPrinter(t *testing.T) {
+	type args struct {
+		logger gone.Logger
+		err    error
+		msg    string
+		args   []any
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "success",
+			args: args{
+				logger: gone.GetDefaultLogger(),
+				err:    errors.New("test"),
+				msg:    "test",
+				args:   []any{"test"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ErrorPrinter(tt.args.logger, tt.args.err, tt.args.msg, tt.args.args...)
+		})
+	}
+}

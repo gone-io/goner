@@ -1,3 +1,3 @@
 package _interface
 
-//go:generate gonectr mock -p=mock -s=. -d=./mock
+//go:generate gonectl mock -p=mock -s=. -d=./mock

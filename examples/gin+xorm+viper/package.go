@@ -4,4 +4,4 @@ import (
 	_ "github.com/go-sql-driver/mysql" //导入mysql驱动
 )
 
-//go:generate gonectr generate
+//go:generate gonectl generate

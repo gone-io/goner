@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"net"
+	"net/http"
 	"reflect"
 )
 
@@ -22,17 +23,15 @@ func Recover(logger gone.Logger) {
 // GetLocalIps gets all non-loopback IPv4 addresses of the local machine
 // Returns: List of all available IPv4 addresses
 func GetLocalIps() []net.IP {
-	if addrs, err := net.InterfaceAddrs(); err != nil {
-		panic(gone.ToErrorWithMsg(err, "cannot get ip address"))
-	} else {
-		var ips []net.IP
-		for _, addr := range addrs {
-			if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
-				ips = append(ips, ipnet.IP)
-			}
+	addrs, err := net.InterfaceAddrs()
+	PanicIfErr(err)
+	var ips []net.IP
+	for _, addr := range addrs {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+			ips = append(ips, ipnet.IP)
 		}
-		return ips
 	}
+	return ips
 }
 
 // LoadOp struct encapsulates loading operations
@@ -65,32 +64,11 @@ func F(loadFunc gone.LoadFunc) *LoadOp {
 	}
 }
 
-var m = make(map[gone.Loader]map[string]struct{})
-
-func isNotFirstLoaded(loader gone.Loader, key string) bool {
-	var opsMap map[string]struct{}
-	var ok bool
-	if opsMap, ok = m[loader]; !ok {
-		opsMap = make(map[string]struct{})
-		m[loader] = opsMap
-	}
-	if _, ok = opsMap[key]; !ok {
-		opsMap[key] = struct{}{}
-		return false
-	}
-	return true
-}
-
 // BuildOnceLoadFunc builds a loading function that executes only once
 // ops: List of LoadOps to execute
 // Returns: Loading function that ensures single execution
 func BuildOnceLoadFunc(ops ...*LoadOp) gone.LoadFunc {
-	k := fmt.Sprintf("%#v", ops)
 	return func(loader gone.Loader) error {
-		if isNotFirstLoaded(loader, k) {
-			return nil
-		}
-
 		for _, op := range ops {
 			if op.goner != nil {
 				err := loader.Load(
@@ -178,4 +156,25 @@ func App(name string, loadFuncs ...gone.LoadFunc) (app *gone.Application) {
 		appMap[name] = app
 	}
 	return app
+}
+
+// PanicIfErr panics if an error occurs
+func PanicIfErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+// ResultError return wrapped error if error occurs, otherwise returns the result
+func ResultError[T any](t *T, err error, msg string) (*T, error) {
+	if err != nil {
+		return nil, gone.NewInnerErrorSkip(fmt.Sprintf("%s: %v", msg, err), http.StatusInternalServerError, 3)
+	}
+	return t, nil
+}
+
+func ErrorPrinter(logger gone.Logger, err error, msg string, args ...any) {
+	if err != nil {
+		logger.Errorf("%v", gone.ToErrorWithMsg(err, fmt.Sprintf(msg, args...)))
+	}
 }
