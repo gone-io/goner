@@ -2,10 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/gone-io/gone/v2"
+	"example/grpc/proto"
 	gone_grpc "github.com/gone-io/goner/grpc"
 	"google.golang.org/grpc"
-	"grpc_demo/proto"
 	"log"
 	"os"
 )

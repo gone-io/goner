@@ -2,12 +2,11 @@ package main
 
 import (
 	"context"
+	"example/grpc/proto"
 	"fmt"
-	"github.com/gone-io/gone/v2"
 	gone_grpc "github.com/gone-io/goner/grpc"
 	"github.com/gone-io/goner/viper"
 	"google.golang.org/grpc"
-	"grpc_demo/proto"
 	"log"
 )
 
