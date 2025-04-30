@@ -398,3 +398,31 @@ func TestPanicIfErr(t *testing.T) {
 		})
 	}
 }
+
+func TestErrorPrinter(t *testing.T) {
+	type args struct {
+		logger gone.Logger
+		err    error
+		msg    string
+		args   []any
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "success",
+			args: args{
+				logger: gone.GetDefaultLogger(),
+				err:    errors.New("test"),
+				msg:    "test",
+				args:   []any{"test"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ErrorPrinter(tt.args.logger, tt.args.err, tt.args.msg, tt.args.args...)
+		})
+	}
+}

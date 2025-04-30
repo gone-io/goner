@@ -172,3 +172,9 @@ func ResultError[T any](t *T, err error, msg string) (*T, error) {
 	}
 	return t, nil
 }
+
+func ErrorPrinter(logger gone.Logger, err error, msg string, args ...any) {
+	if err != nil {
+		logger.Errorf("%v", gone.ToErrorWithMsg(err, fmt.Sprintf(msg, args...)))
+	}
+}
