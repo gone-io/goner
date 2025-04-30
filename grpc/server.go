@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"net"
 	"reflect"
 
@@ -23,12 +24,13 @@ func newServer() gone.Goner {
 
 type server struct {
 	gone.Flag
-	logger       gone.Logger         `gone:"*"`
-	grpcServices []Service           `gone:"*"`
-	grpcOptions  []grpc.ServerOption `gone:"*"`
-	cMuxServer   g.Cmux              `gone:"*" option:"allowNil"`
-	tracer       g.Tracer            `gone:"*" option:"allowNil"`
-	registry     g.ServiceRegistry   `gone:"*" option:"allowNil"`
+	logger             gone.Logger          `gone:"*"`
+	grpcServices       []Service            `gone:"*"`
+	grpcOptions        []grpc.ServerOption  `gone:"*"`
+	cMuxServer         g.Cmux               `gone:"*" option:"allowNil"`
+	tracer             g.Tracer             `gone:"*" option:"allowNil"`
+	registry           g.ServiceRegistry    `gone:"*" option:"allowNil"`
+	isOtelTracerLoaded g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
 
 	port             int    `gone:"config,server.grpc.port,default=9090"`
 	host             string `gone:"config,server.grpc.host,default=0.0.0.0"`
@@ -70,6 +72,9 @@ func (s *server) Init() error {
 		s.traceInterceptor,
 		s.recoveryInterceptor,
 	))
+	if s.isOtelTracerLoaded {
+		options = append(options, grpc.StatsHandler(otelgrpc.NewServerHandler()))
+	}
 
 	s.grpcServer = grpc.NewServer(options...)
 	return nil

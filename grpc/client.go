@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/resolver"
 	"reflect"
@@ -15,11 +16,12 @@ import (
 
 type clientRegister struct {
 	gone.Flag
-	logger      gone.Logger        `gone:"*"`
-	clients     []Client           `gone:"*"`
-	grpcOptions []grpc.DialOption  `gone:"*"`
-	tracer      g.Tracer           `gone:"*" option:"allowNil"`
-	discovery   g.ServiceDiscovery `gone:"*" option:"allowNil"`
+	logger             gone.Logger          `gone:"*"`
+	clients            []Client             `gone:"*"`
+	grpcOptions        []grpc.DialOption    `gone:"*"`
+	tracer             g.Tracer             `gone:"*" option:"allowNil"`
+	discovery          g.ServiceDiscovery   `gone:"*" option:"allowNil"`
+	isOtelTracerLoaded g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
 
 	connections map[string]*grpc.ClientConn
 	rb          resolver.Builder
@@ -61,6 +63,9 @@ func (s *clientRegister) createConn(address string) (conn *grpc.ClientConn, err 
 	var options = append(s.grpcOptions, grpc.WithChainUnaryInterceptor(s.traceInterceptor))
 	if s.insecure {
 		options = append(options, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	}
+	if s.isOtelTracerLoaded {
+		options = append(options, grpc.WithStatsHandler(otelgrpc.NewClientHandler()))
 	}
 
 	if s.rb != nil {
