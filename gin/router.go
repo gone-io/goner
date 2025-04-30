@@ -13,17 +13,17 @@ var incr = 0
 type router struct {
 	gone.Flag
 
-	id int
-	r  gin.IRouter
-	*gin.Engine
+	id              int
+	r               gin.IRouter
+	*gin.Engine     `gone:"*" option:"allowNil"`
+	isOtelLogLoaded g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
+	logger          gone.Logger          `gone:"*"`
+	middlewares     []Middleware         `gone:"*"`
 
 	htmlTpl     string `gone:"config,server.html-tpl-pattern"`
 	mode        string `gone:"config,server.mode,default=release"`
 	serviceName string `gone:"config,server.service-name=gin"`
 
-	log              gone.Logger          `gone:"*"`
-	middlewares      []Middleware         `gone:"*"`
-	isOtelLogLoaded  g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
 	HandleProxyToGin `gone:"gone-gin-proxy"`
 }
 
@@ -33,6 +33,23 @@ type logWriter struct {
 
 func (w logWriter) Write(p []byte) (n int, err error) {
 	return w.write(p)
+}
+
+func debugWriter(logger gone.Logger) logWriter {
+	return logWriter{
+		write: func(p []byte) (n int, err error) {
+			logger.Debugf("%s", p)
+			return len(p), nil
+		},
+	}
+}
+func errorWriter(logger gone.Logger) logWriter {
+	return logWriter{
+		write: func(p []byte) (n int, err error) {
+			logger.Errorf("%s", p)
+			return len(p), nil
+		},
+	}
 }
 
 func (r *router) getMiddlewaresFunc() (list []gin.HandlerFunc) {
@@ -46,36 +63,24 @@ func (r *router) GonerName() string {
 	return IdGoneGinRouter
 }
 
-func (r *router) Init() error {
-	gin.SetMode(r.mode)
-	r.Engine = gin.New()
+func (r *router) Init() {
+	if r.Engine == nil {
+		gin.SetMode(r.mode)
+		r.Engine = gin.New()
+	}
 
 	if r.isOtelLogLoaded {
 		r.Engine.Use(otelgin.Middleware(r.serviceName))
 	}
 
-	//use middlewares
-	if wares := r.getMiddlewaresFunc(); len(wares) > 0 {
-		r.Engine.Use(r.getMiddlewaresFunc()...)
-	}
+	r.Engine.Use(r.getMiddlewaresFunc()...)
 
 	if r.htmlTpl != "" {
 		r.Engine.LoadHTMLGlob(r.htmlTpl)
 	}
 
-	gin.DefaultWriter = logWriter{
-		write: func(p []byte) (n int, err error) {
-			r.log.Debugf("%s", p)
-			return len(p), nil
-		},
-	}
-	gin.DefaultErrorWriter = logWriter{
-		write: func(p []byte) (n int, err error) {
-			r.log.Errorf("%s", p)
-			return len(p), nil
-		},
-	}
-	return nil
+	gin.DefaultWriter = debugWriter(r.logger)
+	gin.DefaultErrorWriter = errorWriter(r.logger)
 }
 
 func (r *router) GetGinRouter() gin.IRouter {

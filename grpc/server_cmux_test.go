@@ -43,8 +43,7 @@ func Test_server_cmux_integration(t *testing.T) {
 		cMuxServer:   cMuxServer,
 	}
 
-	err := s.Init()
-	assert.NoError(t, err)
+	s.Init()
 	assert.NotNil(t, s.listener)
 }
 
@@ -66,22 +65,20 @@ func Test_server_service_discovery(t *testing.T) {
 		registry:         registry,
 		serviceName:      "test-service",
 		serviceUseSubNet: "127.0.0.1/24",
-		createListener: func(s *server) error {
-			s.listener = listener
-			return nil
+		createListener: func(host string, port int) net.Listener {
+			return listener
 		},
 		getLocalIps: func() []net.IP {
 			return []net.IP{net.ParseIP("127.0.0.1")}
 		},
 	}
 
-	err := s.Init()
-	assert.NoError(t, err)
+	s.Init()
 
-	unregFn := s.regService()
-	assert.NotNil(t, unregFn)
+	undo := s.regService()
+	assert.NotNil(t, undo)
 
-	err = unregFn()
+	err := undo()
 	assert.NoError(t, err)
 }
 

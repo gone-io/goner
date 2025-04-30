@@ -13,13 +13,14 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-func createListener(s *server) (err error) {
-	s.listener, err = net.Listen("tcp", fmt.Sprintf("%s:%d", s.host, s.port))
-	return
+func mustCreateListener(host string, port int) net.Listener {
+	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", host, port))
+	g.PanicIfErr(gone.ToErrorWithMsg(err, fmt.Sprintf("create listener for %s:%d", host, port)))
+	return listener
 }
 
 func newServer() gone.Goner {
-	return &server{createListener: createListener, getLocalIps: g.GetLocalIps}
+	return &server{createListener: mustCreateListener, getLocalIps: g.GetLocalIps}
 }
 
 type server struct {
@@ -40,7 +41,7 @@ type server struct {
 
 	grpcServer     *grpc.Server
 	listener       net.Listener
-	createListener func(*server) error
+	createListener func(host string, port int) net.Listener
 	unRegService   func() error
 	getLocalIps    func() []net.IP
 }
@@ -56,28 +57,23 @@ func (s *server) getAddress() string {
 	return s.listener.Addr().String()
 }
 
-func (s *server) initListener() error {
+func (s *server) initListener() {
 	if s.cMuxServer != nil {
 		s.listener = s.cMuxServer.MatchFor(g.GRPC)
-		return nil
+		return
 	}
-	return s.createListener(s)
+	s.listener = s.createListener(s.host, s.port)
 }
-func (s *server) Init() error {
-	if err := s.initListener(); err != nil {
-		return gone.ToError(err)
-	}
-
-	options := append(s.grpcOptions, grpc.ChainUnaryInterceptor(
-		s.traceInterceptor,
-		s.recoveryInterceptor,
-	))
+func (s *server) Init() {
+	s.initListener()
+	options := append(
+		s.grpcOptions,
+		grpc.ChainUnaryInterceptor(s.traceInterceptor, s.recoveryInterceptor),
+	)
 	if s.isOtelTracerLoaded {
 		options = append(options, grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	}
-
 	s.grpcServer = grpc.NewServer(options...)
-	return nil
 }
 
 func (s *server) Provide() (*grpc.Server, error) {
@@ -119,10 +115,7 @@ func (s *server) regService() func() error {
 			if ipnet.Contains(ip) {
 				service := g.NewService(s.serviceName, ip.String(), port, g.Metadata{"grpc": "true"}, true, 100)
 				err := s.registry.Register(service)
-				if err != nil {
-					s.logger.Errorf("register gRPC service %s failed: %v", s.serviceName, err)
-					panic(err)
-				}
+				g.PanicIfErr(gone.ToErrorWithMsg(err, fmt.Sprintf("register gRPC service %s failed", s.serviceName)))
 				s.logger.Debugf("Register gRPC service %s success with %s:%d", service.GetName(), service.GetIP(), service.GetPort())
 				return func() error {
 					return gone.ToError(s.registry.Deregister(service))
@@ -147,17 +140,12 @@ func (s *server) Start() error {
 
 func (s *server) server() {
 	s.logger.Infof("gRPC server now listen at %s", s.getAddress())
-	if err := s.grpcServer.Serve(s.listener); err != nil {
-		s.logger.Errorf("failed to serve: %v", err)
-	}
+	g.ErrorPrinter(s.logger, s.grpcServer.Serve(s.listener), "failed to serve")
 }
 
 func (s *server) Stop() error {
 	if s.unRegService != nil {
-		err := s.unRegService()
-		if err != nil {
-			s.logger.Errorf("unregister gRPC service %s failed: %v", s.serviceName, err)
-		}
+		g.ErrorPrinter(s.logger, s.unRegService(), "unregister gRPC service %s failed:", s.serviceName)
 	}
 	s.grpcServer.Stop()
 	return nil
