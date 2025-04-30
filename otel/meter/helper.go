@@ -7,6 +7,7 @@ import (
 	otelHelper "github.com/gone-io/goner/otel"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/stdout/stdoutmetric"
+	otelMetric "go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 )
@@ -28,28 +29,22 @@ func (s *providerHelper) Init() (err error) {
 	} else {
 		exporter := s.exporter
 		if exporter == nil {
-			exporter, err = stdoutmetric.New(
+			exporter, _ = stdoutmetric.New(
 				stdoutmetric.WithPrettyPrint(),
 				stdoutmetric.WithoutTimestamps(),
 			)
-			if err != nil {
-				return gone.ToErrorWithMsg(err, "can not create stdout trace exporter")
-			}
 		}
 		reader = metric.NewPeriodicReader(exporter)
 	}
 
 	var options = []metric.Option{metric.WithReader(reader)}
 
-	if s.resource != nil {
-		options = append(options, metric.WithResource(s.resource))
-	} else {
-		res, err := s.resourceGetter.Get()
-		if err != nil {
+	if s.resource == nil {
+		if s.resource, err = s.resourceGetter.Get(); err != nil {
 			return gone.ToErrorWithMsg(err, "can not get resource")
 		}
-		options = append(options, metric.WithResource(res))
 	}
+	options = append(options, metric.WithResource(s.resource))
 
 	meterProvider := metric.NewMeterProvider(options...)
 	s.afterStop(func() {
@@ -66,6 +61,10 @@ func (s *providerHelper) Provide(_ string) (g.IsOtelMeterLoaded, error) {
 
 // Register for openTelemetry openTelemetry MeterProvider
 func Register(loader gone.Loader) error {
+	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelMetric.Meter, error) {
+		name, _ := gone.ParseGoneTag(tagConf)
+		return otel.Meter(name), nil
+	}))
 	loader.MustLoad(&providerHelper{})
 	return otelHelper.HelpSetPropagator(loader)
 }

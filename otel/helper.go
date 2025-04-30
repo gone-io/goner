@@ -15,9 +15,8 @@ type ResourceGetter interface {
 
 type helper struct {
 	gone.Flag
-	propagators    []propagation.TextMapPropagator `gone:"*"`
-	serviceName    string                          `gone:"config,otel.service.name"`
-	serviceVersion string                          `gone:"config,otel.service.version"`
+	propagators []propagation.TextMapPropagator `gone:"*"`
+	serviceName string                          `gone:"config,otel.service.name"`
 }
 
 func (s *helper) Init() {
@@ -36,9 +35,6 @@ func (s *helper) Get() (*resource.Resource, error) {
 	var options []attribute.KeyValue
 	if s.serviceName != "" {
 		options = append(options, semconv.ServiceNameKey.String(s.serviceName))
-	}
-	if s.serviceVersion != "" {
-		options = append(options, semconv.ServiceVersionKey.String(s.serviceVersion))
 	}
 	if len(options) > 0 {
 		return resource.Merge(

@@ -6,6 +6,7 @@ import (
 	"github.com/gone-io/goner/g"
 	otelHelper "github.com/gone-io/goner/otel"
 	"go.opentelemetry.io/otel/exporters/stdout/stdoutlog"
+	otelLog "go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/log/global"
 	"go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -24,13 +25,10 @@ type helper struct {
 func (s *helper) Init() (err error) {
 	exporter := s.exporter
 	if exporter == nil {
-		exporter, err = stdoutlog.New(
+		exporter, _ = stdoutlog.New(
 			stdoutlog.WithPrettyPrint(),
 			stdoutlog.WithoutTimestamps(),
 		)
-		if err != nil {
-			return gone.ToErrorWithMsg(err, "can not create stdout log exporter")
-		}
 	}
 
 	var options = []log.LoggerProviderOption{log.WithProcessor(log.NewBatchProcessor(exporter))}
@@ -63,6 +61,11 @@ func (s *helper) Provide(_ string) (g.IsOtelLogLoaded, error) {
 
 // Register for openTelemetry LoggerProvider
 func Register(loader gone.Loader) error {
+	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelLog.Logger, error) {
+		name, _ := gone.ParseGoneTag(tagConf)
+		return global.Logger(name), nil
+	}))
+
 	loader.MustLoad(&helper{})
 	return otelHelper.HelpSetPropagator(loader)
 }

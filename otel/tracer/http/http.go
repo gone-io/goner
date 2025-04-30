@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/otel/tracer"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/sdk/trace"
@@ -68,22 +69,18 @@ func (c *Config) ToOtelOptions(options []otlptracehttp.Option) []otlptracehttp.O
 func Provide(_ string, i struct {
 	logger gone.Logger                          `gone:"*"`
 	config Config                               `gone:"config,otel.tracer.http"`
-	proxy  otlptracehttp.HTTPTransportProxyFunc `gone:"otel.http.proxy" option:"allowNil"`
+	proxy  otlptracehttp.HTTPTransportProxyFunc `gone:"*" option:"allowNil"`
 }) (trace.SpanExporter, error) {
 	var options []otlptracehttp.Option
 	if i.proxy != nil {
 		options = append(options, otlptracehttp.WithProxy(i.proxy))
 	}
 
-	traceExporter, err := otlptracehttp.New(
+	exporter, err := otlptracehttp.New(
 		context.Background(),
 		i.config.ToOtelOptions(options)...,
 	)
-
-	if err != nil {
-		return nil, gone.ToErrorWithMsg(err, "can not create stdout trace exporter")
-	}
-	return traceExporter, nil
+	return g.ResultError(exporter, err, "can not create oltp/http trace exporter")
 }
 
 // Load for openTelemetry http trace.SpanExporter

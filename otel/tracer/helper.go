@@ -9,6 +9,7 @@ import (
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
+	otelTrace "go.opentelemetry.io/otel/trace"
 )
 
 type providerHelper struct {
@@ -23,13 +24,10 @@ type providerHelper struct {
 func (s *providerHelper) Init() (err error) {
 	traceExporter := s.traceExporter
 	if traceExporter == nil {
-		traceExporter, err = stdouttrace.New(
+		traceExporter, _ = stdouttrace.New(
 			stdouttrace.WithPrettyPrint(),
 			stdouttrace.WithoutTimestamps(),
 		)
-		if err != nil {
-			return gone.ToErrorWithMsg(err, "can not create stdout trace exporter")
-		}
 	}
 
 	var options = []trace.TracerProviderOption{
@@ -37,15 +35,12 @@ func (s *providerHelper) Init() (err error) {
 			s.traceExporter,
 		),
 	}
-	if s.resource != nil {
-		options = append(options, trace.WithResource(s.resource))
-	} else {
-		res, err := s.resourceGetter.Get()
-		if err != nil {
+	if s.resource == nil {
+		if s.resource, err = s.resourceGetter.Get(); err != nil {
 			return gone.ToErrorWithMsg(err, "can not get resource")
 		}
-		options = append(options, trace.WithResource(res))
 	}
+	options = append(options, trace.WithResource(s.resource))
 	traceProvider := trace.NewTracerProvider(options...)
 	otel.SetTracerProvider(traceProvider)
 	s.afterStop(func() {
@@ -62,6 +57,11 @@ func (s *providerHelper) Provide(_ string) (g.IsOtelTracerLoaded, error) {
 
 // Register for openTelemetry TracerProvider
 func Register(loader gone.Loader) error {
+	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelTrace.Tracer, error) {
+		name, _ := gone.ParseGoneTag(tagConf)
+		return otel.Tracer(name), nil
+	}))
+
 	loader.MustLoad(&providerHelper{})
 	return otelHelper.HelpSetPropagator(loader)
 }

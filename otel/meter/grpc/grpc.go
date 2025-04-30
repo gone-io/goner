@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/otel/meter"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
 	"go.opentelemetry.io/otel/sdk/metric"
@@ -79,10 +80,7 @@ func Provide(_ string, i struct {
 		i.config.ToOtelOptions(options)...,
 	)
 
-	if err != nil {
-		return nil, gone.ToErrorWithMsg(err, "can not create stdout trace exporter")
-	}
-	return exporter, nil
+	return g.ResultError(exporter, err, "can not create oltp/grpc metric exporter")
 }
 
 // Load for openTelemetry grpc metric.Exporter

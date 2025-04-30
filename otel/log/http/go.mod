@@ -3,7 +3,7 @@ module github.com/gone-io/goner/otel/log/http
 go 1.24.1
 
 require (
-	github.com/gone-io/goner/g v1.1.1 // indirect
+	github.com/gone-io/goner/g v1.1.1
 	github.com/gone-io/goner/otel v1.1.1 // indirect
 	github.com/gone-io/goner/otel/log v1.1.1
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.11.0
@@ -38,4 +38,12 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250218202821-56aae31c358a // indirect
 	google.golang.org/grpc v1.71.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
+)
+
+require github.com/stretchr/testify v1.10.0
+
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
