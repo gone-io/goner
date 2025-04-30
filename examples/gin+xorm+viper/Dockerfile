@@ -11,7 +11,7 @@ RUN sed 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' -i /etc/apk/repositories
 
 RUN apk add git
 
-RUN --mount=type=cache,target=/go,id=go go install github.com/gone-io/gonectr@latest && \
+RUN --mount=type=cache,target=/go,id=go go install github.com/gone-io/gonectl@latest && \
     go install go.uber.org/mock/mockgen@latest
 
 COPY ["go.mod", "go.sum", "./"]
