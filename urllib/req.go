@@ -100,28 +100,21 @@ func (r *r) trip(rt req.RoundTripper) req.RoundTripFunc {
 }
 
 func (r *r) Init() error {
-	r.Client = req.C()
-
-	if r.isOtelLogLoaded {
-		transport := r.Client.GetTransport()
-
-		xTransport := otelhttp.NewTransport(
-			http.DefaultTransport,
-			otelhttp.WithClientTrace(func(ctx context.Context) *httptrace.ClientTrace {
-				return otelhttptrace.NewClientTrace(ctx)
-			}),
-		)
-		r.Client.Transport = transport.WrapRoundTripFunc(func(rt http.RoundTripper) req.HttpRoundTripFunc {
-			return xTransport.RoundTrip
-		})
-	}
-
-	r.Client.WrapRoundTripFunc(r.trip)
+	r.Client = r.C()
 	return nil
 }
 
 func (r *r) C() *req.Client {
-	c := req.C()
-	c.WrapRoundTripFunc(r.trip)
-	return c
+	client := req.C()
+	if r.isOtelLogLoaded {
+		client.Transport.WrapRoundTripFunc(func(rt http.RoundTripper) req.HttpRoundTripFunc {
+			return otelhttp.NewTransport(rt,
+				otelhttp.WithClientTrace(func(ctx context.Context) *httptrace.ClientTrace {
+					return otelhttptrace.NewClientTrace(ctx)
+				}),
+			).RoundTrip
+		})
+	}
+	client.WrapRoundTripFunc(r.trip)
+	return client
 }
