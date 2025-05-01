@@ -56,12 +56,18 @@ func (s *helper) Init() (err error) {
 	return nil
 }
 
-func (s *helper) Provide(_ string) (g.IsOtelLogLoaded, error) {
+type isOtelLogLoadedProvider struct {
+	gone.Flag
+}
+
+func (s *isOtelLogLoadedProvider) Provide(_ string) (g.IsOtelLogLoaded, error) {
 	return true, nil
 }
 
 // Register for openTelemetry LoggerProvider
 func Register(loader gone.Loader) error {
+	loader.MustLoad(&isOtelLogLoadedProvider{})
+
 	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelLog.Logger, error) {
 		name, _ := gone.ParseGoneTag(tagConf)
 		return global.Logger(name), nil
