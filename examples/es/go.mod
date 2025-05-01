@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/elastic/go-elasticsearch/v8 v8.17.1
-	github.com/gone-io/gone/v2 v2.0.11
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner/es v1.1.1
 	github.com/gone-io/goner/viper v1.1.1
 )

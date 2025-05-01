@@ -7,7 +7,7 @@ require (
 	github.com/gone-io/gone/mock/v2 v2.1.0
 	github.com/gone-io/gone/v2 v2.1.0
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/mock v0.5.1
+	go.uber.org/mock v0.5.2
 	gorm.io/gorm v1.25.12
 )
 
