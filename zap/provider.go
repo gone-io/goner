@@ -3,6 +3,8 @@ package gone_zap
 import (
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
+	"go.opentelemetry.io/contrib/bridges/otelzap"
+	"go.opentelemetry.io/otel/log/global"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -58,10 +60,14 @@ type zapLoggerProvider struct {
 	rotationMaxAge      int    `gone:"config,log.rotation.max-age,default=30"`
 	rotationLocalTime   bool   `gone:"config,log.rotation.local-time,default=true"`
 	rotationCompress    bool   `gone:"config,log.rotation.compress,default=false"`
+	otelEnable          bool   `gone:"config,log.otel.enable=false"`
+	otelOnly            bool   `gone:"config,log.otel.only=true"`
+	otelLogName         string `gone:"config,log.otel.log-name=zap"`
 
-	beforeStop  gone.BeforeStop `gone:"*"`
-	tracer      g.Tracer        `gone:"*" option:"allowNil"`
-	atomicLevel *atomicLevel    `gone:"*"`
+	tracer          g.Tracer          `gone:"*" option:"allowNil"`
+	isOtelLogLoaded g.IsOtelLogLoaded `gone:"*" option:"allowNil"`
+	atomicLevel     *atomicLevel      `gone:"*"`
+	beforeStop      gone.BeforeStop   `gone:"*"`
 
 	zapLogger *zap.Logger
 }
@@ -85,10 +91,7 @@ func (s *zapLoggerProvider) Init() error {
 		}
 		s.zapLogger = logger
 		s.beforeStop(func() {
-			err := s.zapLogger.Sync()
-			if err != nil {
-				gone.GetDefaultLogger().Errorf("failed to sync logger:%v", err)
-			}
+			g.ErrorPrinter(gone.GetDefaultLogger(), s.zapLogger.Sync(), "zapLogger.Sync")
 		})
 	}
 	return nil
@@ -98,12 +101,10 @@ func (s *zapLoggerProvider) SetLevel(level zapcore.Level) {
 	s.atomicLevel.SetLevel(level)
 }
 
-func (s *zapLoggerProvider) create() (*zap.Logger, error) {
+func (s *zapLoggerProvider) createFileCore() (core zapcore.Core) {
 	outputs := strings.Split(s.output, ",")
 	sink, closeOut, err := zap.Open(outputs...)
-	if err != nil {
-		return nil, gone.ToError(err)
-	}
+	g.PanicIfErr(gone.ToErrorWithMsg(err, "create zap output sink"))
 
 	if s.rotationOutput != "" {
 		rotationWriter := zapcore.AddSync(&lumberjack.Logger{
@@ -123,7 +124,7 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		errSink, _, err = zap.Open(errOutputs...)
 		if err != nil {
 			closeOut()
-			return nil, gone.ToError(err)
+			g.PanicIfErr(gone.ToErrorWithMsg(err, "create zap error sink"))
 		}
 	}
 
@@ -154,7 +155,7 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		encoder = NewTraceEncoder(encoder, s.tracer)
 	}
 
-	core := zapcore.NewCore(
+	core = zapcore.NewCore(
 		encoder,
 		sink,
 		s.atomicLevel,
@@ -170,16 +171,35 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 			),
 		)
 	}
+	return core
+}
 
+func (s *zapLoggerProvider) createCore() (core zapcore.Core) {
+	if bool(s.isOtelLogLoaded) && s.otelEnable {
+		provider := global.GetLoggerProvider()
+		core = otelzap.NewCore("otelLogName", otelzap.WithLoggerProvider(provider))
+
+		if !s.otelOnly {
+			core = zapcore.NewTee(
+				core,
+				s.createFileCore(),
+			)
+		}
+	} else {
+		core = s.createFileCore()
+	}
+	return core
+}
+
+func (s *zapLoggerProvider) create() (*zap.Logger, error) {
+	var core = s.createCore()
 	var opts []Option
 	if !s.disableStacktrace {
 		opts = append(opts, zap.AddStacktrace(parseLevel(s.stackTraceLevel)))
 	}
-
 	if s.reportCaller {
 		opts = append(opts, zap.AddCaller())
 	}
-
 	logger := zap.New(core, opts...)
 	return logger, nil
 }
