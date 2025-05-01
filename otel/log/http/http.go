@@ -67,7 +67,7 @@ func (c *Config) ToOtelOptions(options []otlploghttp.Option) []otlploghttp.Optio
 }
 
 func Provide(_ string, i struct {
-	config Config                             `gone:"config,otel.meter.http"`
+	config Config                             `gone:"config,otel.log.http"`
 	proxy  otlploghttp.HTTPTransportProxyFunc `gone:"otel.http.proxy" option:"allowNil"`
 }) (log.Exporter, error) {
 	var options []otlploghttp.Option

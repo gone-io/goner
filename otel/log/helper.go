@@ -17,7 +17,7 @@ type helper struct {
 
 	resource       *resource.Resource        `gone:"*" option:"allowNil"`
 	exporter       log.Exporter              `gone:"*" option:"allowNil"`
-	logger         gone.Logger               `gone:"*"`
+	logger         gone.Logger               `gone:"*" option:"lazy"`
 	afterStop      gone.AfterStop            `gone:"*"`
 	resourceGetter otelHelper.ResourceGetter `gone:"*"`
 }
@@ -46,9 +46,10 @@ func (s *helper) Init() (err error) {
 	provider := log.NewLoggerProvider(options...)
 
 	s.afterStop(func() {
-		if err := provider.Shutdown(context.Background()); err != nil {
-			s.logger.Errorf("otel logger provider helper: shutdown err: %v", err)
-		}
+		ctx := context.Background()
+		err := provider.ForceFlush(ctx)
+		g.ErrorPrinter(s.logger, err, "provider.ForceFlush")
+		g.ErrorPrinter(s.logger, provider.Shutdown(ctx), "otel logger provider helper shutdown")
 	})
 
 	global.SetLoggerProvider(provider)

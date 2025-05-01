@@ -65,7 +65,7 @@ func (c *Config) ToOtelOptions(options []otlploggrpc.Option) []otlploggrpc.Optio
 }
 
 func Provide(_ string, i struct {
-	config Config                           `gone:"config,otel.meter.grpc"`
+	config Config                           `gone:"config,otel.log.grpc"`
 	creds  credentials.TransportCredentials `gone:"otel.grpc.creds" option:"allowNil"`
 }) (log.Exporter, error) {
 	var options []otlploggrpc.Option
