@@ -11,38 +11,38 @@ import (
 	"strings"
 )
 
-type wrappedLogger struct {
-	*zap.Logger
-}
-
-func (l *wrappedLogger) sugar() *zap.SugaredLogger {
-	return l.Logger.Sugar()
-}
-
-func (l *wrappedLogger) Named(s string) Logger {
-	if s == "" {
-		return l
-	}
-	return &wrappedLogger{Logger: l.Logger.Named(s)}
-}
-func (l *wrappedLogger) WithOptions(opts ...Option) Logger {
-	if len(opts) == 0 {
-		return l
-	}
-	return &wrappedLogger{Logger: l.Logger.WithOptions(opts...)}
-}
-func (l *wrappedLogger) With(fields ...Field) Logger {
-	if len(fields) == 0 {
-		return l
-	}
-	return &wrappedLogger{Logger: l.Logger.With(fields...)}
-}
-func (l *wrappedLogger) Sugar() gone.Logger {
-	SugaredLogger := l.Logger.Sugar()
-	return &sugar{
-		SugaredLogger: SugaredLogger,
-	}
-}
+//type wrappedLogger struct {
+//	*zap.Logger
+//}
+//
+//func (l *wrappedLogger) sugar() *zap.SugaredLogger {
+//	return l.Logger.Sugar()
+//}
+//
+//func (l *wrappedLogger) Named(s string) Logger {
+//	if s == "" {
+//		return l
+//	}
+//	return &wrappedLogger{Logger: l.Logger.Named(s)}
+//}
+//func (l *wrappedLogger) WithOptions(opts ...Option) Logger {
+//	if len(opts) == 0 {
+//		return l
+//	}
+//	return &wrappedLogger{Logger: l.Logger.WithOptions(opts...)}
+//}
+//func (l *wrappedLogger) With(fields ...Field) Logger {
+//	if len(fields) == 0 {
+//		return l
+//	}
+//	return &wrappedLogger{Logger: l.Logger.With(fields...)}
+//}
+//func (l *wrappedLogger) Sugar() gone.Logger {
+//	SugaredLogger := l.Logger.Sugar()
+//	return &goneLogger{
+//		SugaredLogger: SugaredLogger,
+//	}
+//}
 
 type zapLoggerProvider struct {
 	gone.Flag
@@ -202,25 +202,4 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 	}
 	logger := zap.New(core, opts...)
 	return logger, nil
-}
-
-type sugarProvider struct {
-	gone.Flag
-
-	zapLogger *zap.Logger `gone:"*"`
-	wrapped   *wrappedLogger
-}
-
-func (s *sugarProvider) Provide(tagConf string) (Logger, error) {
-	if s.wrapped == nil {
-		s.wrapped = &wrappedLogger{Logger: s.zapLogger}
-	}
-
-	_, keys := gone.TagStringParse(tagConf)
-	if len(keys) > 0 {
-		if keys[0] != "" {
-			return s.wrapped.Named(keys[0]), nil
-		}
-	}
-	return s.wrapped, nil
 }

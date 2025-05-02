@@ -12,10 +12,12 @@ type traceEncoder struct {
 	tracer g.Tracer
 }
 
+const traceIdKey = "traceId"
+
 func (e *traceEncoder) EncodeEntry(entry zapcore.Entry, fields []Field) (*buffer.Buffer, error) {
 	traceId := e.tracer.GetTraceId()
 	if traceId != "" {
-		fields = append(fields, zap.String("traceId", traceId))
+		fields = append(fields, zap.String(traceIdKey, traceId))
 	}
 	return e.Encoder.EncodeEntry(entry, fields)
 }

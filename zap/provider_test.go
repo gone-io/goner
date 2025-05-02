@@ -176,23 +176,24 @@ func TestZapLoggerProvider_LogLevels(t *testing.T) {
 	})
 }
 
-// 测试sugarProvider的功能
-func TestSugarProvider(t *testing.T) {
-	gone.NewApp(Load).Test(func(provider *sugarProvider) {
-		// 测试Provide方法
-		logger, err := provider.Provide("")
-		assert.Nil(t, err, "Provide should not return error")
-		assert.NotNil(t, logger, "Provided logger should not be nil")
-
-		// 测试带名称的Provide方法
-		namedLogger, err := provider.Provide("tag:testLogger")
-		assert.Nil(t, err, "Provide with name should not return error")
-		assert.NotNil(t, namedLogger, "Provided named logger should not be nil")
-
-		// 验证wrapped字段已初始化
-		assert.NotNil(t, provider.wrapped, "wrapped logger should be initialized")
-	})
-}
+//
+//// 测试sugarProvider的功能
+//func TestSugarProvider(t *testing.T) {
+//	gone.NewApp(Load).Test(func(provider *sugarProvider) {
+//		// 测试Provide方法
+//		logger, err := provider.Provide("")
+//		assert.Nil(t, err, "Provide should not return error")
+//		assert.NotNil(t, logger, "Provided logger should not be nil")
+//
+//		// 测试带名称的Provide方法
+//		namedLogger, err := provider.Provide("tag:testLogger")
+//		assert.Nil(t, err, "Provide with name should not return error")
+//		assert.NotNil(t, namedLogger, "Provided named logger should not be nil")
+//
+//		// 验证wrapped字段已初始化
+//		assert.NotNil(t, provider.wrapped, "wrapped logger should be initialized")
+//	})
+//}
 
 // 测试parseLevel函数
 func TestParseLevel(t *testing.T) {

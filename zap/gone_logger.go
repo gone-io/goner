@@ -2,21 +2,31 @@ package gone_zap
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-type sugar struct {
+func newGoneLogger(provider *zapLoggerProvider) *goneLogger {
+	s := goneLogger{
+		provider: provider,
+	}
+	err := s.Init()
+	g.PanicIfErr(err)
+	return &s
+}
+
+type goneLogger struct {
 	gone.Flag
 	*zap.SugaredLogger
 	provider *zapLoggerProvider `gone:"*"`
 }
 
-func (l *sugar) GonerName() string {
+func (l *goneLogger) GonerName() string {
 	return "gone-logger"
 }
 
-func (l *sugar) Init() error {
+func (l *goneLogger) Init() error {
 	logger, err := l.provider.Provide("")
 	if err != nil {
 		return gone.ToError(err)
@@ -24,7 +34,8 @@ func (l *sugar) Init() error {
 	l.SugaredLogger = logger.Sugar()
 	return nil
 }
-func (l *sugar) GetLevel() gone.LoggerLevel {
+
+func (l *goneLogger) GetLevel() gone.LoggerLevel {
 	switch l.SugaredLogger.Level() {
 	case zap.DebugLevel:
 		return gone.DebugLevel
@@ -39,7 +50,7 @@ func (l *sugar) GetLevel() gone.LoggerLevel {
 	}
 }
 
-func (l *sugar) SetLevel(level gone.LoggerLevel) {
+func (l *goneLogger) SetLevel(level gone.LoggerLevel) {
 	var zapLevel zapcore.Level
 	switch level {
 	case gone.DebugLevel:

@@ -61,7 +61,7 @@ func TestSugar_GetLevel(t *testing.T) {
 
 			// 创建logger
 			logger, _ := provider.Provide("")
-			s := &sugar{
+			s := &goneLogger{
 				SugaredLogger: logger.Sugar(),
 				provider:      provider,
 			}
@@ -101,7 +101,7 @@ func TestSugar_SetLevel(t *testing.T) {
 
 			// 创建logger
 			logger, _ := provider.Provide("")
-			s := &sugar{
+			s := &goneLogger{
 				SugaredLogger: logger.Sugar(),
 				provider:      provider,
 			}
@@ -166,7 +166,7 @@ func Test_sugar_Init(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			l := &sugar{
+			l := &goneLogger{
 				Flag:          tt.fields.Flag,
 				SugaredLogger: tt.fields.SugaredLogger,
 				provider:      tt.fields.provider,
