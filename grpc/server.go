@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel/trace"
 	"net"
 	"reflect"
 
@@ -158,9 +159,20 @@ func (s *server) traceInterceptor(
 	handler grpc.UnaryHandler,
 ) (resp interface{}, err error) {
 	var traceId string
-	traceIdV := metadata.ValueFromIncomingContext(ctx, s.tracerIdKey)
-	if len(traceIdV) > 0 {
-		traceId = traceIdV[0]
+
+	if s.isOtelTracerLoaded {
+		span := trace.SpanFromContext(ctx)
+		spanContext := span.SpanContext()
+		if spanContext.IsValid() {
+			traceId = spanContext.TraceID().String()
+		}
+	}
+
+	if traceId == "" {
+		traceIdV := metadata.ValueFromIncomingContext(ctx, s.tracerIdKey)
+		if len(traceIdV) > 0 {
+			traceId = traceIdV[0]
+		}
 	}
 
 	if s.tracer == nil {

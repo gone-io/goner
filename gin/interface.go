@@ -13,7 +13,6 @@ type Context struct {
 }
 
 type ResponseWriter = gin.ResponseWriter
-
 type HandlerFunc = g.HandlerFunc
 type IRoutes = g.IRoutes
 

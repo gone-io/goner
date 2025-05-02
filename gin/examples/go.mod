@@ -13,6 +13,8 @@ replace (
 	github.com/gone-io/goner/g => ../../g
 	github.com/gone-io/goner/gin => ../../gin
 	github.com/gone-io/goner/tracer => ../../tracer
+	github.com/gone-io/goner/tracer/gid => ../../tracer/gid
+	github.com/gone-io/goner/tracer/gls => ../../tracer/gls
 	github.com/gone-io/goner/viper => ../../viper
 	github.com/gone-io/goner/zap => ../../zap
 )
@@ -35,6 +37,8 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gone-io/goner/g v1.1.1 // indirect
 	github.com/gone-io/goner/tracer v1.1.1 // indirect
+	github.com/gone-io/goner/tracer/gid v1.1.1 // indirect
+	github.com/gone-io/goner/tracer/gls v1.1.1 // indirect
 	github.com/gone-io/goner/viper v1.1.1 // indirect
 	github.com/gone-io/goner/zap v1.1.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -65,6 +69,7 @@ require (
 	go.opentelemetry.io/otel/log v0.11.0 // indirect
 	go.opentelemetry.io/otel/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
+	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/arch v0.15.0 // indirect
