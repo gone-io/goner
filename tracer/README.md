@@ -1,47 +1,30 @@
-# Gone Tracer Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-`gone-tracer` is a distributed tracing component for the Gone framework, providing unified trace IDs. With this component, you can easily implement distributed tracing in Gone applications, tracking requests across multiple services and goroutines, facilitating problem diagnosis and performance analysis.
+# Goner Tracer Component
 
-## Features
+## Component Features
 
-- Seamless integration with Gone framework
-- Automatic generation and propagation of trace IDs
-- Support for trace ID propagation across goroutines
-- Two implementation approaches: based on `github.com/jtolds/gls` and `github.com/petermattis/goid` mapping
-- Simplified log correlation and request tracing
-- Lightweight design with low performance overhead
+`goner/tracer` component provides a simple function: **automatically adding traceID to logs (requires cooperation with logging components, currently supports `goner/zap`), without manually passing context**.
 
-## Installation
-
-```bash
-go get github.com/gone-io/goner
-```
+It solves the following core problems:
+- Implementing automatic log association with traceID in the Gone framework
+- No need to explicitly pass `context.Context` in each function
+- Supporting traceID propagation across goroutines
 
 ## Quick Start
 
-### 1. Load the Tracing Component
+### Installation
 
-```go
-package main
-
-import (
-    "github.com/gone-io/gone/v2"
-    "github.com/gone-io/goner/tracer"
-)
-
-func main() {
-    gone.
-    Loads(
-        tracer.Load,  // Load tracing component
-        // Other components...
-    ).
-    Run(func() {
-        // Start application
-    })
-}
+```bash
+# Choose one implementation method to install
+gonectl install goner/tracer/gls  # Complete functionality implementation
+# or
+gonectl install goner/tracer/gid  # High-performance implementation
 ```
 
-### 2. Use Tracing Features
+### Basic Usage
 
 ```go
 type MyService struct {
@@ -51,36 +34,48 @@ type MyService struct {
 }
 
 func (s *MyService) DoSomething() {
-    // Set trace ID and execute function
-    s.tracer.SetTraceId("", func() {
-        // Get trace ID of current goroutine
+    // Set trace ID
+    s.tracer.SetTraceId("", func() {  // Empty string means auto-generate traceID
+        // Logs will automatically include traceID
+        s.logger.Info("Processing business logic...")
+
+        // If you need to get the current traceID
         traceId := s.tracer.GetTraceId()
         s.logger.Infof("Current trace ID: %s", traceId)
 
-        // Maintain trace ID in new goroutine
+        // Cross-goroutine traceID propagation - Important!
         s.tracer.Go(func() {
-            // GetTraceId() here will return the same trace ID as the parent goroutine
-            s.logger.Infof("Child goroutine trace ID: %s", s.tracer.GetTraceId())
+            // Logs here will also carry the same traceID
+            s.logger.Info("Child goroutine processing...")
         })
     })
 }
 ```
 
-## Implementation Approaches
-
-Gone Tracer component provides two implementation approaches:
-
-1. **Goroutine Local Storage Based (tracer)**: Uses the `github.com/jtolds/gls` library, implementing trace ID storage and propagation through goroutine local storage mechanism.
-
-2. **Goroutine ID Mapping Based (tracerOverGid)**: Uses the `github.com/petermattis/goid` library to get goroutine ID and maintains trace ID mapping through sync.Map.
-
-By default, the component uses the first approach. If you prefer to use the goroutine ID-based implementation, specify it when loading the component:
+## Core API
 
 ```go
-tracer.LoadOverGid  // Load goroutine ID-based tracing component
+type Tracer interface {
+    // Set traceID and execute callback function
+    SetTraceId(traceId string, fn func())
+    
+    // Get the traceID of the current goroutine
+    GetTraceId() string
+    
+    // Create a new goroutine while maintaining traceID (must use this instead of the go keyword)
+    Go(fn func())
+}
 ```
 
-## Performance Tests
+## Comparison of Two Implementation Methods
+
+| Implementation Method         | Advantages     | Disadvantages | Applicable Scenarios |
+| ----------------------------- | -------------- | ------------- | -------------------- |
+| **gls implementation** (goner/tracer/gls) | No need to get gid | Lower performance | General scenarios |
+| **gid implementation** (goner/tracer/gid) | High performance (about 10x) | None | High concurrency scenarios |
+
+
+**Performance Test**
 
 ```log
 ➜  goner go test -bench=. -benchmem ./tracer
@@ -102,101 +97,22 @@ PASS
 ok      github.com/gone-io/goner/tracer 17.094s
 ```
 
-## API Reference
+## Important Usage Notes
 
-### Tracer Interface
+1. **Must use `tracer.Go()` instead of the standard `go` keyword**, otherwise the child goroutine will not be able to get the traceID
 
-```go
-type Tracer interface {
-    // SetTraceId sets the trace ID. If traceId is empty string, it automatically generates one
-    // Business logic is executed through callback function fn, within which GetTraceId can be used to get the set trace ID
-    SetTraceId(traceId string, fn func())
+2. **Set traceID at entry points**: Use `SetTraceId` at entry points such as HTTP handlers
 
-    // GetTraceId gets the trace ID of the current goroutine
-    GetTraceId() string
+3. **Cross-service propagation**: If you need to propagate traceID across services, you need to manually add it to the request header:
+   ```go
+   // When sending a request
+   req.Header.Set("X-Trace-ID", tracer.GetTraceId())
+   
+   // When receiving a request
+   traceId := r.Header.Get("X-Trace-ID")
+   tracer.SetTraceId(traceId, func() {
+       // Process the request...
+   })
+   ```
 
-    // Go starts a new goroutine and propagates the current trace ID
-    // This method can replace the standard go keyword to ensure child goroutines inherit parent goroutine's trace ID
-    Go(fn func())
-}
-```
-
-## Advanced Usage
-
-### Using in HTTP Services
-
-Combined with Gone's gin component, HTTP request tracing can be easily implemented:
-
-```go
-func setupRouter(router gin.Router, tracer tracer.Tracer) {
-    // Add middleware to set trace ID for each request
-    router.Use(func(c *gin.Context) {
-        // Get trace ID from request header, generate new if not exists
-        traceId := c.GetHeader("X-Trace-ID")
-        tracer.SetTraceId(traceId, func() {
-            // Set trace ID to response header
-            c.Header("X-Trace-ID", tracer.GetTraceId())
-            c.Next()
-        })
-    })
-
-    // Route handling
-    router.GET("/api/example", func(c *gin.Context) {
-        // Get trace ID directly in handler
-        traceId := tracer.GetTraceId()
-        // Handle business logic...
-    })
-}
-```
-
-### Propagating Trace ID Between Microservices
-
-```go
-// Client sending request
-func (c *Client) CallService() {
-    c.tracer.SetTraceId("", func() {
-        // Create HTTP request
-        req, _ := http.NewRequest("GET", "http://service-b/api", nil)
-        // Add trace ID to request header
-        req.Header.Set("X-Trace-ID", c.tracer.GetTraceId())
-        // Send request
-        c.httpClient.Do(req)
-    })
-}
-
-// Server receiving request
-func (s *Server) HandleRequest(w http.ResponseWriter, r *http.Request) {
-    // Get trace ID from request header
-    traceId := r.Header.Get("X-Trace-ID")
-    s.tracer.SetTraceId(traceId, func() {
-        // Handle request
-        // ...
-    })
-}
-```
-
-## Best Practices
-
-1. **Set Trace ID at Service Entry Points**: Use `SetTraceId` at entry points like HTTP handlers, gRPC service methods
-
-2. **Use `tracer.Go` Instead of Standard `go` Keyword**: Ensure child goroutines inherit parent goroutine's trace ID
-
-3. **Include Trace ID in Logs**: Facilitate correlation of different log entries for the same request
-
-4. **Propagate Trace ID in Microservice Calls**: Pass trace ID via HTTP headers or gRPC metadata for cross-service request tracing
-
-5. **Choose Appropriate Implementation**: Select the most performant implementation based on your use case
-
-6. **Integrate with Logging Component**: Automatically add trace ID to log fields for improved traceability
-
-## Important Notes
-
-1. Trace IDs don't automatically cross process boundaries; manual propagation between services is required
-
-2. In microservice architecture, use consistent header fields (like `X-Trace-ID`) for trace ID propagation
-
-3. Avoid setting traceId multiple times in the same goroutine; the first set value will be retained
-
-4. When traceId parameter is empty string, a UUID will be automatically generated as traceId
-
-5. In high-concurrency scenarios, tracerOverGid implementation may offer better performance
+4. **Integration with OpenTelemetry**: If `goner/otel/tracer` is installed, traceID will be generated by OpenTelemetry and automatically propagated across processes, but if you need complete OpenTelemetry functionality (metrics, etc.), you still need to explicitly pass `context.Context` according to the specification

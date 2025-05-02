@@ -19,6 +19,8 @@ replace (
 	github.com/gone-io/goner/gin => ../../gin
 	github.com/gone-io/goner/nacos => ../../nacos
 	github.com/gone-io/goner/tracer => ../../tracer
+	github.com/gone-io/goner/tracer/gid => ../../tracer/gid
+	github.com/gone-io/goner/tracer/gls => ../../tracer/gls
 	github.com/gone-io/goner/urllib => ../../urllib
 	github.com/gone-io/goner/viper => ../../viper
 	github.com/gone-io/goner/zap => ../../zap
@@ -62,6 +64,8 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/gone-io/goner/g v1.1.1 // indirect
 	github.com/gone-io/goner/tracer v1.1.1 // indirect
+	github.com/gone-io/goner/tracer/gid v1.1.1 // indirect
+	github.com/gone-io/goner/tracer/gls v1.1.1 // indirect
 	github.com/gone-io/goner/zap v1.1.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/pprof v0.0.0-20250317173921-a4b03ec1a45e // indirect

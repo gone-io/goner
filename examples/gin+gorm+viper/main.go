@@ -2,10 +2,7 @@ package main
 
 import (
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner"
 	"github.com/gone-io/goner/gin"
-	goneGorm "github.com/gone-io/goner/gorm"
-	"github.com/gone-io/goner/gorm/mysql"
 	"gorm.io/gorm"
 )
 
@@ -54,16 +51,15 @@ func (r *UserRepository) GetByID(id uint) (*User, error) {
 	return &user, err
 }
 
+func LoadControllerAndRepository(loader gone.Loader) error {
+	loader.
+		MustLoad(&HelloController{}).
+		MustLoad(&UserRepository{})
+	return nil
+}
+
 func main() {
 	// 加载组件并启动应用
 	gone.
-		Loads(
-			goner.BaseLoad,
-			goneGorm.Load, // 加载 Gorm 核心组件
-			mysql.Load,    // 加载 MySQL 驱动
-			gin.Load,      // 加载 Gin 组件
-		).
-		Load(&HelloController{}). // 加载控制器
-		Load(&UserRepository{}).  // 加载仓库
 		Serve()
 }

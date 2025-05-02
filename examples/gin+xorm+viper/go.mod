@@ -8,6 +8,8 @@ require (
 	github.com/gone-io/goner/g v1.1.1
 	github.com/gone-io/goner/gin v1.1.1
 	github.com/gone-io/goner/tracer v1.1.1
+	github.com/gone-io/goner/tracer/gid v1.1.1 // indirect
+	github.com/gone-io/goner/tracer/gls v1.1.1 // indirect
 	github.com/gone-io/goner/viper v1.1.1
 	github.com/gone-io/goner/xorm v1.1.1
 	github.com/gone-io/goner/zap v1.1.1
@@ -21,6 +23,8 @@ replace (
 	github.com/gone-io/goner/g => ../../g
 	github.com/gone-io/goner/gin => ../../gin
 	github.com/gone-io/goner/tracer => ../../tracer
+	github.com/gone-io/goner/tracer/gid => ../../tracer/gid
+	github.com/gone-io/goner/tracer/gls => ../../tracer/gls
 	github.com/gone-io/goner/viper => ../../viper
 	github.com/gone-io/goner/xorm => ../../xorm
 	github.com/gone-io/goner/zap => ../../zap
