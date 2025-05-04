@@ -1,6 +1,7 @@
 package gone_zap
 
 import (
+	"errors"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"go.opentelemetry.io/contrib/bridges/otelzap"
@@ -8,6 +9,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io/fs"
 	"strings"
 )
 
@@ -83,15 +85,19 @@ func (s *zapLoggerProvider) Provide(tagConf string) (*zap.Logger, error) {
 	return s.zapLogger, nil
 }
 
+func (s *zapLoggerProvider) processError(err error) {
+	var e *fs.PathError
+	if errors.As(err, &e) && strings.HasPrefix(e.Path, "/dev/") {
+		return
+	}
+	g.ErrorPrinter(gone.GetDefaultLogger(), err, "zapLogger.Sync")
+}
+
 func (s *zapLoggerProvider) Init() error {
 	if s.zapLogger == nil {
-		logger, err := s.create()
-		if err != nil {
-			return gone.ToError(err)
-		}
-		s.zapLogger = logger
+		s.zapLogger = s.create()
 		s.beforeStop(func() {
-			g.ErrorPrinter(gone.GetDefaultLogger(), s.zapLogger.Sync(), "zapLogger.Sync")
+			s.processError(s.zapLogger.Sync())
 		})
 	}
 	return nil
@@ -150,10 +156,7 @@ func (s *zapLoggerProvider) createFileCore() (core zapcore.Core) {
 	} else {
 		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
 	}
-
-	if s.tracer != nil {
-		encoder = NewTraceEncoder(encoder, s.tracer)
-	}
+	encoder = NewTraceEncoder(encoder, s.tracer)
 
 	core = zapcore.NewCore(
 		encoder,
@@ -191,7 +194,7 @@ func (s *zapLoggerProvider) createCore() (core zapcore.Core) {
 	return core
 }
 
-func (s *zapLoggerProvider) create() (*zap.Logger, error) {
+func (s *zapLoggerProvider) create() *zap.Logger {
 	var core = s.createCore()
 	var opts []Option
 	if !s.disableStacktrace {
@@ -201,5 +204,5 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		opts = append(opts, zap.AddCaller())
 	}
 	logger := zap.New(core, opts...)
-	return logger, nil
+	return logger
 }

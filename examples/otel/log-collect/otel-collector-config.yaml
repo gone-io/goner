@@ -22,10 +22,11 @@ extensions:
 service:
   extensions: [health_check, pprof, zpages]
   pipelines:
-#    traces:
-#      receivers: [otlp]
-#      processors: [batch]
-#      exporters: [otlp]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file]
+
 #    metrics:
 #      receivers: [otlp]
 #      processors: [batch]

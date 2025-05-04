@@ -48,7 +48,13 @@ func (s *helper) Get() (*resource.Resource, error) {
 	return resource.Default(), nil
 }
 
+var h *helper
+
 // HelpSetPropagator setting propagator for openTelemetry
 func HelpSetPropagator(loader gone.Loader) error {
-	return loader.Load(&helper{})
+	if h == nil {
+		h = &helper{}
+		return loader.Load(h)
+	}
+	return nil
 }

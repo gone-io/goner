@@ -59,6 +59,7 @@ func (c ctxLogger) Ctx(ctx context.Context) gone.Logger {
 	spanContext := span.SpanContext()
 	var traceId string
 	if spanContext.IsValid() {
+		logger.SugaredLogger = logger.With(zap.Any(contextKey, ctx))
 		traceId = spanContext.TraceID().String()
 	} else if c.tracer != nil {
 		traceId = c.tracer.GetTraceId()

@@ -6,7 +6,6 @@ import (
 )
 
 func Load(loader gone.Loader) error {
-	//defaultLog, _ := zap.NewDevelopment()
 	loader.
 		MustLoad(&atomicLevel{}).
 		MustLoad(&zapLoggerProvider{}).
