@@ -12,6 +12,7 @@ replace (
 require (
 	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner/g v1.1.1
+	github.com/gone-io/goner/tracer/gid v0.0.0-00010101000000-000000000000
 	github.com/gone-io/goner/zap v0.0.0-00010101000000-000000000000
 	go.uber.org/zap v1.27.0
 )
@@ -19,7 +20,6 @@ require (
 require (
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/gone-io/goner/tracer/gid v0.0.0-00010101000000-000000000000 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/petermattis/goid v0.0.0-20250319124200-ccd6737f222a // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect

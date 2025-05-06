@@ -426,3 +426,50 @@ func TestErrorPrinter(t *testing.T) {
 		})
 	}
 }
+
+func TestIsLoaded(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	loader := mock.NewMockLoader(controller)
+
+	type X struct {
+		gone.Flag
+	}
+	type Y struct {
+		gone.Flag
+	}
+
+	var y = &Y{}
+
+	IsLoaded(loader, y)
+
+	type args struct {
+		goner gone.Goner
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "false",
+			args: args{
+				goner: &X{},
+			},
+			want: false,
+		},
+		{
+			name: "true",
+			args: args{
+				goner: y,
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, IsLoaded(loader, tt.args.goner), "IsLoaded(%v, %v)", loader, tt.args.goner)
+		})
+	}
+}

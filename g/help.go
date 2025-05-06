@@ -178,3 +178,17 @@ func ErrorPrinter(logger gone.Logger, err error, msg string, args ...any) {
 		logger.Errorf("%v", gone.ToErrorWithMsg(err, fmt.Sprintf(msg, args...)))
 	}
 }
+
+var m = make(map[gone.Loader]map[gone.Goner]struct{})
+
+func IsLoaded(loader gone.Loader, goner gone.Goner) bool {
+	if m2, ok := m[loader]; ok {
+		if _, ok := m2[goner]; ok {
+			return true
+		}
+	} else {
+		m[loader] = make(map[gone.Goner]struct{})
+	}
+	m[loader][goner] = struct{}{}
+	return false
+}

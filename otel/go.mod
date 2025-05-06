@@ -4,10 +4,13 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/goner/g v1.1.1
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel v1.35.0
 	go.opentelemetry.io/otel/sdk v1.35.0
 )
+
+replace github.com/gone-io/goner/g => ../g
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

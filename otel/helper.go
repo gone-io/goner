@@ -2,6 +2,7 @@ package otel
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/propagation"
@@ -48,12 +49,11 @@ func (s *helper) Get() (*resource.Resource, error) {
 	return resource.Default(), nil
 }
 
-var h *helper
+var h = &helper{}
 
 // HelpSetPropagator setting propagator for openTelemetry
 func HelpSetPropagator(loader gone.Loader) error {
-	if h == nil {
-		h = &helper{}
+	if !g.IsLoaded(loader, h) {
 		return loader.Load(h)
 	}
 	return nil
