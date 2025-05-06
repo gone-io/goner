@@ -8,27 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-//type sugarProvider struct {
-//	gone.Flag
-//
-//	zapLogger *zap.Logger `gone:"*"`
-//	wrapped   *wrappedLogger
-//}
-//
-//func (s *sugarProvider) Provide(tagConf string) (Logger, error) {
-//	if s.wrapped == nil {
-//		s.wrapped = &wrappedLogger{Logger: s.zapLogger}
-//	}
-//
-//	_, keys := gone.TagStringParse(tagConf)
-//	if len(keys) > 0 {
-//		if keys[0] != "" {
-//			return s.wrapped.Named(keys[0]), nil
-//		}
-//	}
-//	return s.wrapped, nil
-//}
-
 // GetTraceIdFromCtx which get traceId from context and convert to zap.Field
 // Examples:
 //

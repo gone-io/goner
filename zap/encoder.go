@@ -17,7 +17,7 @@ const traceIdKey = "traceId"
 const contextKey = "context"
 const contextValue = "context.Background.WithValue(trace.traceContextKeyType, *trace.recordingSpan)"
 
-func (e *traceEncoder) EncodeEntry(entry zapcore.Entry, fields []Field) (*buffer.Buffer, error) {
+func (e *traceEncoder) EncodeEntry(entry zapcore.Entry, fields []zap.Field) (*buffer.Buffer, error) {
 	if e.tracer != nil && !e.addedTraceId {
 		traceId := e.tracer.GetTraceId()
 		if traceId != "" {

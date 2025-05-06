@@ -18,7 +18,7 @@ func TestZapLoggerProvider_create(t *testing.T) {
 	tests := []struct {
 		name     string
 		provider *zapLoggerProvider
-		wantErr  bool
+		isPanic  bool
 	}{
 		{
 			name: "default config with stdout",
@@ -27,7 +27,6 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				encoder:     "console",
 				atomicLevel: newAtomicLevel(zap.InfoLevel),
 			},
-			wantErr: false,
 		},
 		{
 			name: "json encoder with file output",
@@ -36,7 +35,6 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				encoder:     "json",
 				atomicLevel: newAtomicLevel(zap.InfoLevel),
 			},
-			wantErr: false,
 		},
 		{
 			name: "with error output",
@@ -46,7 +44,6 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				encoder:     "console",
 				atomicLevel: newAtomicLevel(zap.InfoLevel),
 			},
-			wantErr: false,
 		},
 		{
 			name: "with rotation output",
@@ -60,7 +57,6 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				encoder:          "console",
 				atomicLevel:      newAtomicLevel(zap.InfoLevel),
 			},
-			wantErr: false,
 		},
 		{
 			name: "with rotation error output",
@@ -74,7 +70,6 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				encoder:             "console",
 				atomicLevel:         newAtomicLevel(zap.InfoLevel),
 			},
-			wantErr: false,
 		},
 		{
 			name: "with tracer",
@@ -84,7 +79,6 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				atomicLevel: newAtomicLevel(zap.InfoLevel),
 				tracer:      &mockTracer{},
 			},
-			wantErr: false,
 		},
 		{
 			name: "with invalid output",
@@ -93,7 +87,7 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				encoder:     "console",
 				atomicLevel: newAtomicLevel(zap.InfoLevel),
 			},
-			wantErr: true,
+			isPanic: true,
 		},
 		{
 			name: "with invalid error output",
@@ -103,18 +97,21 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				encoder:     "console",
 				atomicLevel: newAtomicLevel(zap.InfoLevel),
 			},
-			wantErr: true,
+			isPanic: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			logger, err := tt.provider.create()
-			if tt.wantErr {
-				assert.Error(t, err)
-				return
-			}
-			assert.NoError(t, err)
+			defer func() {
+				if r := recover(); r != nil {
+					if !tt.isPanic {
+						t.Errorf("Unexpected panic: %v", r)
+					}
+				}
+			}()
+
+			logger := tt.provider.create()
 			assert.NotNil(t, logger)
 
 			// Test logging

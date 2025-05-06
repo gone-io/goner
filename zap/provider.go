@@ -13,39 +13,6 @@ import (
 	"strings"
 )
 
-//type wrappedLogger struct {
-//	*zap.Logger
-//}
-//
-//func (l *wrappedLogger) sugar() *zap.SugaredLogger {
-//	return l.Logger.Sugar()
-//}
-//
-//func (l *wrappedLogger) Named(s string) Logger {
-//	if s == "" {
-//		return l
-//	}
-//	return &wrappedLogger{Logger: l.Logger.Named(s)}
-//}
-//func (l *wrappedLogger) WithOptions(opts ...Option) Logger {
-//	if len(opts) == 0 {
-//		return l
-//	}
-//	return &wrappedLogger{Logger: l.Logger.WithOptions(opts...)}
-//}
-//func (l *wrappedLogger) With(fields ...Field) Logger {
-//	if len(fields) == 0 {
-//		return l
-//	}
-//	return &wrappedLogger{Logger: l.Logger.With(fields...)}
-//}
-//func (l *wrappedLogger) Sugar() gone.Logger {
-//	SugaredLogger := l.Logger.Sugar()
-//	return &goneLogger{
-//		SugaredLogger: SugaredLogger,
-//	}
-//}
-
 type zapLoggerProvider struct {
 	gone.Flag
 
@@ -66,6 +33,7 @@ type zapLoggerProvider struct {
 	otelOnly            bool   `gone:"config,log.otel.only=true"`
 	otelLogName         string `gone:"config,log.otel.log-name=zap"`
 
+	useEncoder      zapcore.Encoder   `gone:"*" option:"allowNil"`
 	tracer          g.Tracer          `gone:"*" option:"allowNil"`
 	isOtelLogLoaded g.IsOtelLogLoaded `gone:"*" option:"allowNil"`
 	atomicLevel     *atomicLevel      `gone:"*"`
@@ -148,18 +116,20 @@ func (s *zapLoggerProvider) createFileCore() (core zapcore.Core) {
 			errSink = zap.CombineWriteSyncers(rotationWriter, errSink)
 		}
 	}
-	var encoder zapcore.Encoder
-	if s.encoder == "console" {
-		config := zap.NewDevelopmentEncoderConfig()
-		config.ConsoleSeparator = "|"
-		encoder = zapcore.NewConsoleEncoder(config)
-	} else {
-		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+
+	if s.useEncoder == nil {
+		if s.encoder == "console" {
+			config := zap.NewDevelopmentEncoderConfig()
+			config.ConsoleSeparator = "|"
+			s.useEncoder = zapcore.NewConsoleEncoder(config)
+		} else {
+			s.useEncoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+		}
+		s.useEncoder = NewTraceEncoder(s.useEncoder, s.tracer)
 	}
-	encoder = NewTraceEncoder(encoder, s.tracer)
 
 	core = zapcore.NewCore(
-		encoder,
+		s.useEncoder,
 		sink,
 		s.atomicLevel,
 	)
@@ -168,7 +138,7 @@ func (s *zapLoggerProvider) createFileCore() (core zapcore.Core) {
 		core = zapcore.NewTee(
 			core,
 			zapcore.NewCore(
-				encoder,
+				s.useEncoder,
 				errSink,
 				s.atomicLevel,
 			),
@@ -196,7 +166,7 @@ func (s *zapLoggerProvider) createCore() (core zapcore.Core) {
 
 func (s *zapLoggerProvider) create() *zap.Logger {
 	var core = s.createCore()
-	var opts []Option
+	var opts []zap.Option
 	if !s.disableStacktrace {
 		opts = append(opts, zap.AddStacktrace(parseLevel(s.stackTraceLevel)))
 	}
