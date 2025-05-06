@@ -48,9 +48,9 @@ func (s *providerHelper) Init() (err error) {
 
 	meterProvider := metric.NewMeterProvider(options...)
 	s.afterStop(func() {
-		if err := meterProvider.Shutdown(context.Background()); err != nil {
-			s.logger.Errorf("otel meter provider helper: shutdown err: %v", err)
-		}
+		ctx := context.Background()
+		g.ErrorPrinter(s.logger, meterProvider.ForceFlush(ctx), "metric provider ForceFlush")
+		g.ErrorPrinter(s.logger, meterProvider.Shutdown(ctx), "metric provider Shutdown")
 	})
 	otel.SetMeterProvider(meterProvider)
 	return nil

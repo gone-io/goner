@@ -9,6 +9,7 @@ import (
 	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/gin/internal/json"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/time/rate"
 	"io"
 	"net/http"
@@ -20,7 +21,9 @@ import (
 type SysMiddleware struct {
 	gone.Flag
 
-	tracer     g.Tracer    `gone:"*" option:"allowNil"`
+	tracer             g.Tracer             `gone:"*" option:"allowNil"`
+	isOtelTracerLoaded g.IsOtelTracerLoaded `gone:"*" option:"allowNil"`
+
 	logger     gone.Logger `gone:"*"`
 	resHandler Responser   `gone:"*"`
 
@@ -102,7 +105,18 @@ func (m *SysMiddleware) Process(ginCtx *gin.Context) {
 		m.resHandler.Failed(ginCtx, gone.NewError(http.StatusTooManyRequests, TooManyRequests, http.StatusTooManyRequests))
 		return
 	}
-	traceId := ginCtx.GetHeader(m.tracerIdKey)
+
+	var traceId string
+	if m.isOtelTracerLoaded {
+		span := trace.SpanFromContext(ginCtx.Request.Context())
+		spanContext := span.SpanContext()
+		if spanContext.IsValid() {
+			traceId = spanContext.TraceID().String()
+		}
+	}
+	if traceId == "" {
+		traceId = ginCtx.GetHeader(m.tracerIdKey)
+	}
 	if traceId == "" {
 		traceId = uuid.New().String()
 	}

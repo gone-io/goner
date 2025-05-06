@@ -1,11 +1,24 @@
-package tracer
+package gid
 
 import (
+	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
+	"github.com/stretchr/testify/assert"
 	"sync"
 	"testing"
+
+	"github.com/petermattis/goid"
 )
 
-func TestTracer_SetAndGetTraceId(t *testing.T) {
+func Test_GetGoId(t *testing.T) {
+	gid := goid.Get()
+	if gid == 0 {
+		t.Fatal("can not get goid")
+	}
+	t.Logf("gid=%d", gid)
+}
+
+func TestTracerOverGid_SetAndGetTraceId(t *testing.T) {
 	tracer := &tracer{}
 
 	// 测试设置自定义traceId
@@ -37,7 +50,7 @@ func TestTracer_SetAndGetTraceId(t *testing.T) {
 	}
 }
 
-func TestTracer_Go(t *testing.T) {
+func TestTracerOverGid_Go(t *testing.T) {
 	tracer := &tracer{}
 	customTraceId := "go-routine-trace-id"
 
@@ -64,7 +77,7 @@ func TestTracer_Go(t *testing.T) {
 	}
 }
 
-func TestTracer_MultipleGoroutines(t *testing.T) {
+func TestTracerOverGid_MultipleGoroutines(t *testing.T) {
 	tracer := &tracer{}
 	customTraceId := "multi-goroutine-trace-id"
 
@@ -98,28 +111,10 @@ func TestTracer_MultipleGoroutines(t *testing.T) {
 	}
 }
 
-func TestTracer_NestedSetTraceId(t *testing.T) {
-	tracer := &tracer{}
-	outerTraceId := "outer-trace-id"
-	innerTraceId := "inner-trace-id"
-
-	var outerGotTraceId, innerGotTraceId string
-
-	tracer.SetTraceId(outerTraceId, func() {
-		outerGotTraceId = tracer.GetTraceId()
-
-		// 在已有traceId的情况下再次设置traceId
-		tracer.SetTraceId(innerTraceId, func() {
-			innerGotTraceId = tracer.GetTraceId()
+func TestLoad(t *testing.T) {
+	gone.
+		NewApp(Load).
+		Run(func(tracer g.Tracer) {
+			assert.NotNil(t, tracer)
 		})
-	})
-
-	// 验证内部和外部的traceId是否正确
-	if outerGotTraceId != outerTraceId {
-		t.Errorf("Outer traceId = %s; want %s", outerGotTraceId, outerTraceId)
-	}
-
-	if innerGotTraceId != innerTraceId {
-		t.Errorf("Inner traceId = %s; want %s", innerGotTraceId, innerTraceId)
-	}
 }

@@ -1,7 +1,8 @@
-package tracer
+package gls
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/google/uuid"
 	"github.com/jtolds/gls"
 )
@@ -33,4 +34,9 @@ func (t *tracer) SetTraceId(traceId string, cb func()) {
 
 func (t *tracer) Go(cb func()) {
 	gls.Go(cb)
+}
+
+// Load a tracer that uses `github.com/jtolds/gls` to implement invisible traceID propagation within a program.
+func Load(loader gone.Loader) error {
+	return loader.Load(&tracer{}, gone.IsDefault(new(g.Tracer)))
 }

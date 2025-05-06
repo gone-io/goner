@@ -18,8 +18,8 @@ jaeger:
 
 
 server:
-	cd ./server && OTEL_RESOURCE_ATTRIBUTES="service.name=hello-server,service.version=0.1.0" gonectr run ./cmd
+	cd ./server && gonectr run ./cmd
 
 
 client:
-	cd ./client && OTEL_RESOURCE_ATTRIBUTES="service.name=hello-client,service.version=0.1.0" gonectr run ./cmd
+	cd ./client && gonectr run ./cmd

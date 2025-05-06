@@ -1,15 +1,17 @@
 module github.com/gone-io/goner/viper
 
-go 1.23.0
+go 1.24
+
+toolchain go1.24.1
 
 require (
 	github.com/go-viper/encoding/javaproperties v0.1.0
-	github.com/gone-io/gone/v2 v2.0.11
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/sagikazarmark/locafero v0.9.0
 	github.com/spf13/afero v1.14.0
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/mock v0.5.1
+	go.uber.org/mock v0.5.2
 )
 
 require (

@@ -1,152 +1,280 @@
 # Gone Zap Component
 
-`gone-zap` is a logging component for the Gone framework, implemented based on [uber-go/zap](https://github.com/uber-go/zap), providing high-performance structured logging functionality. With this component, you can easily implement unified log management in Gone applications, supporting various output formats and log levels.
+**goner/zap** is a Gone framework component that integrates [uber-go/zap](https://github.com/uber-go/zap), providing high-performance structured logging functionality.
 
-## Features
+Main features include:
 
-- Seamless integration with Gone framework
-- High-performance structured logging
-- Support for multiple log levels (Debug, Info, Warn, Error, Panic, Fatal)
-- Console and file output support
-- Log rotation support
-- Trace ID correlation support
-- Custom log format support
+- Configuration support
+- Provides `*zap.Logger` injection using Gone's Provider mechanism
+- Provides `gone.Logger` implementation based on zap, enhancing Gone's logging capabilities
+- Integrates with [openTelemetry](https://github.com/open-telemetry/opentelemetry-go) and `goner/tracer` to provide log tracing functionality
 
 ## Configuration
 
-```properties
-# Log level, available values: debug, info, warn, error, panic, fatal, default is info
-log.level=info
+| Configuration Item        | Description                                                                                                                                                                | Default Value    |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| log.output                | Log output path                                                                                                                                                             | `stdout`        |
+| log.error-output          | Error log output path, if not configured, error output will reuse `log.output`                                                                                                | empty           |
+| log.level                 | Log level, supports `debug`,`info`,`warn`,`error`,`panic`,`fatal`, default is `info`, supports dynamic configuration via configuration center                                 | `info`          |
+| log.encoder               | Log encoding format, supports `console` and `json`, default is `console`; if `zapcore.Encoder` injection is provided, this configuration will be invalid                        | `console`       |
+| log.disable-stacktrace    | Whether to disable stack trace                                                                                                                                                 | `false`         |
+| log.stacktrace-level      | Log level that triggers stack trace                                                                                                                                            | `error`         |
+| log.report-caller         | Whether to report caller information in logs                                                                                                                                   | `true`          |
+| log.rotation.output       | Log rotation output file path                                                                                                                                                  | empty           |
+| log.rotation.error-output | Error log rotation output file path                                                                                                                                          | empty           |
+| log.rotation.max-size     | Maximum size of log rotation files (MB)                                                                                                                                      | `100`           |
+| log.rotation.max-files    | Maximum number of log rotation files to retain                                                                                                                                | `10`            |
+| log.rotation.max-age      | Maximum retention days for log rotation files                                                                                                                                 | `30`            |
+| log.rotation.local-time   | Whether to use local time for log rotation                                                                                                                                    | `true`          |
+| log.rotation.compress     | Whether to compress old files in log rotation                                                                                                                                  | `false`         |
+| log.otel.enable          | Whether to enable OpenTelemetry log integration                                                                                                                                | `false`         |
+| log.otel.only            | Whether to only use OpenTelemetry for logging, without file output                                                                                                            | `true`          |
+| log.otel.log-name        | OpenTelemetry log name                                                                                                                                                        | `zap`           |
 
-# Whether to disable stack trace, default is false
-log.disable-stacktrace=false
 
-# Stack trace level, default is error
-log.stacktrace-level=error
-
-# Whether to report caller information, default is true
-log.report-caller=true
-
-# Log encoder, available values: console, json, default is console
-log.encoder=console
-
-# Log output path, default is stdout
-log.output=stdout
-
-# Log file configuration (effective when log.output is set to a file path)
-log.filename=app.log
-log.max-size=100  # Maximum size of single log file in MB
-log.max-age=30    # Number of days to retain log files
-log.max-backups=5 # Maximum number of backup files
-log.compress=true # Whether to compress backup files
+## Installation
+```bash
+gonectl install goner/zap
 ```
 
-## Quick Start
+## Using `*zap.Logger` for Logging
+```go
+package main
 
-### 1. Load the Logger Component
+import (
+	"github.com/gone-io/gone/v2"
+	"go.uber.org/zap"
+)
+
+type UseOriginZap struct {
+	gone.Flag
+	zap *zap.Logger `gone:"*"`
+}
+
+func (s *UseOriginZap) PrintLog() {
+	s.zap.Info("hello", zap.String("name", "gone io"))
+}
+```
+
+## Using `goner.Logger` for Logging
+```go
+package main
+
+import "github.com/gone-io/gone/v2"
+
+type UseGoneLogger struct {
+	gone.Flag
+	logger gone.Logger `gone:"*"`
+}
+
+func (u *UseGoneLogger) PrintLog() {
+	u.logger.Infof("hello %s", "GONE IO")
+}
+```
+
+## Using `g.tracer` to Provide traceId for Logs
+
+- Install `g.tracer` implementation
+```bash
+gonectl install goner/tracer/gls
+
+# or
+# gonectl install goner/tracer/gid
+```
+
+- Print logs
+```go
+package main
+
+import (
+	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
+	"go.uber.org/zap"
+)
+
+type UseTracer struct {
+	gone.Flag
+	logger gone.Logger `gone:"*"`
+	zap    *zap.Logger `gone:"*"`
+	tracer g.Tracer    `gone:"*"`
+}
+
+func (s *UseTracer) PrintLog() {
+	s.tracer.SetTraceId("", func() {
+		s.logger.Infof("hello with traceId")
+		s.zap.Info("hello with traceId")
+	})
+}
+```
+
+## Custom `zapcore.Encoder`
 
 ```go
 package main
 
 import (
-    "github.com/gone-io/gone/v2"
-    "github.com/gone-io/goner/zap"
+	"go.uber.org/zap"
+	"go.uber.org/zap/buffer"
+	"go.uber.org/zap/zapcore"
+)
+
+var _ zapcore.Encoder = (*UseCustomerEncoder)(nil)
+
+func init() {
+	gone.Load(NewUseCustomerEncoder())
+}
+
+func NewUseCustomerEncoder() *UseCustomerEncoder {
+	return &UseCustomerEncoder{
+		Encoder: zapcore.NewConsoleEncoder(zap.NewProductionEncoderConfig()),
+	}
+}
+
+type UseCustomerEncoder struct {
+	zapcore.Encoder
+	gone.Flag
+}
+
+func (e *UseCustomerEncoder) EncodeEntry(entry zapcore.Entry, fields []zap.Field) (*buffer.Buffer, error) {
+	//do something
+	return e.Encoder.EncodeEntry(entry, fields)
+}
+```
+
+## Integration with OpenTelemetry
+### Features
+- Use OpenTelemetry tracer to provide tracerId for logs
+- Use OpenTelemetry log/oltp protocol to collect logs
+
+### Steps
+
+#### 1. Component Installation
+
+```bash
+# Install OpenTelemetry related components
+gonectl install goner/otel/log/http    # Use oltp/http/log to collect logs
+gonectl install goner/otel/tracer/http # Use olte/tracer to provide traceID for logs and use oltp/http/tracer to collect trace information
+gonectl install goner/zap              # Use zap for logging
+gonectl install goner/viper            # Use viper for configuration
+```
+
+#### 2. Configuration Settings
+
+Add OpenTelemetry and logging related configurations to the configuration file:
+
+```yaml
+service:
+  name: &serviceName "your-service-name"
+
+otel:
+  service:
+    name: *serviceName
+  log:
+    http:
+      endpoint: localhost:4318  # OpenTelemetry Collector HTTP endpoint
+      insecure: true           # Whether to use insecure connection
+  tracer:
+    http:
+      endpoint: localhost:4318  # OpenTelemetry Collector HTTP endpoint
+      insecure: true           # Whether to use insecure connection
+
+log:
+  otel:
+    enable: true               # Enable OpenTelemetry log integration
+    log-name: *serviceName     # Log name, usually same as service name
+    only: false                # Whether to only use OpenTelemetry for logging, without file output
+```
+
+#### 3. Usage Example
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
+	"go.opentelemetry.io/otel"
 )
 
 func main() {
-    gone.Loads(
-        zap.Load,  // Load logger component
-        // Other components...
-    )
+	gone.Run(func(logger gone.Logger, ctxLogger g.CtxLogger, gTracer g.Tracer, i struct {
+		name string `gone:"config,otel.service.name"`
+	}) {
+		// Create OpenTelemetry tracer
+		tracer := otel.Tracer("your-tracer-name")
+		ctx, span := tracer.Start(context.Background(), "operation-name")
+		defer span.End()
+
+		// Use logger with context, automatically includes traceId
+		log := ctxLogger.Ctx(ctx)
+		log.Infof("Log message with traceId")
+
+		// Use tracer to set traceId
+		gTracer.SetTraceId(span.SpanContext().TraceID().String(), func() {
+			// All logs within this function will include traceId
+			logger.Infof("Log with traceId set via g.Tracer")
+		})
+	})
 }
 ```
 
-### 2. Using the Logger
+#### 4. Configure OpenTelemetry Collector
 
-```go
-type MyService struct {
-    gone.Flag
-    logger gone.Logger `gone:"*"` // Inject logger
-}
+To collect and process logs, you need to set up OpenTelemetry Collector. Here's a basic configuration example:
 
-func (s *MyService) DoSomething() error {
-    // Log different levels
-    s.logger.Debug("Debug message")
-    s.logger.Info("Normal message")
-    s.logger.Warn("Warning message")
-    s.logger.Error("Error message")
-    
-    // Use formatted logging
-    s.logger.Infof("User %s logged in successfully", "admin")
-    
-    // Log with context
-    s.logger.With("user_id", 123).Info("User operation")
-    
-    // Log with error
-    err := errors.New("operation failed")
-    s.logger.WithError(err).Error("Error processing request")
-    
-    return nil
-}
+```yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+
+exporters:
+  file:
+    path: /log/log.json  # Log output path
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [file]
 ```
 
-### 3. Creating Named Logger
+You can use Docker Compose to start OpenTelemetry Collector:
 
-```go
-type UserService struct {
-    gone.Flag
-    logger gone.Logger `gone:"*"`
-}
-
-func (s *UserService) Init() {
-    // Create logger with module name
-    s.logger = s.logger.Named("user-service")
-}
-
-func (s *UserService) CreateUser() {
-    // Log output will include module name prefix
-    s.logger.Info("Creating user")
-    // Output: [user-service] Creating user
-}
+```yaml
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+      - ./:/log/
+    ports:
+      - "4317:4317"  # OTLP gRPC receiver
+      - "4318:4318"  # OTLP HTTP receiver
 ```
 
-## API Reference
+#### 5. View Collected Logs
 
-### Logger Interface
+Logs will be collected and saved to the path configured in OpenTelemetry Collector. You can view logs through:
 
-```go
-type Logger interface {
-    Debug(args ...interface{})
-    Info(args ...interface{})
-    Warn(args ...interface{})
-    Error(args ...interface{})
-    Panic(args ...interface{})
-    Fatal(args ...interface{})
-    
-    Debugf(template string, args ...interface{})
-    Infof(template string, args ...interface{})
-    Warnf(template string, args ...interface{})
-    Errorf(template string, args ...interface{})
-    Panicf(template string, args ...interface{})
-    Fatalf(template string, args ...interface{})
-    
-    With(args ...interface{}) Logger
-    WithError(err error) Logger
-    Named(name string) Logger
-}
-```
-
-## Best Practices
-
-1. Create named loggers for different modules to facilitate log categorization and filtering
-2. Use JSON format logs in production environment for easier log collection and analysis
-3. Set appropriate log levels to avoid performance impact from excessive debug logs
-4. Use structured logging to record key information such as user ID, request ID, etc.
-5. Combine with Tracer component to include trace IDs in logs
-6. Avoid logging sensitive information such as passwords and tokens directly
-
-## Notes
-
-1. `Panic` and `Fatal` level logs will terminate the program, use with caution
-2. In high-concurrency scenarios, excessive logging may impact performance, consider adjusting log levels accordingly
-3. Log rotation functionality depends on the [lumberjack](https://github.com/natefinch/lumberjack) library, ensure proper configuration of related parameters
+- Direct log file viewing
+- Export logs to log management systems like Elasticsearch, Loki
+- Use tools like Grafana for visualization

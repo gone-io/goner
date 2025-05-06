@@ -8,7 +8,7 @@ require (
 	github.com/gone-io/goner/g v1.1.1
 	github.com/soheilhy/cmux v0.1.5
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/mock v0.5.1
+	go.uber.org/mock v0.5.2
 )
 
 replace github.com/gone-io/goner/g => ../g

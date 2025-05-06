@@ -44,9 +44,9 @@ func (s *providerHelper) Init() (err error) {
 	traceProvider := trace.NewTracerProvider(options...)
 	otel.SetTracerProvider(traceProvider)
 	s.afterStop(func() {
-		if err := traceProvider.Shutdown(context.Background()); err != nil {
-			s.logger.Errorf("otel tracer provider helper: shutdown err: %v", err)
-		}
+		ctx := context.Background()
+		g.ErrorPrinter(s.logger, traceProvider.ForceFlush(ctx), "tracer provider ForceFlush")
+		g.ErrorPrinter(s.logger, traceProvider.Shutdown(ctx), "tracer provider Shutdown")
 	})
 	return nil
 }

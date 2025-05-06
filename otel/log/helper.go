@@ -17,7 +17,7 @@ type helper struct {
 
 	resource       *resource.Resource        `gone:"*" option:"allowNil"`
 	exporter       log.Exporter              `gone:"*" option:"allowNil"`
-	logger         gone.Logger               `gone:"*"`
+	logger         gone.Logger               `gone:"*" option:"lazy"`
 	afterStop      gone.AfterStop            `gone:"*"`
 	resourceGetter otelHelper.ResourceGetter `gone:"*"`
 }
@@ -46,21 +46,28 @@ func (s *helper) Init() (err error) {
 	provider := log.NewLoggerProvider(options...)
 
 	s.afterStop(func() {
-		if err := provider.Shutdown(context.Background()); err != nil {
-			s.logger.Errorf("otel logger provider helper: shutdown err: %v", err)
-		}
+		ctx := context.Background()
+		err := provider.ForceFlush(ctx)
+		g.ErrorPrinter(s.logger, err, "provider.ForceFlush")
+		g.ErrorPrinter(s.logger, provider.Shutdown(ctx), "otel logger provider helper shutdown")
 	})
 
 	global.SetLoggerProvider(provider)
 	return nil
 }
 
-func (s *helper) Provide(_ string) (g.IsOtelLogLoaded, error) {
+type isOtelLogLoadedProvider struct {
+	gone.Flag
+}
+
+func (s *isOtelLogLoadedProvider) Provide(_ string) (g.IsOtelLogLoaded, error) {
 	return true, nil
 }
 
 // Register for openTelemetry LoggerProvider
 func Register(loader gone.Loader) error {
+	loader.MustLoad(&isOtelLogLoadedProvider{})
+
 	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelLog.Logger, error) {
 		name, _ := gone.ParseGoneTag(tagConf)
 		return global.Logger(name), nil

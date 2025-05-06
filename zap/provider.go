@@ -1,46 +1,17 @@
 package gone_zap
 
 import (
+	"errors"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
+	"go.opentelemetry.io/contrib/bridges/otelzap"
+	"go.opentelemetry.io/otel/log/global"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io/fs"
 	"strings"
 )
-
-type wrappedLogger struct {
-	*zap.Logger
-}
-
-func (l *wrappedLogger) sugar() *zap.SugaredLogger {
-	return l.Logger.Sugar()
-}
-
-func (l *wrappedLogger) Named(s string) Logger {
-	if s == "" {
-		return l
-	}
-	return &wrappedLogger{Logger: l.Logger.Named(s)}
-}
-func (l *wrappedLogger) WithOptions(opts ...Option) Logger {
-	if len(opts) == 0 {
-		return l
-	}
-	return &wrappedLogger{Logger: l.Logger.WithOptions(opts...)}
-}
-func (l *wrappedLogger) With(fields ...Field) Logger {
-	if len(fields) == 0 {
-		return l
-	}
-	return &wrappedLogger{Logger: l.Logger.With(fields...)}
-}
-func (l *wrappedLogger) Sugar() gone.Logger {
-	SugaredLogger := l.Logger.Sugar()
-	return &sugar{
-		SugaredLogger: SugaredLogger,
-	}
-}
 
 type zapLoggerProvider struct {
 	gone.Flag
@@ -58,10 +29,15 @@ type zapLoggerProvider struct {
 	rotationMaxAge      int    `gone:"config,log.rotation.max-age,default=30"`
 	rotationLocalTime   bool   `gone:"config,log.rotation.local-time,default=true"`
 	rotationCompress    bool   `gone:"config,log.rotation.compress,default=false"`
+	otelEnable          bool   `gone:"config,log.otel.enable=false"`
+	otelOnly            bool   `gone:"config,log.otel.only=true"`
+	otelLogName         string `gone:"config,log.otel.log-name=zap"`
 
-	beforeStop  gone.BeforeStop `gone:"*"`
-	tracer      g.Tracer        `gone:"*" option:"allowNil"`
-	atomicLevel *atomicLevel    `gone:"*"`
+	useEncoder      zapcore.Encoder   `gone:"*" option:"allowNil"`
+	tracer          g.Tracer          `gone:"*" option:"allowNil"`
+	isOtelLogLoaded g.IsOtelLogLoaded `gone:"*" option:"allowNil"`
+	atomicLevel     *atomicLevel      `gone:"*"`
+	beforeStop      gone.BeforeStop   `gone:"*"`
 
 	zapLogger *zap.Logger
 }
@@ -77,18 +53,19 @@ func (s *zapLoggerProvider) Provide(tagConf string) (*zap.Logger, error) {
 	return s.zapLogger, nil
 }
 
+func (s *zapLoggerProvider) processError(err error) {
+	var e *fs.PathError
+	if errors.As(err, &e) && strings.HasPrefix(e.Path, "/dev/") {
+		return
+	}
+	g.ErrorPrinter(gone.GetDefaultLogger(), err, "zapLogger.Sync")
+}
+
 func (s *zapLoggerProvider) Init() error {
 	if s.zapLogger == nil {
-		logger, err := s.create()
-		if err != nil {
-			return gone.ToError(err)
-		}
-		s.zapLogger = logger
+		s.zapLogger = s.create()
 		s.beforeStop(func() {
-			err := s.zapLogger.Sync()
-			if err != nil {
-				gone.GetDefaultLogger().Errorf("failed to sync logger:%v", err)
-			}
+			s.processError(s.zapLogger.Sync())
 		})
 	}
 	return nil
@@ -98,12 +75,10 @@ func (s *zapLoggerProvider) SetLevel(level zapcore.Level) {
 	s.atomicLevel.SetLevel(level)
 }
 
-func (s *zapLoggerProvider) create() (*zap.Logger, error) {
+func (s *zapLoggerProvider) createFileCore() (core zapcore.Core) {
 	outputs := strings.Split(s.output, ",")
 	sink, closeOut, err := zap.Open(outputs...)
-	if err != nil {
-		return nil, gone.ToError(err)
-	}
+	g.PanicIfErr(gone.ToErrorWithMsg(err, "create zap output sink"))
 
 	if s.rotationOutput != "" {
 		rotationWriter := zapcore.AddSync(&lumberjack.Logger{
@@ -123,7 +98,7 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		errSink, _, err = zap.Open(errOutputs...)
 		if err != nil {
 			closeOut()
-			return nil, gone.ToError(err)
+			g.PanicIfErr(gone.ToErrorWithMsg(err, "create zap error sink"))
 		}
 	}
 
@@ -141,21 +116,20 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 			errSink = zap.CombineWriteSyncers(rotationWriter, errSink)
 		}
 	}
-	var encoder zapcore.Encoder
-	if s.encoder == "console" {
-		config := zap.NewDevelopmentEncoderConfig()
-		config.ConsoleSeparator = "|"
-		encoder = zapcore.NewConsoleEncoder(config)
-	} else {
-		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+
+	if s.useEncoder == nil {
+		if s.encoder == "console" {
+			config := zap.NewDevelopmentEncoderConfig()
+			config.ConsoleSeparator = "|"
+			s.useEncoder = zapcore.NewConsoleEncoder(config)
+		} else {
+			s.useEncoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+		}
+		s.useEncoder = NewTraceEncoder(s.useEncoder, s.tracer)
 	}
 
-	if s.tracer != nil {
-		encoder = NewTraceEncoder(encoder, s.tracer)
-	}
-
-	core := zapcore.NewCore(
-		encoder,
+	core = zapcore.NewCore(
+		s.useEncoder,
 		sink,
 		s.atomicLevel,
 	)
@@ -164,43 +138,41 @@ func (s *zapLoggerProvider) create() (*zap.Logger, error) {
 		core = zapcore.NewTee(
 			core,
 			zapcore.NewCore(
-				encoder,
+				s.useEncoder,
 				errSink,
 				s.atomicLevel,
 			),
 		)
 	}
+	return core
+}
 
-	var opts []Option
+func (s *zapLoggerProvider) createCore() (core zapcore.Core) {
+	if bool(s.isOtelLogLoaded) && s.otelEnable {
+		provider := global.GetLoggerProvider()
+		core = otelzap.NewCore("otelLogName", otelzap.WithLoggerProvider(provider))
+
+		if !s.otelOnly {
+			core = zapcore.NewTee(
+				core,
+				s.createFileCore(),
+			)
+		}
+	} else {
+		core = s.createFileCore()
+	}
+	return core
+}
+
+func (s *zapLoggerProvider) create() *zap.Logger {
+	var core = s.createCore()
+	var opts []zap.Option
 	if !s.disableStacktrace {
 		opts = append(opts, zap.AddStacktrace(parseLevel(s.stackTraceLevel)))
 	}
-
 	if s.reportCaller {
 		opts = append(opts, zap.AddCaller())
 	}
-
 	logger := zap.New(core, opts...)
-	return logger, nil
-}
-
-type sugarProvider struct {
-	gone.Flag
-
-	zapLogger *zap.Logger `gone:"*"`
-	wrapped   *wrappedLogger
-}
-
-func (s *sugarProvider) Provide(tagConf string) (Logger, error) {
-	if s.wrapped == nil {
-		s.wrapped = &wrappedLogger{Logger: s.zapLogger}
-	}
-
-	_, keys := gone.TagStringParse(tagConf)
-	if len(keys) > 0 {
-		if keys[0] != "" {
-			return s.wrapped.Named(keys[0]), nil
-		}
-	}
-	return s.wrapped, nil
+	return logger
 }

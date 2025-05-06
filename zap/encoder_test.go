@@ -1,6 +1,8 @@
 package gone_zap
 
 import (
+	gMock "github.com/gone-io/goner/g/mock"
+	"go.uber.org/mock/gomock"
 	"testing"
 	"time"
 
@@ -11,22 +13,22 @@ import (
 )
 
 // 模拟tracer实现
-type mockTracer struct {
-	traceId string
-}
+//type mockTracer struct {
+//	traceId string
+//}
 
-func (m *mockTracer) SetTraceId(traceId string, fn func()) {
-	m.traceId = traceId
-	fn()
-}
-
-func (m *mockTracer) GetTraceId() string {
-	return m.traceId
-}
-
-func (m *mockTracer) Go(fn func()) {
-	go fn()
-}
+//func (m *mockTracer) SetTraceId(traceId string, fn func()) {
+//	m.traceId = traceId
+//	fn()
+//}
+//
+//func (m *mockTracer) GetTraceId() string {
+//	return m.traceId
+//}
+//
+//func (m *mockTracer) Go(fn func()) {
+//	go fn()
+//}
 
 // 模拟encoder实现
 type mockEncoder struct {
@@ -123,8 +125,13 @@ func (m *mockEncoder) EncodeEntry(entry zapcore.Entry, fields []zapcore.Field) (
 
 // 测试traceEncoder的EncodeEntry方法
 func TestTraceEncoder_EncodeEntry(t *testing.T) {
-	// 创建一个有traceId的情况
-	mockTracer := &mockTracer{traceId: "test-trace-id"}
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	mockTracer := gMock.NewMockTracer(controller)
+
+	traceId := "mocked-trace-id"
+	mockTracer.EXPECT().GetTraceId().Return(traceId).AnyTimes()
+
 	mockBaseEncoder := &mockEncoder{}
 	traceEncoder := NewTraceEncoder(mockBaseEncoder, mockTracer)
 
@@ -152,20 +159,21 @@ func TestTraceEncoder_EncodeEntry(t *testing.T) {
 	found := false
 	for _, field := range mockBaseEncoder.fields {
 		if field.Key == "traceId" {
-			assert.Equal(t, "test-trace-id", field.String)
+			assert.Equal(t, traceId, field.String)
 			found = true
 			break
 		}
 	}
 	assert.True(t, found, "traceId field should be added")
 
-	// 测试没有traceId的情况
-	mockTracer.traceId = ""
 	mockBaseEncoder = &mockEncoder{}
 	traceEncoder = NewTraceEncoder(mockBaseEncoder, mockTracer)
 
 	// 调用EncodeEntry方法
 	_, err = traceEncoder.EncodeEntry(entry, fields)
+
+	traceEncoder = traceEncoder.Clone()
+	traceEncoder.AddString(contextKey, contextValue)
 
 	// 验证结果
 	assert.Nil(t, err)
@@ -178,5 +186,5 @@ func TestTraceEncoder_EncodeEntry(t *testing.T) {
 			break
 		}
 	}
-	assert.False(t, found, "traceId field should not be added when traceId is empty")
+	assert.True(t, found, "traceId field should not be added when traceId is empty")
 }

@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner/g v1.1.1-00010101000000-000000000000
+	github.com/gone-io/goner/g v1.1.1
 	github.com/gone-io/goner/otel v1.1.1-00010101000000-000000000000
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel v1.35.0

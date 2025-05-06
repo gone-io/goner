@@ -1,0 +1,21 @@
+
+service:
+  name: &serviceName "log-collect-example"
+
+otel:
+  service:
+    name: *serviceName
+  log:
+    http:
+      endpoint: localhost:4318
+      insecure: true
+  tracer:
+    http:
+      endpoint: localhost:4318
+      insecure: true
+
+log:
+  otel:
+    enable: true
+    log-name: *serviceName
+    only: false

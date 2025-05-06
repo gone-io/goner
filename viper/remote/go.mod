@@ -3,13 +3,13 @@ module github.com/gone-io/goner/viper/remote
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.0.11
+	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner/viper v1.1.1
 	github.com/google/go-cmp v0.7.0
 	github.com/spf13/viper v1.20.1
 	github.com/spf13/viper/remote v1.20.1
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/mock v0.5.1
+	go.uber.org/mock v0.5.2
 )
 
 replace github.com/gone-io/goner/viper => ../
