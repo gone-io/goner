@@ -1,6 +1,8 @@
 package gone_zap
 
 import (
+	gMock "github.com/gone-io/goner/g/mock"
+	"go.uber.org/mock/gomock"
 	"os"
 	"path/filepath"
 	"testing"
@@ -13,6 +15,11 @@ import (
 
 // 测试zapLoggerProvider的create方法
 func TestZapLoggerProvider_create(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	mockTracer := gMock.NewMockTracer(controller)
+	mockTracer.EXPECT().GetTraceId().Return("traceId").AnyTimes()
+
 	tempDir := t.TempDir()
 
 	tests := []struct {
@@ -77,7 +84,7 @@ func TestZapLoggerProvider_create(t *testing.T) {
 				output:      "stdout",
 				encoder:     "console",
 				atomicLevel: newAtomicLevel(zap.InfoLevel),
-				tracer:      &mockTracer{},
+				tracer:      mockTracer,
 			},
 		},
 		{

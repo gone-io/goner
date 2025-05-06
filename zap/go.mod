@@ -14,6 +14,7 @@ require (
 	go.opentelemetry.io/contrib/bridges/otelzap v0.10.0
 	go.opentelemetry.io/otel/log v0.11.0
 	go.opentelemetry.io/otel/trace v1.35.0
+	go.uber.org/mock v0.5.2
 )
 
 replace github.com/gone-io/goner/g => ../g

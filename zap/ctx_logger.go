@@ -8,22 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// GetTraceIdFromCtx which get traceId from context and convert to zap.Field
-// Examples:
-//
-//	logger := zap.NewNop()
-//	logger.With(CtxTraceId(context.Background())).Info("info")
-//	logger.Info("info", CtxTraceId(context.Background()))
-func GetTraceIdFromCtx(ctx context.Context) zap.Field {
-	span := trace.SpanFromContext(ctx)
-	spanContext := span.SpanContext()
-	var traceId string
-	if spanContext.IsValid() {
-		traceId = spanContext.TraceID().String()
-	}
-	return zap.String(traceIdKey, traceId)
-}
-
 var _ g.CtxLogger = (*ctxLogger)(nil)
 
 type ctxLogger struct {
@@ -34,10 +18,9 @@ type ctxLogger struct {
 
 func (c ctxLogger) Ctx(ctx context.Context) gone.Logger {
 	logger := newGoneLogger(c.provider)
-	span := trace.SpanFromContext(ctx)
-	spanContext := span.SpanContext()
+	spanContext := trace.SpanContextFromContext(ctx)
 	var traceId string
-	if spanContext.IsValid() {
+	if spanContext.HasTraceID() {
 		logger.SugaredLogger = logger.With(zap.Any(contextKey, ctx))
 		traceId = spanContext.TraceID().String()
 	} else if c.tracer != nil {
