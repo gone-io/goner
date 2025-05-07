@@ -44,12 +44,13 @@
 - [goner/schedule](./schedule) - Scheduled task component
 
 ### Microservices
+
 #### Configuration Center
 - [goner/apollo](./apollo) - Configuration center component based on [Apollo](https://www.apolloconfig.com/), providing dynamic configuration management
 - [goner/nacos](./nacos) - Configuration center component based on [Nacos](https://nacos.io/), providing dynamic configuration management
 - [goner/viper/remote](./viper/remote) - Configuration component based on various remote configuration centers (such as etcd, consul), providing unified configuration management
 
-### Service Registry
+#### Service Registry
 - [goner/nacos](./nacos) - Service registry component based on [Nacos](https://nacos.io/), providing service registration and discovery
 - [goner/etcd](./etcd) - Service registry component based on [etcd](https://etcd.io/), providing service registration and discovery
 - [goner/consul](./consul) - Service registry component based on [consul](https://www.consul.io/), providing service registration and discovery

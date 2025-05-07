@@ -11,7 +11,7 @@
 
 # Goner
 
-`goner` 是 [Gone](https://github.com/gone-io/gone) 框架的官方组件库，提供了一系列可即插即用的组件，帮助开发者快速构建高质量的 Go 应用程序。
+Goner 是 [Gone](https://github.com/gone-io/gone) 框架的官方组件库，提供了一系列可即插即用的组件，帮助开发者快速构建高质量的 Go 应用程序。
 
 ## 组件列表
 
@@ -44,12 +44,13 @@
 - [goner/schedule](./schedule) - 定时任务组件
 
 ### 微服务
+
 #### 配置中心
 - [goner/apollo](./apollo) - 基于 [Apollo](https://www.apolloconfig.com/) 的配置中心组件，提供动态配置管理功能
 - [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能
 - [goner/viper/remote](./viper/remote) - 基于多种远程配置中心（如 etcd、consul 等）的配置组件，提供统一的配置管理功能
 
-### 注册中心
+#### 注册中心
 - [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能
 - [goner/etcd](./etcd) - 基于 [etcd](https://etcd.io/) 的注册中心组件，提供服务注册、发现等功能
 - [goner/consul](./consul) - 基于 [consul](https://www.consul.io/) 的注册中心组件，提供服务注册、发现
