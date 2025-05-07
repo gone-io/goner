@@ -1,5 +1,5 @@
 <p align="left">
-   English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+    <a href="README_CN.md">中文</a>&nbsp;|&nbsp;English
 </p>
 
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -15,139 +15,105 @@
 
 ## Component List
 
+### Local Configuration
+- [goner/viper](./viper) - Configuration management component based on [spf13/viper](https://github.com/spf13/viper)
+
+### Logging
+- [goner/zap](./zap) - Logging component based on [uber-go/zap](https://github.com/uber-go/zap)
+
 ### Web Framework
-- [gin](./gin) - A web framework wrapper based on [gin-gonic/gin](https://github.com/gin-gonic/gin), providing route management, middleware processing, HTTP injection, and other features
-- [cmux](./cmux) - A multi-protocol multiplexer based on [soheilhy/cmux](https://github.com/soheilhy/cmux), supporting multiple protocol services on the same port
+- [goner/gin](./gin) - Web framework wrapper based on [gin-gonic/gin](https://github.com/gin-gonic/gin), providing route management, middleware processing, HTTP injection and other functions
+- [goner/cmux](./cmux) - Multi-protocol multiplexer based on [soheilhy/cmux](https://github.com/soheilhy/cmux), supporting multiple protocol services on the same port
 
 ### Database
-- [gorm](./gorm) - An ORM component based on [GORM](https://gorm.io/), supporting MySQL, PostgreSQL, SQLite, SQL Server, ClickHouse, and other databases
-- [xorm](./xorm) - An ORM component based on [XORM](https://xorm.io/), providing simple and efficient database operations, supporting multiple databases
+- [goner/gorm](./gorm) - ORM component based on [GORM](https://gorm.io/), supporting MySQL, PostgreSQL, SQLite, SQL Server and ClickHouse
+- [goner/xorm](./xorm) - ORM component based on [XORM](https://xorm.io/), providing simple and efficient database operations, supporting multiple databases
 
-### Cache and Messaging
-- [redis](./redis) - Redis client wrapper, providing caching, distributed locks, and other features
+### Cache & Messaging
+- [goner/redis](./redis) - Redis client wrapper, providing caching, distributed lock and other functions
+
+### Search
+- [goner/es](./es) - Elasticsearch client wrapper, providing full-text search functionality
+
+### Scheduling
+- [goner/schedule](./schedule) - Scheduled task component
 
 ### Microservices
 #### Configuration Center
-- [apollo](./apollo) - A configuration center component based on [Apollo](https://www.apolloconfig.com/), providing dynamic configuration management
-- [nacos](./nacos) - A configuration center component based on [Nacos](https://nacos.io/), providing dynamic configuration management
-- [remote](./viper/remote) - A configuration component based on various remote configuration centers (such as etcd, consul, etc.), providing unified configuration management
+- [goner/apollo](./apollo) - Configuration center component based on [Apollo](https://www.apolloconfig.com/), providing dynamic configuration management
+- [goner/nacos](./nacos) - Configuration center component based on [Nacos](https://nacos.io/), providing dynamic configuration management
+- [goner/viper/remote](./viper/remote) - Configuration component based on various remote configuration centers (such as etcd, consul), providing unified configuration management
 
 ### Service Registry
-- [nacos](./nacos) - A service registry component based on [Nacos](https://nacos.io/), providing service registration, discovery, and other features
-- [etcd](./etcd) - A service registry component based on [etcd](https://etcd.io/), providing service registration, discovery, and other features
-- [consul](./consul) - A service registry component based on [Consul](https://www.consul.io/), providing service registration, discovery, and other features
+- [goner/nacos](./nacos) - Service registry component based on [Nacos](https://nacos.io/), providing service registration and discovery
+- [goner/etcd](./etcd) - Service registry component based on [etcd](https://etcd.io/), providing service registration and discovery
+- [goner/consul](./consul) - Service registry component based on [consul](https://www.consul.io/), providing service registration and discovery
 
 #### RPC
-- [grpc](./grpc) - gRPC client and server wrapper, simplifying microservice development
-- [urllib](./urllib) - HTTP client wrapper
+- [goner/grpc](./grpc) - gRPC client and server wrapper, simplifying microservice development
+- [goner/urllib](./urllib) - HTTP client wrapper
 
 ### AI Components
-- [openai](./openai) - OpenAI client wrapper, providing GPT and other AI capabilities integration
-- [deepseek](./deepseek) - Deepseek client wrapper, providing Chinese LLM integration
-- [mcp](./mcp) - is a toolkit wrapped around `github.com/mark3labs/mcp-go`, helping developers quickly build MCP(Model Context Protocol)  server and client applications. By using the Gone MCP component, you can easily integrate AI models with your business systems.
-- 
-### Utility Components
-- [viper](./viper) - Configuration management component, based on [spf13/viper](https://github.com/spf13/viper)
-- [zap](./zap) - Logging component, based on [uber-go/zap](https://github.com/uber-go/zap)
-- [tracer](./tracer) - Distributed tracing component
-- [urllib](./urllib) - HTTP client wrapper
-- [schedule](./schedule) - Scheduled task component
-- [es](./es) - Elasticsearch client wrapper, providing full-text search functionality
+- [goner/openai](./openai) - OpenAI client wrapper, providing GPT and other AI capabilities integration
+- [goner/deepseek](./deepseek) - Deepseek client wrapper, providing domestic large language model integration
+- [goner/mcp](./mcp) - Toolkit wrapper based on `github.com/mark3labs/mcp-go`, helping developers quickly build MCP (Model Context Protocol) server and client applications
+
+### Observability
+- [goner/otel](./otel) - OpenTelemetry component, providing distributed tracing, metrics and log collection
+  - [goner/otel/tracer](./otel/tracer) - Tracing component
+    - [goner/otel/tracer/http](./otel/tracer/http) - Tracing Exporter integrated with OLTP/HTTP protocol
+    - [goner/otel/tracer/grpc](./otel/tracer/grpc) - Tracing Exporter integrated with OLTP/GRPC protocol
+    - [goner/otel/tracer/zipkin](./otel/tracer/zipkin) - Tracing Exporter supporting Zipkin
+
+  - [goner/otel/meter](./otel/meter) - Metrics component
+    - [goner/otel/meter/http](./otel/meter/http) - Metrics Exporter integrated with OLTP/HTTP protocol
+    - [goner/otel/meter/grpc](./otel/meter/grpc) - Metrics Exporter integrated with OLTP/GRPC protocol
+    - [goner/otel/meter/prometheus](./otel/meter/prometheus) - Reader providing Prometheus integration
+    - [goner/otel/meter/prometheus/gin](./otel/meter/prometheus/gin) - Gin middleware for exposing Prometheus metrics endpoint
+
+  - [goner/otel/log](./otel/log) - Log component
+    - [goner/otel/log/http](./otel/log/http) - Log Exporter integrated with OLTP/HTTP protocol
+    - [goner/otel/log/grpc](./otel/log/grpc) - Log Exporter integrated with OLTP/GRPC protocol
+- [goner/tracer](./tracer) - Providing implicit parameter passing of traceID within programs
 
 ## Installation
 ```bash
-go get github.com/gone-io/goner
+# Install Gone CLI tool
+go install github.com/gone-io/gonectl@latest
+
+# Install Goner component
+# gonectl install <goner component name>
+gonectl install goner/gin
 ```
 
 ## Quick Start
+Create an application based on Gin, XORM and Viper using Gone CLI tool:
 
-Here's an example of creating a simple web application using the Gone framework and Goner component library:
-
-- main.go
-```go
-package main
-
-import (
-	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner"
-	"github.com/gone-io/goner/gin"
-	goneGorm "github.com/gone-io/goner/gorm"
-	"github.com/gone-io/goner/gorm/mysql"
-	"gorm.io/gorm"
-)
-
-// Define controller
-type HelloController struct {
-	gone.Flag
-	gin.IRouter `gone:"*"`      // Inject router
-	uR          *UserRepository `gone:"*"`
-}
-
-// Mount implements the gin.Controller interface
-func (h *HelloController) Mount() gin.MountError {
-	h.GET("/hello", h.hello) // Register route
-	h.GET("/user/:id", h.getUser)
-	return nil
-}
-
-func (h *HelloController) hello() (string, error) {
-	return "Hello, Gone!", nil
-}
-func (h *HelloController) getUser(in struct {
-	id uint `param:"id"`
-}) (*User, error) {
-
-	user, err := h.uR.GetByID(in.id)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-// Define data model and repository
-type User struct {
-	ID   uint `gorm:"primaryKey"`
-	Name string
-}
-
-type UserRepository struct {
-	gone.Flag
-	*gorm.DB `gone:"*"`
-}
-
-func (r *UserRepository) GetByID(id uint) (*User, error) {
-	var user User
-	err := r.First(&user, id).Error
-	return &user, err
-}
-
-func main() {
-	// Load components and start the application
-	gone.
-		Loads(
-			goner.BaseLoad,
-			goneGorm.Load, // Load Gorm core components
-			mysql.Load,    // Load MySQL driver
-			gin.Load,      // Load Gin components
-		).
-		Load(&HelloController{}). // Load controller
-		Load(&UserRepository{}).  // Load repository
-		Serve()
-}
+- Create and install dependencies
+```bash
+gonectl create -t gin+xorm+viper goner-demo
+cd goner-demo
+go mod tidy
 ```
 
-- config/default.properties
-```init
-gorm.mysql.dsn=root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local
+- Run application
+```bash
+# Start database
+docker compose up -d
+
+# Start application
+go run ./cmd
+
+# Or
+# gonectl run ./cmd
 ```
 
-## Configuration Guide
+> Example code location: [gin+xorm+viper](examples/gin%2Bxorm%2Bviper)
 
-For detailed configuration instructions for each component, please refer to the README.md file in each component directory.
 
-## Contribution Guidelines
+## Contribution Guide
 
-Contributions of code or issues are welcome! Please follow these steps:
+Welcome contributions! Please follow these steps:
 
 1. Fork this repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -157,4 +123,4 @@ Contributions of code or issues are welcome! Please follow these steps:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details
+MIT License - see LICENSE file

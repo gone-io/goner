@@ -15,136 +15,103 @@
 
 ## 组件列表
 
+### 本地配置
+- [goner/viper](./viper) - 配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper)
+
+### 日志管理
+- [goner/zap](./zap) - 日志组件，基于 [uber-go/zap](https://github.com/uber-go/zap)
+
 ### Web 框架
-- [gin](./gin) - 基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，提供路由管理、中间件处理、HTTP 注入等功能
-- [cmux](./cmux) - 基于 [soheilhy/cmux](https://github.com/soheilhy/cmux) 的多协议复用器，支持在同一端口上运行多种协议服务
+- [goner/gin](./gin) - 基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，提供路由管理、中间件处理、HTTP 注入等功能
+- [goner/cmux](./cmux) - 基于 [soheilhy/cmux](https://github.com/soheilhy/cmux) 的多协议复用器，支持在同一端口上运行多种协议服务
 
 ### 数据库
-- [gorm](./gorm) - 基于 [GORM](https://gorm.io/) 的 ORM 组件，支持 MySQL、PostgreSQL、SQLite、SQL Server 和 ClickHouse 等多种数据库
-- [xorm](./xorm) - 基于 [XORM](https://xorm.io/) 的 ORM 组件，提供简单高效的数据库操作，支持多种数据库 
+- [goner/gorm](./gorm) - 基于 [GORM](https://gorm.io/) 的 ORM 组件，支持 MySQL、PostgreSQL、SQLite、SQL Server 和 ClickHouse 等多种数据库
+- [goner/xorm](./xorm) - 基于 [XORM](https://xorm.io/) 的 ORM 组件，提供简单高效的数据库操作，支持多种数据库 
 
 ### 缓存与消息
-- [redis](./redis) - Redis 客户端封装，提供缓存、分布式锁等功能
+- [goner/redis](./redis) - Redis 客户端封装，提供缓存、分布式锁等功能
+
+### 搜索
+- [goner/es](./es) - Elasticsearch 客户端封装，提供全文搜索功能
+
+### 定时任务
+- [goner/schedule](./schedule) - 定时任务组件
 
 ### 微服务
 #### 配置中心
-- [apollo](./apollo) - 基于 [Apollo](https://www.apolloconfig.com/) 的配置中心组件，提供动态配置管理功能
-- [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能
-- [remote](./viper/remote) - 基于多种远程配置中心（如 etcd、consul 等）的配置组件，提供统一的配置管理功能
+- [goner/apollo](./apollo) - 基于 [Apollo](https://www.apolloconfig.com/) 的配置中心组件，提供动态配置管理功能
+- [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能
+- [goner/viper/remote](./viper/remote) - 基于多种远程配置中心（如 etcd、consul 等）的配置组件，提供统一的配置管理功能
 
 ### 注册中心
-- [nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能
-- [etcd](./etcd)] - 基于 [etcd](https://etcd.io/) 的注册中心组件，提供服务注册、发现等功能
-- [consul](./consul) - 基于 [consul](https://www.consul.io/) 的注册中心组件，提供服务注册、发现
+- [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能
+- [goner/etcd](./etcd) - 基于 [etcd](https://etcd.io/) 的注册中心组件，提供服务注册、发现等功能
+- [goner/consul](./consul) - 基于 [consul](https://www.consul.io/) 的注册中心组件，提供服务注册、发现
 
 #### RPC
-- [grpc](./grpc) - gRPC 客户端和服务端封装，简化微服务开发
-- [urllib](./urllib) - HTTP 客户端封装
+- [goner/grpc](./grpc) - gRPC 客户端和服务端封装，简化微服务开发
+- [goner/urllib](./urllib) - HTTP 客户端封装
 
 ### AI 组件
-- [openai](./openai) - OpenAI 客户端封装，提供 GPT 等 AI 能力集成
-- [deepseek](./deepseek) - Deepseek 客户端封装，提供国产大语言模型集成
-- [mcp](./mcp) - 基于 `github.com/mark3labs/mcp-go` 进行封装的工具包，它能帮助开发者快速构建 MCP (Model Context Protocol)  的服务端和客户端应用。通过使用 Gone MCP 组件，您可以轻松地将 AI 模型与您的业务系统进行集成。
+- [goner/openai](./openai) - OpenAI 客户端封装，提供 GPT 等 AI 能力集成
+- [goner/deepseek](./deepseek) - Deepseek 客户端封装，提供国产大语言模型集成
+- [goner/mcp](./mcp) - 基于 `github.com/mark3labs/mcp-go` 进行封装的工具包，它能帮助开发者快速构建 MCP (Model Context Protocol)  的服务端和客户端应用。通过使用 Gone MCP 组件，您可以轻松地将 AI 模型与您的业务系统进行集成。
 
-### 工具组件
-- [viper](./viper) - 配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper)
-- [zap](./zap) - 日志组件，基于 [uber-go/zap](https://github.com/uber-go/zap)
-- [tracer](./tracer) - 分布式追踪组件
-- [urllib](./urllib) - HTTP 客户端封装
-- [schedule](./schedule) - 定时任务组件
-- [es](./es) - Elasticsearch 客户端封装，提供全文搜索功能
+### 可观测性
+- [goner/otel](./otel) - OpenTelemetry 组件，提供分布式追踪、指标和日志收集功能
+  - [goner/otel/tracer](./otel/tracer) - 追踪组件
+    - [goner/otel/tracer/http](./otel/tracer/http) - 集成OLTP/HTTP协议的追踪Exporter
+    - [goner/otel/tracer/grpc](./otel/tracer/grpc) - 集成OLTP/GRPC协议的追踪Exporter
+    - [goner/otel/tracer/zipkin](./otel/tracer/zipkin) - 支持对接Zipkin的追踪Exporter
+
+  - [goner/otel/meter](./otel/meter) - 指标组件
+    - [goner/otel/meter/http](./otel/meter/http) - 集成OLTP/HTTP协议的指标Exporter
+    - [goner/otel/meter/grpc](./otel/meter/grpc) - 集成OLTP/GRPC协议的指标Exporter
+    - [goner/otel/meter/prometheus](./otel/meter/prometheus) - 提供Prometheus对接的Reader
+		- [goner/otel/meter/prometheus/gin](./otel/meter/prometheus/gin) - 基于Gin的中间件，用于暴露Prometheus指标端点
+
+  - [goner/otel/log](./otel/log) - 日志组件
+    - [goner/otel/log/http](./otel/log/http) - 集成OLTP/HTTP协议的日志Exporter
+    - [goner/otel/log/grpc](./otel/log/grpc) - 集成OLTP/GRPC协议的日志Exporter
+- [goner/tracer](./tracer) - 提供程序内部traceID隐形传参
+
+
 
 ## 安装
 ```bash
-go get github.com/gone-io/goner
+# 安装 Gone 控制台工具
+go install github.com/gone-io/gonectl@latest
+
+# 安装 Goner 组件
+# gonectl install <goner component name>
+gonectl install goner/gin
 ```
 
 ## 快速开始
+使用 Gone 控制台工具创建一个基于 Gin、XORM 和 Viper 的应用程序：
 
-以下是一个使用 Gone 框架和 Goner 组件库创建简单 Web 应用的示例：
-
-
-- main.go
-```go
-package main
-
-import (
-	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner"
-	"github.com/gone-io/goner/gin"
-	goneGorm "github.com/gone-io/goner/gorm"
-	"github.com/gone-io/goner/gorm/mysql"
-	"gorm.io/gorm"
-)
-
-// 定义控制器
-type HelloController struct {
-	gone.Flag
-	gin.IRouter `gone:"*"`      // 注入路由器
-	uR          *UserRepository `gone:"*"`
-}
-
-// Mount 实现 gin.Controller 接口
-func (h *HelloController) Mount() gin.MountError {
-	h.GET("/hello", h.hello) // 注册路由
-	h.GET("/user/:id", h.getUser)
-	return nil
-}
-
-func (h *HelloController) hello() (string, error) {
-	return "Hello, Gone!", nil
-}
-func (h *HelloController) getUser(in struct {
-	id uint `param:"id"`
-}) (*User, error) {
-
-	user, err := h.uR.GetByID(in.id)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-// 定义数据模型和仓库
-type User struct {
-	ID   uint `gorm:"primaryKey"`
-	Name string
-}
-
-type UserRepository struct {
-	gone.Flag
-	*gorm.DB `gone:"*"`
-}
-
-func (r *UserRepository) GetByID(id uint) (*User, error) {
-	var user User
-	err := r.First(&user, id).Error
-	return &user, err
-}
-
-func main() {
-	// 加载组件并启动应用
-	gone.
-		Loads(
-			goner.BaseLoad,
-			goneGorm.Load, // 加载 Gorm 核心组件
-			mysql.Load,    // 加载 MySQL 驱动
-			gin.Load,      // 加载 Gin 组件
-		).
-		Load(&HelloController{}). // 加载控制器
-		Load(&UserRepository{}).  // 加载仓库
-		Serve()
-}
+- 创建和安装依赖
+```bash
+gonectl create -t gin+xorm+viper goner-demo
+cd goner-demo
+go mod tidy
 ```
 
-- config/default.properties
-```init
-gorm.mysql.dsn=root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local
+- 运行应用程序
+```bash
+# 启动数据库
+docker compose up -d
+
+# 启动应用
+go run ./cmd
+
+# 或者
+# gonectl run ./cmd
 ```
 
-## 配置说明
+> 示例代码，所在目录：[gin+xorm+viper](examples/gin%2Bxorm%2Bviper)
 
-各组件的详细配置说明请参考各组件目录下的 README.md 文件。
 
 ## 贡献指南
 
