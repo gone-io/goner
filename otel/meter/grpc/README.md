@@ -29,15 +29,15 @@ gonectl install goner/otel/meter/grpc
 
 | Configuration Item          | Type   | Description                     |
 |-------------------------|--------|---------------------------------|
-| `endpoint`              | string | OpenTelemetry Collector address and port |
-| `endpointUrl`           | string | Complete endpoint URL (alternative to endpoint) |
-| `compressor`            | string | Data compression method, e.g. "gzip" |
-| `headers`               | map    | Custom gRPC headers             |
-| `duration`              | time   | Request timeout duration        |
-| `retry.enabled`         | bool   | Whether to enable retry mechanism |
-| `retry.initialInterval` | time   | Initial wait time after first failure |
-| `retry.maxInterval`     | time   | Maximum retry interval          |
-| `retry.maxElapsedTime`  | time   | Maximum total time before giving up retries |
+| `otel.meter.grpc.endpoint`              | string | OpenTelemetry Collector address and port |
+| `otel.meter.grpc.endpointUrl`           | string | Complete endpoint URL (alternative to endpoint) |
+| `otel.meter.grpc.compressor`            | string | Data compression method, e.g. "gzip" |
+| `otel.meter.grpc.headers`               | map    | Custom gRPC headers             |
+| `otel.meter.grpc.duration`              | time   | Request timeout duration        |
+| `otel.meter.grpc.retry.enabled`         | bool   | Whether to enable retry mechanism |
+| `otel.meter.grpc.retry.initialInterval` | time   | Initial wait time after first failure |
+| `otel.meter.grpc.retry.maxInterval`     | time   | Maximum retry interval          |
+| `otel.meter.grpc.retry.maxElapsedTime`  | time   | Maximum total time before giving up retries |
 
 ## Examples
 

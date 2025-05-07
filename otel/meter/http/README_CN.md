@@ -29,15 +29,15 @@ gonectl install goner/otel/meter/http
 
 | 配置项                     | 类型  | 说明                      |
 |-------------------------|-----|-------------------------|
-| `endpoint`              | 字符串 | OpenTelemetry 收集器的地址和端口 |
-| `urlPath`               | 字符串 | 指标上报的 URL 路径            |
-| `insecure`              | 布尔值 | 是否使用非安全连接（不使用 TLS）      |
-| `headers`               | 映射  | 自定义 HTTP 头信息            |
-| `duration`              | 时间  | 请求超时时间                  |
-| `retry.enabled`         | 布尔值 | 是否启用重试机制                |
-| `retry.initialInterval` | 时间  | 首次失败后的等待时间              |
-| `retry.maxInterval`     | 时间  | 重试间隔的最大值                |
-| `retry.maxElapsedTime`  | 时间  | 放弃重试前的最大总时间             |
+| `otel.meter.http.endpoint`              | 字符串 | OpenTelemetry 收集器的地址和端口 |
+| `otel.meter.http.urlPath`               | 字符串 | 指标上报的 URL 路径            |
+| `otel.meter.http.insecure`              | 布尔值 | 是否使用非安全连接（不使用 TLS）      |
+| `otel.meter.http.headers`               | 映射  | 自定义 HTTP 头信息            |
+| `otel.meter.http.duration`              | 时间  | 请求超时时间                  |
+| `otel.meter.http.retry.enabled`         | 布尔值 | 是否启用重试机制                |
+| `otel.meter.http.retry.initialInterval` | 时间  | 首次失败后的等待时间              |
+| `otel.meter.http.retry.maxInterval`     | 时间  | 重试间隔的最大值                |
+| `otel.meter.http.retry.maxElapsedTime`  | 时间  | 放弃重试前的最大总时间             |
 
 ## 例子
 

@@ -1,4 +1,4 @@
-<p>
+otel.tracer.grpc.<p>
     English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
 </p>
 
@@ -29,15 +29,15 @@ gonectl install goner/otel/tracer/grpc
 
 | Configuration Item | Type | Description |
 | --- | --- | --- |
-| `endpoint` | string | Address and port of OpenTelemetry collector |
-| `insecure` | boolean | Whether to use insecure connection (no TLS) |
-| `compression` | string | Data compression method, e.g., "gzip" |
-| `headers` | map | Custom gRPC headers |
-| `duration` | time | Request timeout duration |
-| `retry.enabled` | boolean | Whether to enable retry mechanism |
-| `retry.initialInterval` | time | Wait time after first failure |
-| `retry.maxInterval` | time | Maximum retry interval |
-| `retry.maxElapsedTime` | time | Maximum total time before giving up retries |
+| `otel.tracer.grpc.endpoint` | string | Address and port of OpenTelemetry collector |
+| `otel.tracer.grpc.insecure` | boolean | Whether to use insecure connection (no TLS) |
+| `otel.tracer.grpc.compression` | string | Data compression method, e.g., "gzip" |
+| `otel.tracer.grpc.headers` | map | Custom gRPC headers |
+| `otel.tracer.grpc.duration` | time | Request timeout duration |
+| `otel.tracer.grpc.retry.enabled` | boolean | Whether to enable retry mechanism |
+| `otel.tracer.grpc.retry.initialInterval` | time | Wait time after first failure |
+| `otel.tracer.grpc.retry.maxInterval` | time | Maximum retry interval |
+| `otel.tracer.grpc.retry.maxElapsedTime` | time | Maximum total time before giving up retries |
 
 ## Example
 > The following example demonstrates how to export trace data using OLTP/gRPC protocol. The project includes a server and a client, both exporting trace data to Jaeger. The client calls the server via gRPC requests, passing trace information during the call process.

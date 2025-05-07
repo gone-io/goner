@@ -29,15 +29,15 @@ gonectl install goner/otel/tracer/grpc
 
 | 配置项 | 类型 | 说明 |
 | --- | --- | --- |
-| `endpoint` | 字符串 | OpenTelemetry 收集器的地址和端口 |
-| `insecure` | 布尔值 | 是否使用非安全连接（不使用 TLS） |
-| `compression` | 字符串 | 数据压缩方式，如 "gzip" |
-| `headers` | 映射 | 自定义 gRPC 头信息 |
-| `duration` | 时间 | 请求超时时间 |
-| `retry.enabled` | 布尔值 | 是否启用重试机制 |
-| `retry.initialInterval` | 时间 | 首次失败后的等待时间 |
-| `retry.maxInterval` | 时间 | 重试间隔的最大值 |
-| `retry.maxElapsedTime` | 时间 | 放弃重试前的最大总时间 |
+| `otel.tracer.grpc.endpoint` | 字符串 | OpenTelemetry 收集器的地址和端口 |
+| `otel.tracer.grpc.insecure` | 布尔值 | 是否使用非安全连接（不使用 TLS） |
+| `otel.tracer.grpc.compression` | 字符串 | 数据压缩方式，如 "gzip" |
+| `otel.tracer.grpc.headers` | 映射 | 自定义 gRPC 头信息 |
+| `otel.tracer.grpc.duration` | 时间 | 请求超时时间 |
+| `otel.tracer.grpc.retry.enabled` | 布尔值 | 是否启用重试机制 |
+| `otel.tracer.grpc.retry.initialInterval` | 时间 | 首次失败后的等待时间 |
+| `otel.tracer.grpc.retry.maxInterval` | 时间 | 重试间隔的最大值 |
+| `otel.tracer.grpc.retry.maxElapsedTime` | 时间 | 放弃重试前的最大总时间 |
 
 ## 例子
 > 下面例子，展示如何使用OLTP/gRPC协议导出追踪数据。项目包括一个服务端和一个客户端，服务端和客户端的追踪数据导出到Jaeger；客户端通过gRPC请求调用服务端，调用过程中传递追踪信息。

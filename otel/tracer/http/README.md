@@ -28,15 +28,15 @@ gonectl install goner/otel/tracer/http
 
 | Configuration Item | Type | Description |
 | --- | --- | --- |
-| `endpoint` | string | Address and port of the OpenTelemetry collector |
-| `urlPath` | string | URL path for trace reporting |
-| `insecure` | boolean | Whether to use non-secure connection (without TLS) |
-| `headers` | map | Custom HTTP headers |
-| `duration` | time | Request timeout duration |
-| `retry.enabled` | boolean | Whether to enable retry mechanism |
-| `retry.initialInterval` | time | Wait time after first failure |
-| `retry.maxInterval` | time | Maximum retry interval |
-| `retry.maxElapsedTime` | time | Maximum total time before giving up retries |
+| `otel.tracer.http.endpoint` | string | Address and port of the OpenTelemetry collector |
+| `otel.tracer.http.urlPath` | string | URL path for trace reporting |
+| `otel.tracer.http.insecure` | boolean | Whether to use non-secure connection (without TLS) |
+| `otel.tracer.http.headers` | map | Custom HTTP headers |
+| `otel.tracer.http.duration` | time | Request timeout duration |
+| `otel.tracer.http.retry.enabled` | boolean | Whether to enable retry mechanism |
+| `otel.tracer.http.retry.initialInterval` | time | Wait time after first failure |
+| `otel.tracer.http.retry.maxInterval` | time | Maximum retry interval |
+| `otel.tracer.http.retry.maxElapsedTime` | time | Maximum total time before giving up retries |
 
 ## Example
 > The following example demonstrates how to export trace data using OLTP/HTTP protocol. The project includes a server and a client, with both trace data exported to Jaeger; the client calls the server via HTTP requests, passing trace information during the process.

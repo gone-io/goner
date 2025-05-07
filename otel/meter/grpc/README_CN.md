@@ -30,15 +30,15 @@ gonectl install goner/otel/meter/grpc
 
 | 配置项                     | 类型  | 说明                        |
 |-------------------------|-----|---------------------------|
-| `endpoint`              | 字符串 | OpenTelemetry 收集器的地址和端口   |
-| `endpointUrl`           | 字符串 | 完整的端点 URL（与 endpoint 二选一） |
-| `compressor`            | 字符串 | 数据压缩方式，如 "gzip"           |
-| `headers`               | 映射  | 自定义 gRPC 头信息              |
-| `duration`              | 时间  | 请求超时时间                    |
-| `retry.enabled`         | 布尔值 | 是否启用重试机制                  |
-| `retry.initialInterval` | 时间  | 首次失败后的等待时间                |
-| `retry.maxInterval`     | 时间  | 重试间隔的最大值                  |
-| `retry.maxElapsedTime`  | 时间  | 放弃重试前的最大总时间               |
+| `otel.meter.grpc.endpoint`              | 字符串 | OpenTelemetry 收集器的地址和端口   |
+| `otel.meter.grpc.endpointUrl`           | 字符串 | 完整的端点 URL（与 endpoint 二选一） |
+| `otel.meter.grpc.compressor`            | 字符串 | 数据压缩方式，如 "gzip"           |
+| `otel.meter.grpc.headers`               | 映射  | 自定义 gRPC 头信息              |
+| `otel.meter.grpc.duration`              | 时间  | 请求超时时间                    |
+| `otel.meter.grpc.retry.enabled`         | 布尔值 | 是否启用重试机制                  |
+| `otel.meter.grpc.retry.initialInterval` | 时间  | 首次失败后的等待时间                |
+| `otel.meter.grpc.retry.maxInterval`     | 时间  | 重试间隔的最大值                  |
+| `otel.meter.grpc.retry.maxElapsedTime`  | 时间  | 放弃重试前的最大总时间               |
 
 ## 例子
 

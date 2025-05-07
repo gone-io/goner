@@ -28,15 +28,15 @@ gonectl install goner/otel/meter/http
 
 | Configuration Item         | Type   | Description                      |
 |-------------------------|--------|---------------------------------|
-| `endpoint`              | string | Address and port of OpenTelemetry collector |
-| `urlPath`               | string | URL path for metrics reporting  |
-| `insecure`              | bool   | Whether to use insecure connection (without TLS) |
-| `headers`               | map    | Custom HTTP headers             |
-| `duration`              | time   | Request timeout duration        |
-| `retry.enabled`         | bool   | Whether to enable retry mechanism |
-| `retry.initialInterval` | time   | Wait time after first failure   |
-| `retry.maxInterval`     | time   | Maximum retry interval          |
-| `retry.maxElapsedTime`  | time   | Maximum total time before giving up retries |
+| `otel.meter.http.endpoint`              | string | Address and port of OpenTelemetry collector |
+| `otel.meter.http.urlPath`               | string | URL path for metrics reporting  |
+| `otel.meter.http.insecure`              | bool   | Whether to use insecure connection (without TLS) |
+| `otel.meter.http.headers`               | map    | Custom HTTP headers             |
+| `otel.meter.http.duration`              | time   | Request timeout duration        |
+| `otel.meter.http.retry.enabled`         | bool   | Whether to enable retry mechanism |
+| `otel.meter.http.retry.initialInterval` | time   | Wait time after first failure   |
+| `otel.meter.http.retry.maxInterval`     | time   | Maximum retry interval          |
+| `otel.meter.http.retry.maxElapsedTime`  | time   | Maximum total time before giving up retries |
 
 ## Example
 
