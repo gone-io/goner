@@ -1,0 +1,7 @@
+otel:
+  service:
+    name: "meter over grpc"
+  meter:
+    http:
+      endpoint: localhost:4317
+      insecure: true

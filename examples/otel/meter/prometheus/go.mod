@@ -1,14 +1,14 @@
-module examples/otel/prometheus
+module examples/otel/meter/prometheus
 
 go 1.24.1
 
 replace (
-	github.com/gone-io/goner/g => ../../../g
-	github.com/gone-io/goner/gin => ../../../gin
-	github.com/gone-io/goner/otel => ../../../otel
-	github.com/gone-io/goner/otel/meter => ../../../otel/meter
-	github.com/gone-io/goner/otel/meter/prometheus => ../../../otel/meter/prometheus
-	github.com/gone-io/goner/otel/meter/prometheus/gin => ../../../otel/meter/prometheus/gin
+	github.com/gone-io/goner/g => ./../../../../g
+	github.com/gone-io/goner/gin => ./../../../../gin
+	github.com/gone-io/goner/otel => ./../../../../otel
+	github.com/gone-io/goner/otel/meter => ./../../../../otel/meter
+	github.com/gone-io/goner/otel/meter/prometheus => ./../../../../otel/meter/prometheus
+	github.com/gone-io/goner/otel/meter/prometheus/gin => ./../../../../otel/meter/prometheus/gin
 )
 
 require (
