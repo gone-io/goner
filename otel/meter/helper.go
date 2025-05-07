@@ -55,15 +55,16 @@ func (s *providerHelper) Init() (err error) {
 	otel.SetMeterProvider(meterProvider)
 	return nil
 }
-func (s *providerHelper) Provide(_ string) (g.IsOtelMeterLoaded, error) {
-	return true, nil
+
+func (s *providerHelper) Provide(tagConf string) (otelMetric.Meter, error) {
+	name, _ := gone.ParseGoneTag(tagConf)
+	return otel.Meter(name), nil
 }
 
 // Register for openTelemetry openTelemetry MeterProvider
 func Register(loader gone.Loader) error {
-	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelMetric.Meter, error) {
-		name, _ := gone.ParseGoneTag(tagConf)
-		return otel.Meter(name), nil
+	loader.MustLoad(gone.WrapFunctionProvider(func(_ string, _ struct{}) (g.IsOtelMeterLoaded, error) {
+		return true, nil
 	}))
 	loader.MustLoad(&providerHelper{})
 	return otelHelper.HelpSetPropagator(loader)

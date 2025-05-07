@@ -1,0 +1,13 @@
+
+service:
+  name: &serviceName "log-collect-example"
+
+otel:
+  service:
+    name: *serviceName
+
+log:
+  otel:
+    enable: true
+    log-name: *serviceName
+    only: true

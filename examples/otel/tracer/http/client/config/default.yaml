@@ -1,0 +1,8 @@
+
+otel:
+  service:
+    name: "http-hello-client"
+  tracer:
+    http:
+      endpoint: localhost:4318
+      insecure: true

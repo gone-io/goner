@@ -1,0 +1,7 @@
+otel:
+  service:
+    name: "meter over http"
+  meter:
+    http:
+      endpoint: localhost:4318
+      insecure: true

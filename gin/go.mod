@@ -17,7 +17,7 @@ require (
 
 require (
 	github.com/gone-io/gone/mock/v2 v2.1.0
-	github.com/gone-io/goner/g v1.1.1
+	github.com/gone-io/goner/g v1.2.1
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.60.0
 	go.opentelemetry.io/otel/trace v1.35.0
 )
