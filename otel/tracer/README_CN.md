@@ -61,7 +61,7 @@ go run .
 .
 ├── go.mod
 ├── go.sum
-├── main.go 
+├── main.go
 ├── module.load.go
 └── your_compoent.go
 ```
