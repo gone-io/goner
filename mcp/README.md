@@ -1,4 +1,9 @@
-# Gone MCP Component Usage Guide
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/mcp Component
+
 - [Gone MCP Component Usage Guide](#gone-mcp-component-usage-guide)
   - [Introduction](#introduction)
   - [Quick Start](#quick-start)
@@ -30,7 +35,7 @@
 
 MCP (Model Context Protocol) is an open protocol led by Anthropic (the developer of Claude model). Its main goal is to provide a standardized framework for AI models to easily interact with external data sources, tools, and services.
 
-Gone MCP component is a toolkit wrapped around `github.com/mark3labs/mcp-go`, helping developers quickly build MCP server and client applications. By using the Gone MCP component, you can easily integrate AI models with your business systems.
+The **goner/mcp** component is a toolkit wrapped around `github.com/mark3labs/mcp-go`, helping developers quickly build MCP server and client applications. By using the Gone MCP component, you can easily integrate AI models with your business systems.
 
 ## Quick Start
 

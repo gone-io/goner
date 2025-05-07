@@ -1,6 +1,10 @@
-# Gone Viper Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-`gone-viper` is the configuration management component of the Gone framework, implemented based on [spf13/viper](https://github.com/spf13/viper). It provides flexible and powerful configuration management capabilities for your Gone applications, supporting multiple configuration sources and formats, making your application configuration simple and efficient.
+# goner/viper Component
+
+The **goner/viper** component is the configuration management component of the Gone framework, implemented based on [spf13/viper](https://github.com/spf13/viper). It provides flexible and powerful configuration management capabilities for your Gone applications, supporting multiple configuration sources and formats, making your application configuration simple and efficient.
 
 ## Features
 

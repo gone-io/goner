@@ -1,10 +1,14 @@
-# Gone Framework etcd Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/etcd Component
 
 ## Component Overview
 
-The etcd component provides service registration and discovery capabilities for the Gone framework based on etcd. This integration offers a reliable solution for service management in distributed systems.
+The **goner/etcd** component provides service registration and discovery capabilities for the Gone framework based on etcd. This integration offers a reliable solution for service management in distributed systems.
 
-With the etcd component, you can:
+With the **goner/etcd** component, you can:
 
 - Register and discover services in distributed environments
 - Implement service health checks and automatic failover

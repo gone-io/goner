@@ -1,6 +1,10 @@
-# Gone Viper 组件
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-`gone-viper` 是 Gone 框架的配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper) 实现。它为您的 Gone 应用提供灵活而强大的配置管理能力，支持多种配置源和格式，让您的应用配置变得简单高效。
+# goner/viper 组件
+
+**goner/viper** 组件 是 Gone 框架的配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper) 实现。它为您的 Gone 应用提供灵活而强大的配置管理能力，支持多种配置源和格式，让您的应用配置变得简单高效。
 
 ## 功能特性
 

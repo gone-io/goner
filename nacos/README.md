@@ -1,8 +1,12 @@
-# Gone Framework Nacos Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/nacos Component
 
 ## Overview
 
-The Nacos component empowers the Gone framework with dynamic configuration management and service discovery capabilities by leveraging Alibaba's Nacos. This integration provides a robust solution for managing application configurations and service discovery in distributed systems.
+The **goner/nacos** component empowers the Gone framework with dynamic configuration management and service discovery capabilities by leveraging Alibaba's Nacos. This integration provides a robust solution for managing application configurations and service discovery in distributed systems.
 
 With the Nacos component, you can:
 

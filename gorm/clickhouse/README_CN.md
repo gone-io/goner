@@ -1,4 +1,8 @@
-# Gone Gorm ClickHouse 驱动
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/gorm/clickhouse 组件, Gone Gorm ClickHouse 驱动
 
 ## 简介
 

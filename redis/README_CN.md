@@ -1,12 +1,16 @@
-# gone-redis
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-本库基于 [redigo](github.com/gomodule/redigo/redis) 集成了 Redis 的基本操作。
+# goner/redis 组件
+
+**goner/redis** 组件基于 [redigo](github.com/gomodule/redigo/redis) 集成了 Redis 的基本操作。
 
 ## 使用方法
 
 ### 0. Redis 服务器配置
 
-本库使用 [gone-config](../config) 进行配置，因此可以在配置文件（config/default.properties，config/${env}.properties）中进行配置。
+**goner/redis** 组件使用 gone 进行配置注入，配合[goner/viper](../viper)可以读取本地配置文件，配合[goner/nacos](../nacos)、[goner/apollo](../apollo)等组件可以对接配置中心。
 
 - redis.server：Redis 服务器地址，例如：`localhost:6379`。
 - redis.password：Redis 服务器密码。

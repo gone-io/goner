@@ -1,4 +1,8 @@
-# Gone Gorm MySQL 驱动
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/gorm/mysql 组件， Gone Gorm MySQL 驱动
 
 ## 简介
 

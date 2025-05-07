@@ -1,6 +1,10 @@
-# Gone gRPC Component Usage Guide
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-This document explains how to use the gRPC component in the Gone framework, covering both the traditional approach and the Gone V2 Provider mechanism.
+# goner/grpc Component Usage Guide
+
+This document explains how to use the **goner/grpc** component, covering both the traditional approach and the Gone V2 Provider mechanism.
 
 ## Getting Started
 

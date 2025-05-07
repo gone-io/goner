@@ -1,13 +1,14 @@
-# gone-redis
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-This lib integrated the basic operation of redis with [redigo](github.com/gomodule/redigo/redis).
+# goner/redis Component
+
+The goner/redis Component integrated the basic operation of redis with [redigo](github.com/gomodule/redigo/redis).
 
 ## How to Use
 
 ### 0. Redis Server Config
-
-The Lib use the [gone-config](../config), so we can config in config files(config/default.properties,
-config/${env}.properties).
 
 - redis.server: Redis server address, example: `localhost:6379`.
 - redis.password: Redis server password.

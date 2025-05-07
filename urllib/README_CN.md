@@ -1,6 +1,10 @@
-# Gone URLlib 组件
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-`gone-urllib` 是 Gone 框架的 HTTP 客户端组件，基于 [imroc/req](https://github.com/imroc/req) 实现，提供了简洁易用的 HTTP 请求功能。通过该组件，您可以轻松地在 Gone 应用中发起 HTTP 请求，处理响应，并与其他组件集成。
+# goner/urllib 组件
+
+**goner/urllib** 组件 是 Gone 框架的 HTTP 客户端组件，基于 [imroc/req](https://github.com/imroc/req) 实现，提供了简洁易用的 HTTP 请求功能。通过该组件，您可以轻松地在 Gone 应用中发起 HTTP 请求，处理响应，并与其他组件集成。
 
 ## 功能特性
 

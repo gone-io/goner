@@ -1,4 +1,8 @@
-# Gone Gorm ClickHouse Driver
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/gorm/clickhouse Component, Gone Gorm ClickHouse Driver
 
 ## Introduction
 

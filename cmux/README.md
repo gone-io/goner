@@ -1,6 +1,10 @@
-# CMux
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-`cmux` is a component for multiplexing multiple protocols on the same port, allowing you to handle different protocol requests like HTTP and gRPC on a single port. This component is implemented based on [soheilhy/cmux](https://github.com/soheilhy/cmux).
+# goner/cmux Component
+
+**goner/cmux** is a component for multiplexing multiple protocols on the same port, allowing you to handle different protocol requests like HTTP and gRPC on a single port. This component is implemented based on [soheilhy/cmux](https://github.com/soheilhy/cmux).
 
 ## Features
 

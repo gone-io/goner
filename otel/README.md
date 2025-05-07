@@ -2,7 +2,7 @@
     English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
 </p>
 
-# goner/otel - OpenTelemetry Support Component for Gone Framework
+# goner/otel component - OpenTelemetry Support Component for Gone Framework
 
 ## Overview
 goner/otel is a comprehensive OpenTelemetry integration solution that provides full support for Traces, Metrics, and Logs. This component integrates various export protocols and formats, allowing you to flexibly choose the observability solution that best suits your needs.

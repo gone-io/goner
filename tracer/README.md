@@ -2,11 +2,11 @@
     English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
 </p>
 
-# Goner Tracer Component
+# goner/tracer Component
 
 ## Component Features
 
-`goner/tracer` component provides a simple function: **automatically adding traceID to logs (requires cooperation with logging components, currently supports `goner/zap`), without manually passing context**.
+The `goner/tracer` component provides a simple function: **automatically adding traceID to logs (requires cooperation with logging components, currently supports `goner/zap`), without manually passing context**.
 
 It solves the following core problems:
 - Implementing automatic log association with traceID in the Gone framework

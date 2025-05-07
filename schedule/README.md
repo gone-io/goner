@@ -1,4 +1,8 @@
-# Configure Scheduled Tasks with Cron Expressions
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/schedule component, and Configure Scheduled Tasks with Cron Expressions
 
 Scheduled tasks are essential for web projects. You can implement scheduled tasks using Gone's built-in components, which support `cron` expressions. In web projects where code typically runs on multiple nodes, we use Redis as a distributed lock to ensure that each task executes on only one node at a time. Therefore, you need to set up Redis first. For more information about Redis, please refer to: [Using Redis for Distributed Locks and Caching](https://goner.fun/guide/redis.html). Additionally, scheduled tasks can be integrated with the framework's "configuration injection" feature to store cron expressions in configuration files. For more details, see [Support Configuration Files with Built-in Goners](https://goner.fun/guide/config.html).
 

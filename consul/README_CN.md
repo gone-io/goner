@@ -1,8 +1,12 @@
-# Gone框架 Consul组件
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/consul 组件
 
 ## 组件概述
 
-Consul组件为Gone框架提供了基于HashiCorp Consul的服务注册与发现功能。这一集成方案为分布式系统中的服务管理提供了强大的解决方案。
+**goner/consul**组件为Gone框架提供了基于HashiCorp Consul的服务注册与发现功能。这一集成方案为分布式系统中的服务管理提供了强大的解决方案。
 
 通过Consul组件，您可以：
 

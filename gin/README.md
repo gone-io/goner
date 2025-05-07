@@ -1,6 +1,10 @@
-# Gone Gin Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-`gone-gin` is a web framework wrapper based on [gin-gonic/gin](https://github.com/gin-gonic/gin), providing HTTP service support for the Gone framework.
+# goner/gin  Component
+
+The **goner/gin** Component is a web framework wrapper based on [gin-gonic/gin](https://github.com/gin-gonic/gin), providing HTTP service support for the Gone framework.
 
 ## Features
 

@@ -1,6 +1,10 @@
-# Gone URLlib Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-`gone-urllib` is the HTTP client component of the Gone framework, implemented based on [imroc/req](https://github.com/imroc/req). It provides a simple and easy-to-use HTTP request functionality. With this component, you can easily make HTTP requests, handle responses, and integrate with other components in Gone applications.
+# goner/urllib Component
+
+The **goner/urllib** component is the HTTP client component of the Gone framework, implemented based on [imroc/req](https://github.com/imroc/req). It provides a simple and easy-to-use HTTP request functionality. With this component, you can easily make HTTP requests, handle responses, and integrate with other components in Gone applications.
 
 ## Features
 

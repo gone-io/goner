@@ -2,11 +2,11 @@
     <a href="README.md">English</a>&nbsp ｜&nbsp 中文
 </p>
 
-# Goner Tracer 组件
+# goner/tracer 组件
 
 ## 组件功能
 
-`goner/tracer` 组件提供一个简单的功能：**让日志自动带上traceID（需要日志组件配合，已经支持的日志组件`goner/zap`），无需手动传递context**。
+**goner/tracer** 组件提供一个简单的功能：**让日志自动带上traceID（需要日志组件配合，已经支持的日志组件`goner/zap`），无需手动传递context**。
 
 它解决的核心问题：
 - 在Gone框架中实现日志自动关联traceID

@@ -1,9 +1,13 @@
-# Balancer Load Balancer
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/balancer Component, for Load Balancer 
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/gone-io/goner/balancer)](https://goreportcard.com/report/github.com/gone-io/goner/balancer)
 [![GoDoc](https://godoc.org/github.com/gone-io/goner/balancer?status.svg)](https://godoc.org/github.com/gone-io/goner/balancer)
 
-`balancer` is a client-side load balancer component for the Gone framework, providing service discovery and load balancing functionality with support for multiple load balancing strategies. This component seamlessly integrates with `goner/urllib` to provide load balancing capabilities. **Note**: The server and client need to use the same service registration/discovery component to work properly.
+**goner/balancer** is a client-side load balancer component for the Gone framework, providing service discovery and load balancing functionality with support for multiple load balancing strategies. This component seamlessly integrates with `goner/urllib` to provide load balancing capabilities. **Note**: The server and client need to use the same service registration/discovery component to work properly.
 
 ## Features
 

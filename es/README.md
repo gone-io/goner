@@ -1,6 +1,10 @@
-# Gone Elasticsearch Integration
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-This package provides Elasticsearch integration for Gone applications, offering both low-level and typed client support.
+# goner/es Component
+
+The **goner/es** Component provides Elasticsearch integration for Gone applications, offering both low-level and typed client support.
 
 ## Features
 

@@ -1,8 +1,12 @@
-# Gone Framework Consul Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/consul Component
 
 ## Component Overview
 
-The Consul component provides service registration and discovery capabilities for the Gone framework based on HashiCorp Consul. This integration offers a robust solution for service management in distributed systems.
+The **goner/consul** component provides service registration and discovery capabilities for the Gone framework based on HashiCorp Consul. This integration offers a robust solution for service management in distributed systems.
 
 With the Consul component, you can:
 

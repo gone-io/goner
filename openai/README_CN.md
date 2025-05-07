@@ -1,4 +1,8 @@
-# Gone OpenAI 集成
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/openai 组件 和 Gone OpenAI 集成
 
 本包为 Gone 应用程序提供 OpenAI 集成功能，提供简单易用的客户端配置和管理。
 
@@ -12,7 +16,7 @@
 ## 安装
 
 ```bash
-go get github.com/gone-io/goner/openai
+gonectl install goner/openai
 ```
 
 ## 配置

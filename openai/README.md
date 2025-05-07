@@ -1,4 +1,8 @@
-# Gone OpenAI Integration
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/openai component and Gone OpenAI Integration
 
 This package provides OpenAI integration for Gone applications, offering easy-to-use client configuration and management.
 
@@ -12,7 +16,7 @@ This package provides OpenAI integration for Gone applications, offering easy-to
 ## Installation
 
 ```bash
-go get github.com/gone-io/goner/openai
+gonectl install goner/openai
 ```
 
 ## Configuration

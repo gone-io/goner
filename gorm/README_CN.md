@@ -1,8 +1,12 @@
-# Gone Gorm 组件
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/gorm 组件
 
 ## 简介
 
-Gone Gorm 是 Gone 框架的 ORM 组件，基于 [GORM](https://gorm.io/) 实现，提供了与 Gone 框架的无缝集成。通过该组件，您可以轻松地在 Gone 应用中使用 GORM 进行数据库操作，支持 MySQL、PostgreSQL、SQLite、SQL Server 和 ClickHouse 等多种数据库。
+**goner/gorm** 组件 是 Gone 框架的 ORM 组件，基于 [GORM](https://gorm.io/) 实现，提供了与 Gone 框架的无缝集成。通过该组件，您可以轻松地在 Gone 应用中使用 GORM 进行数据库操作，支持 MySQL、PostgreSQL、SQLite、SQL Server 和 ClickHouse 等多种数据库。
 
 ## 特性
 

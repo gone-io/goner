@@ -1,6 +1,10 @@
-# goner/xorm
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-一个为 Gone 框架提供的强大数据库集成组件，基于 XORM 提供增强功能。
+# goner/xorm 组件
+
+**goner/xorm** 组件 是一个为 Gone 框架提供的强大数据库集成组件，基于 XORM 提供增强功能。
 
 ## 特性
 
