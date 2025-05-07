@@ -22,7 +22,7 @@ cd prometheus
 go mod init examples/otel/prometheus
 
 # Install Gone framework's OpenTelemetry and Prometheus integration components
-gonectr install goner/otel/meter/prometheus/gin
+gonectl install goner/otel/meter/prometheus/gin
 ```
 
 ### 2. Define Metrics: API Access Counter
@@ -84,7 +84,7 @@ import (
 	"github.com/gone-io/gone/v2"
 )
 
-//go:generate gonectr generate -m . -s ..
+//go:generate gonectl generate -m . -s ..
 func main() {
 	gone.Serve()
 }
@@ -103,10 +103,10 @@ go generate ./...
 go run ./cmd
 ```
 
-Or use gonectr to run:
+Or use gonectl to run:
 
 ```bash
-gonectr run ./cmd
+gonectl run ./cmd
 ```
 
 ## Viewing Results

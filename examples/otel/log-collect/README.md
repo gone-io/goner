@@ -21,10 +21,10 @@ cd log-collect
 go mod init examples/otel/collect
 
 # Install Gone framework's OpenTelemetry and log collection related components
-gonectr install goner/otel/log/http    # Use oltp/http/log for log collection
-gonectr install goner/otel/tracer/http # Use olte/tracer to provide traceID and oltp/http/tracer to collect trace information
-gonectr install goner/zap              # Use zap for logging
-gonectr install goner/viper            # Use viper for configuration
+gonectl install goner/otel/log/http    # Use oltp/http/log for log collection
+gonectl install goner/otel/tracer/http # Use olte/tracer to provide traceID and oltp/http/tracer to collect trace information
+gonectl install goner/zap              # Use zap for logging
+gonectl install goner/viper            # Use viper for configuration
 ```
 
 ### 2. Configure Log Collection

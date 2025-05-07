@@ -22,7 +22,7 @@ cd prometheus
 go mod init examples/otel/prometheus
 
 # 安装Gone框架的OpenTelemetry与Prometheus集成组件
-gonectr install goner/otel/meter/prometheus/gin
+gonectl install goner/otel/meter/prometheus/gin
 ```
 
 ### 2. 定义指标：API访问计数器
@@ -84,7 +84,7 @@ import (
 	"github.com/gone-io/gone/v2"
 )
 
-//go:generate gonectr generate -m . -s ..
+//go:generate gonectl generate -m . -s ..
 func main() {
 	gone.Serve()
 }
@@ -103,10 +103,10 @@ go generate ./...
 go run ./cmd
 ```
 
-或者使用gonectr运行：
+或者使用gonectl运行：
 
 ```bash
-gonectr run ./cmd
+gonectl run ./cmd
 ```
 
 ## 查看结果

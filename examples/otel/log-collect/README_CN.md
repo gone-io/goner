@@ -22,10 +22,10 @@ cd log-collect
 go mod init examples/otel/collect
 
 # 安装Gone框架的OpenTelemetry与日志收集相关组件
-gonectr install goner/otel/log/http    # 使用oltp/http/log 收集日志
-gonectr install goner/otel/tracer/http # 使用olte/tracer 给日志提供traceID，并且使用oltp/http/tracer 收集trace信息
-gonectr install goner/zap              # 使用zap打印日志
-gonectr install goner/viper            # 使用viper读取配置
+gonectl install goner/otel/log/http    # 使用oltp/http/log 收集日志
+gonectl install goner/otel/tracer/http # 使用olte/tracer 给日志提供traceID，并且使用oltp/http/tracer 收集trace信息
+gonectl install goner/zap              # 使用zap打印日志
+gonectl install goner/viper            # 使用viper读取配置
 ```
 
 ### 2. 配置日志收集
