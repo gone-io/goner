@@ -22,9 +22,8 @@ type providerHelper struct {
 }
 
 func (s *providerHelper) Init() (err error) {
-	traceExporter := s.traceExporter
-	if traceExporter == nil {
-		traceExporter, _ = stdouttrace.New(
+	if s.traceExporter == nil {
+		s.traceExporter, _ = stdouttrace.New(
 			stdouttrace.WithPrettyPrint(),
 			stdouttrace.WithoutTimestamps(),
 		)
@@ -51,15 +50,15 @@ func (s *providerHelper) Init() (err error) {
 	return nil
 }
 
-func (s *providerHelper) Provide(_ string) (g.IsOtelTracerLoaded, error) {
-	return true, nil
+func (s *providerHelper) Provide(tagConf string) (otelTrace.Tracer, error) {
+	name, _ := gone.ParseGoneTag(tagConf)
+	return otel.Tracer(name), nil
 }
 
 // Register for openTelemetry TracerProvider
 func Register(loader gone.Loader) error {
-	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelTrace.Tracer, error) {
-		name, _ := gone.ParseGoneTag(tagConf)
-		return otel.Tracer(name), nil
+	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (g.IsOtelTracerLoaded, error) {
+		return true, nil
 	}))
 
 	loader.MustLoad(&providerHelper{})
