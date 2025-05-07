@@ -1,6 +1,10 @@
-# Gone Deepseek Integration
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
 
-This package provides Deepseek integration for Gone applications, offering easy-to-use client configuration and management.
+# goner/deepseek Component
+
+The **goner/deepseek** Component provides Deepseek integration for Gone applications, offering easy-to-use client configuration and management.
 
 ## Features
 

@@ -1,4 +1,8 @@
-# Gone Apollo 组件
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/apollo 组件
 
 ## 简介
 

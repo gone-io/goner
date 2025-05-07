@@ -1,6 +1,10 @@
-# Gone Deepseek 集成
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-本包为 Gone 应用程序提供 Deepseek 集成功能，提供简单易用的客户端配置和管理。
+# goner/deepseek 组件
+
+**goner/deepseek** 组件为 Gone 应用程序提供 Deepseek 集成功能，提供简单易用的客户端配置和管理。
 
 ## 功能特点
 

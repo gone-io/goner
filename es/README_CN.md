@@ -1,6 +1,10 @@
-# Gone Elasticsearch 集成
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-本包为 Gone 应用程序提供 Elasticsearch 集成功能，支持低级别和类型安全的客户端。
+# goner/es 组件
+
+goner/es 组件为 Gone 应用程序提供 Elasticsearch 集成功能，支持低级别和类型安全的客户端。
 
 ## 功能特点
 

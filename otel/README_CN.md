@@ -2,10 +2,10 @@
     <a href="README.md">English</a>&nbsp ｜&nbsp 中文
 </p>
 
-# goner/otel 是gone框架中用于支持OpenTelemetry的组件
+# goner/otel 组件，是gone框架中用于支持OpenTelemetry的组件
 
 ## 概述
-goner/otel 是一个完整的 OpenTelemetry 集成解决方案，提供了追踪（Traces）、指标（Metrics）和日志（Logs）的全方位支持。该组件集成了多种导出协议和格式，使您能够灵活地选择最适合您需求的可观测性解决方案。
+**goner/otel** 是一个完整的 OpenTelemetry 集成解决方案，提供了追踪（Traces）、指标（Metrics）和日志（Logs）的全方位支持。该组件集成了多种导出协议和格式，使您能够灵活地选择最适合您需求的可观测性解决方案。
 
 ## 主要功能
 - 完整的 OpenTelemetry 协议支持

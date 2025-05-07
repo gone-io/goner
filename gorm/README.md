@@ -1,8 +1,12 @@
-# Gone Gorm Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/gorm Component
 
 ## Introduction
 
-Gone Gorm is the ORM component of the Gone framework, implemented based on [GORM](https://gorm.io/). It provides seamless integration with the Gone framework. Through this component, you can easily perform database operations in Gone applications using GORM, supporting various databases including MySQL, PostgreSQL, SQLite, SQL Server, and ClickHouse.
+The **goner/gorm** is the ORM component of the Gone framework, implemented based on [GORM](https://gorm.io/). It provides seamless integration with the Gone framework. Through this component, you can easily perform database operations in Gone applications using GORM, supporting various databases including MySQL, PostgreSQL, SQLite, SQL Server, and ClickHouse.
 
 ## Features
 

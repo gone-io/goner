@@ -1,6 +1,10 @@
-# Gone Zap 组件
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-**goner/zap** 是整合[uber-go/zap](https://github.com/uber-go/zap)的 Gone 框架组件，提供了高性能的结构化日志记录功能。
+# goner/zap 组件
+
+**goner/zap** 组件 是整合[uber-go/zap](https://github.com/uber-go/zap)的 Gone 框架组件，提供了高性能的结构化日志记录功能。
 
 主要包括功能：
 

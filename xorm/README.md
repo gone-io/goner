@@ -1,4 +1,8 @@
-# goner/xorm
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/xorm Component
 
 A powerful database integration component for the Gone framework, providing enhanced features based on XORM.
 

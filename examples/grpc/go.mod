@@ -11,9 +11,9 @@ require (
 )
 
 replace (
-	github.com/gone-io/goner/g => ./../../../g
-	github.com/gone-io/goner/grpc => ./../../../grpc
-	github.com/gone-io/goner/viper => ./../../../viper
+	github.com/gone-io/goner/g => ./../../g
+	github.com/gone-io/goner/grpc => ./../../grpc
+	github.com/gone-io/goner/viper => ./../../viper
 )
 
 require (

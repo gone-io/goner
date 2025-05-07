@@ -1,4 +1,8 @@
-# Gone Gorm MySQL Driver
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/gorm/mysql Component, Gone Gorm MySQL Driver
 
 ## Introduction
 

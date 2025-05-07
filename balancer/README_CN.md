@@ -1,9 +1,13 @@
-# Balancer 负载均衡器
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/balancer 负载均衡器 组件
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/gone-io/goner/balancer)](https://goreportcard.com/report/github.com/gone-io/goner/balancer)
 [![GoDoc](https://godoc.org/github.com/gone-io/goner/balancer?status.svg)](https://godoc.org/github.com/gone-io/goner/balancer)
 
-`balancer`是Gone框架的客户端负载均衡器组件，提供服务发现和负载均衡功能，支持多种负载均衡策略。该组件与`goner/urllib`无缝集成，为`urllib`提供负载均衡能力。**注意**：服务端和客户端需要使用相同的服务注册/发现组件才能正常工作。
+**goner/balancer**是Gone框架的客户端负载均衡器组件，提供服务发现和负载均衡功能，支持多种负载均衡策略。该组件与`goner/urllib`无缝集成，为`urllib`提供负载均衡能力。**注意**：服务端和客户端需要使用相同的服务注册/发现组件才能正常工作。
 
 ## 功能特性
 

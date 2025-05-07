@@ -1,4 +1,8 @@
-# Gone Gorm PostgreSQL Driver
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/gorm/postgres Component, Gone Gorm PostgreSQL Driver
 
 ## Introduction
 

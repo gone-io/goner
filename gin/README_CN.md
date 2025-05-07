@@ -1,6 +1,10 @@
-# Gone Gin 组件
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-`gone-gin` 是一个基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，为 Gone 框架提供 HTTP 服务支持。
+# goner/gin 组件
+
+**goner/gin** 组件 是一个基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，为 Gone 框架提供 HTTP 服务支持。
 
 ## 功能特性
 

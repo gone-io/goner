@@ -1,6 +1,10 @@
-# CMux
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-`cmux`是一个用于在同一端口上复用多种协议的组件，它允许你在一个端口上同时处理HTTP和gRPC等不同协议的请求。这个组件是基于[soheilhy/cmux](https://github.com/soheilhy/cmux)实现的。
+# goner/cmux 组件
+
+**goner/cmux** 是一个用于在同一端口上复用多种协议的组件，它允许你在一个端口上同时处理HTTP和gRPC等不同协议的请求。这个组件是基于[soheilhy/cmux](https://github.com/soheilhy/cmux)实现的。
 
 ## 功能特点
 

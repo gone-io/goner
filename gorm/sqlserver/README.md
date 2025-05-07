@@ -1,4 +1,8 @@
-# Gone Gorm SQL Server Driver
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/gorm/sqlserver Component, Gone Gorm SQL Server Driver
 
 ## Introduction
 

@@ -1,8 +1,12 @@
-# Gone Apollo Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/apollo Component
 
 ## Introduction
 
-The Gone Apollo component is an integration of the [Apollo](https://www.apolloconfig.com/) configuration center with the Gone framework, providing dynamic configuration fetching and real-time updates. Apollo is an open-source distributed configuration center developed by Ctrip, which can centrally manage configurations for different environments and clusters. After configuration changes, they can be pushed to applications in real-time, with standardized permissions and governance features.
+The **goner/apollo** component is an integration of the [Apollo](https://www.apolloconfig.com/) configuration center with the Gone framework, providing dynamic configuration fetching and real-time updates. Apollo is an open-source distributed configuration center developed by Ctrip, which can centrally manage configurations for different environments and clusters. After configuration changes, they can be pushed to applications in real-time, with standardized permissions and governance features.
 
 ## Quick Start
 

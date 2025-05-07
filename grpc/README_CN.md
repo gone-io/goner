@@ -1,6 +1,10 @@
-# Gone gRPC 组件使用指南
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-本文档介绍如何在 Gone 框架中使用 gRPC 组件，包括传统方式、Gone V2 的 Provider 机制以及服务注册与发现三种实现方式。
+# goner/grpc 组件
+
+本文档介绍如何使用 **goner/grpc** 组件，包括传统方式、Gone V2 的 Provider 机制以及服务注册与发现三种实现方式。
 
 ## 目录
 

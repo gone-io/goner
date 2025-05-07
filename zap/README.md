@@ -1,4 +1,8 @@
-# Gone Zap Component
+<p>
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
+</p>
+
+# goner/zap Component
 
 **goner/zap** is a Gone framework component that integrates [uber-go/zap](https://github.com/uber-go/zap), providing high-performance structured logging functionality.
 

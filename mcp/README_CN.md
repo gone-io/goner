@@ -1,6 +1,10 @@
-# Gone MCP 组件使用指南
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-> Gone MCP是基于MCP协议封装的Go组件，支持快速构建AI模型与业务系统的集成。组件提供服务端和客户端实现，支持两种定义方式(Goner Define和Functional Define)来定义Tool、Prompt和Resource。服务端支持Stdio和SSE两种通信通道，可配置Hooks和ContextFunc，并支持多实例。客户端支持多实例配置、Stdio/SSE传输及自定义Transport。通过简洁的API设计，开发者可以轻松实现AI模型与外部系统的交互。
+# goner/mcp 组件
+
+> goner/mcp 组件是基于MCP协议封装的Go组件，支持快速构建AI模型与业务系统的集成。组件提供服务端和客户端实现，支持两种定义方式(Goner Define和Functional Define)来定义Tool、Prompt和Resource。服务端支持Stdio和SSE两种通信通道，可配置Hooks和ContextFunc，并支持多实例。客户端支持多实例配置、Stdio/SSE传输及自定义Transport。通过简洁的API设计，开发者可以轻松实现AI模型与外部系统的交互。
 >
 
 - [Gone MCP 组件使用指南](#gone-mcp-组件使用指南)

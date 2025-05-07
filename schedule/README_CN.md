@@ -1,5 +1,8 @@
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
 
-# 用cron表达式配置定时任务
+# goner/schedule 组件，用cron表达式配置定时任务
 定时任务对于Web项目基本上时标配，可以通过Gone的内置组件来实现定时任务，支持`cron`表达式。在Web项目中代码一般都是多节点运行，我们使用了redis作为分布式锁来保证任务每次执行只在一个节点上进行，所以需要先准备redis服务，关于redis相关内容请参考：[利用redis提供分布式锁和分布式缓存](https://goner.fun/zh/guide/redis.html)。另外定时任务还可以和框架“配置注入”的特性结合，将cron表达式放到配置文件中，参考[通过内置Goners支持配置文件](https://goner.fun/zh/guide/config.html)。
 
 ## 将相关Goners注册到Gone

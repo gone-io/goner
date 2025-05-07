@@ -1,4 +1,8 @@
-# Gone Gorm PostgreSQL 驱动
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
+# goner/gorm/postgres 组件， Gone Gorm PostgreSQL 驱动
 
 ## 简介
 
