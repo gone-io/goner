@@ -43,7 +43,7 @@ import (
 	"github.com/gone-io/gone/v2"
 )
 
-//go:generate gonectr generate -m . -s ..
+//go:generate gonectl generate -m . -s ..
 func main() {
 	gone.Serve()
 }
@@ -142,7 +142,7 @@ import (
 
 const tracerName = "hello-client"
 
-//go:generate gonectr generate -m . -s .. -e client
+//go:generate gonectl generate -m . -s .. -e client
 func main() {
 	gone.
 		Load(&client{}).
@@ -240,7 +240,7 @@ make server
 或者直接运行：
 
 ```bash
-cd ./server && gonectr run ./cmd
+cd ./server && gonectl run ./cmd
 ```
 
 ### 3. 启动客户端
@@ -252,7 +252,7 @@ make client
 或者直接运行：
 
 ```bash
-cd ./client && gonectr run ./cmd
+cd ./client && gonectl run ./cmd
 ```
 
 ## 查看链路追踪结果
@@ -265,7 +265,7 @@ cd ./client && gonectr run ./cmd
 
 4. 您可以看到完整的调用链路，包括客户端发起请求和服务端处理请求的详细信息
 
-![](./screenshot-1.png)
+![](screenshot-1.png)
 ![](./screenshot-2.png
 
 

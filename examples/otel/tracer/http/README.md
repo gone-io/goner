@@ -43,7 +43,7 @@ import (
 	"github.com/gone-io/gone/v2"
 )
 
-//go:generate gonectr generate -m . -s ..
+//go:generate gonectl generate -m . -s ..
 func main() {
 	gone.Serve()
 }
@@ -142,7 +142,7 @@ import (
 
 const tracerName = "hello-client"
 
-//go:generate gonectr generate -m . -s .. -e client
+//go:generate gonectl generate -m . -s .. -e client
 func main() {
 	gone.
 		Load(&client{}).
@@ -240,7 +240,7 @@ make server
 Or run directly:
 
 ```bash
-cd ./server && gonectr run ./cmd
+cd ./server && gonectl run ./cmd
 ```
 
 ### 3. Start Client
@@ -252,7 +252,7 @@ make client
 Or run directly:
 
 ```bash
-cd ./client && gonectr run ./cmd
+cd ./client && gonectl run ./cmd
 ```
 
 ## View Tracing Results
@@ -265,8 +265,8 @@ cd ./client && gonectr run ./cmd
 
 4. You can see the complete call chain, including details of client requests and server processing
 
-![](./screenshot-1.png)
-![](./screenshot-2.png)
+![](screenshot-1.png)
+![](screenshot-2.png)
 
 ## Project Description
 

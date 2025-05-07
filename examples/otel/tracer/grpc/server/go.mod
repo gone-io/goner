@@ -1,9 +1,9 @@
-module examples/otel/tracer/oltp/grpc/client
+module examples/otel/tracer/oltp/grpc/server
 
 go 1.24.1
 
 require (
-	examples/otel/tracer/oltp/grpc v1.1.1
+	examples/otel/tracer/oltp/grpc v1.0.0
 	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner/g v1.1.1
 	github.com/gone-io/goner/grpc v1.1.1
@@ -15,12 +15,12 @@ require (
 
 replace (
 	examples/otel/tracer/oltp/grpc => ../
-	github.com/gone-io/goner/g => ../../../../g
-	github.com/gone-io/goner/grpc => ../../../../grpc
-	github.com/gone-io/goner/otel => ../../../../otel
-	github.com/gone-io/goner/otel/tracer => ../../../../otel/tracer
-	github.com/gone-io/goner/otel/tracer/grpc => ../../../../otel/tracer/grpc
-	github.com/gone-io/goner/viper => ../../../../viper
+	github.com/gone-io/goner/g => ./../../../../../g
+	github.com/gone-io/goner/grpc => ./../../../../../grpc
+	github.com/gone-io/goner/otel => ./../../../../../otel
+	github.com/gone-io/goner/otel/tracer => ./../../../../../otel/tracer
+	github.com/gone-io/goner/otel/tracer/grpc => ./../../../../../otel/tracer/grpc
+	github.com/gone-io/goner/viper => ./../../../../../viper
 )
 
 require (
@@ -34,6 +34,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3 // indirect
 	github.com/magiconair/properties v1.8.10 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
+	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.14.0 // indirect
@@ -48,7 +49,6 @@ require (
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.35.0 // indirect
 	go.opentelemetry.io/otel/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.35.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
 	go.uber.org/mock v0.5.2 // indirect

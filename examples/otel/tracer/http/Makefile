@@ -18,8 +18,8 @@ jaeger:
 
 
 server:
-	cd ./server && gonectr run ./cmd
+	cd ./server && gonectl run ./cmd
 
 
 client:
-	cd ./client && gonectr run ./cmd
+	cd ./client && gonectl run ./cmd

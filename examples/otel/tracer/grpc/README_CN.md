@@ -21,7 +21,7 @@ cd tracer-over-oltp-grpc
 go mod init examples/otel/tracer-over-oltp-grpc
 
 # 安装Gone框架的OpenTelemetry与gRPC集成组件
-gonectr install goner/otel/tracer/grpc
+gonectl install goner/otel/tracer/grpc
 ```
 
 ### 2. 定义gRPC服务
@@ -141,7 +141,7 @@ go run ./cmd
 1. 访问Jaeger UI界面：http://localhost:16686
 2. 在Search界面选择服务名称：`grpc-hello-server`
 3. 点击Find Traces按钮查看追踪数据
-！[](./screenshot.png)
+！[](screenshot.png)
 
 你可以看到完整的调用链路，包括：
 - 客户端发起请求

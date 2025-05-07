@@ -21,7 +21,7 @@ cd tracer-over-oltp-grpc
 go mod init examples/otel/tracer-over-oltp-grpc
 
 # Install Gone framework's OpenTelemetry and gRPC integration component
-gonectr install goner/otel/tracer/grpc
+gonectl install goner/otel/tracer/grpc
 ```
 
 ### 2. Define gRPC Service
@@ -141,7 +141,7 @@ After running the service, you can view the trace data through the Jaeger UI:
 1. Access the Jaeger UI: http://localhost:16686
 2. Select the service name: `grpc-hello-server` in the Search interface
 3. Click the Find Traces button to view trace data
-![](./screenshot.png)
+![](screenshot.png)
 
 You can see the complete call chain, including:
 - Client initiating request

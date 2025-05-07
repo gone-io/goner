@@ -10,7 +10,7 @@ import (
 
 const tracerName = "hello-client"
 
-//go:generate gonectr generate -m . -s .. -e client
+//go:generate gonectl generate -m . -s .. -e client
 func main() {
 	gone.
 		Load(&client{}).

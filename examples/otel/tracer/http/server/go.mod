@@ -13,12 +13,12 @@ require (
 )
 
 replace (
-	github.com/gone-io/goner/g => ../../../../g
-	github.com/gone-io/goner/gin => ../../../../gin
-	github.com/gone-io/goner/otel => ../../../../otel
-	github.com/gone-io/goner/otel/tracer => ../../../../otel/tracer
-	github.com/gone-io/goner/otel/tracer/http => ../../../../otel/tracer/http
-	github.com/gone-io/goner/viper => ../../../../viper
+	github.com/gone-io/goner/g => ./../../../../../g
+	github.com/gone-io/goner/gin => ./../../../../../gin
+	github.com/gone-io/goner/otel => ./../../../../../otel
+	github.com/gone-io/goner/otel/tracer => ./../../../../../otel/tracer
+	github.com/gone-io/goner/otel/tracer/http => ./../../../../../otel/tracer/http
+	github.com/gone-io/goner/viper => ./../../../../../viper
 )
 
 require (
