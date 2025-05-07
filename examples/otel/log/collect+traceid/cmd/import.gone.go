@@ -3,5 +3,5 @@
 package main
 
 import (
-	_ "examples/otel/collect"
+	_ "examples/otel/log/collect_traceid"
 )

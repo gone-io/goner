@@ -1,43 +1,42 @@
-[//]: # (desc: 使用openTelemetry收集日志)
+[//]: # (desc: Log Collection with OpenTelemetry，and record traceId)
 
 <p>
-    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+    English&nbsp ｜&nbsp <a href="README_CN.md">中文</a>
 </p>
 
+# Log Collection with OpenTelemetry
 
-# 使用OpenTelemetry收集日志
+This example demonstrates how to integrate OpenTelemetry with the Gone framework for log collection, enabling centralized log management and analysis.
 
-本示例展示如何在Gone框架中集成OpenTelemetry进行日志收集，实现应用日志的集中管理与分析。
+## Project Setup Steps
 
-## 项目构建步骤
-
-### 1. 创建项目和安装依赖包
+### 1. Create Project and Install Dependencies
 
 ```bash
-# 创建项目目录
+# Create project directory
 mkdir log-collect
 cd log-collect
 
-# 初始化Go模块
+# Initialize Go module
 go mod init examples/otel/collect
 
-# 安装Gone框架的OpenTelemetry与日志收集相关组件
-gonectl install goner/otel/log/http    # 使用oltp/http/log 收集日志
-gonectl install goner/otel/tracer/http # 使用olte/tracer 给日志提供traceID，并且使用oltp/http/tracer 收集trace信息
-gonectl install goner/zap              # 使用zap打印日志
-gonectl install goner/viper            # 使用viper读取配置
+# Install Gone framework's OpenTelemetry and log collection related components
+gonectl install goner/otel/log/http    # Use oltp/http/log for log collection
+gonectl install goner/otel/tracer/http # Use olte/tracer to provide traceID and oltp/http/tracer to collect trace information
+gonectl install goner/zap              # Use zap for logging
+gonectl install goner/viper            # Use viper for configuration
 ```
 
-### 2. 配置日志收集
+### 2. Configure Log Collection
 
-首先，创建配置文件目录和默认配置：
+First, create the configuration directory and default configuration:
 
 ```bash
 mkdir config
 touch config/default.yaml
 ```
 
-然后，在`config/default.yaml`中配置服务名称和OpenTelemetry相关设置：
+Then, configure the service name and OpenTelemetry settings in `config/default.yaml`:
 
 ```yaml
 service:
@@ -62,9 +61,9 @@ log:
     only: false
 ```
 
-### 3. 创建OpenTelemetry Collector配置
+### 3. Create OpenTelemetry Collector Configuration
 
-创建`otel-collector-config.yaml`文件，配置日志收集和导出：
+Create `otel-collector-config.yaml` file to configure log collection and export:
 
 ```yaml
 receivers:
@@ -101,9 +100,9 @@ service:
       exporters: [file]
 ```
 
-### 4. 创建Docker Compose配置
+### 4. Create Docker Compose Configuration
 
-创建`docker-compose.yaml`文件，配置OpenTelemetry Collector服务：
+Create `docker-compose.yaml` file to configure the OpenTelemetry Collector service:
 
 ```yaml
 services:
@@ -122,14 +121,14 @@ services:
       - "55679:55679" # zpages extension
 ```
 
-### 5. 创建服务入口
+### 5. Create Service Entry
 
 ```bash
 mkdir cmd
 touch cmd/main.go
 ```
 
-然后，在`cmd/main.go`中实现日志记录和跟踪：
+Then, implement logging and tracing in `cmd/main.go`:
 
 ```go
 package main
@@ -172,35 +171,35 @@ func doSomething(logger gone.Logger, log gone.Logger) {
 }
 ```
 
-## 运行服务
+## Running the Service
 
-执行以下命令启动OpenTelemetry Collector和应用服务：
+Execute the following commands to start the OpenTelemetry Collector and the application service:
 
 ```bash
-# 启动OpenTelemetry Collector
+# Start OpenTelemetry Collector
 docker compose up -d
 
-# 运行服务
+# Run the service
 go run ./cmd
 ```
 
-## 查看结果
+## View Results
 
-### 查看收集的日志
+### View Collected Logs
 
-日志将被收集并保存到OpenTelemetry Collector配置的路径中（`/log/log.json`）。您可以通过以下命令查看日志内容：
+Logs will be collected and saved to the path configured in the OpenTelemetry Collector (`/log/log.json`). You can view the log contents using the following command:
 
 ```bash
 docker exec -it <collector-container-id> cat /log/log.json
 ```
 
-## 日志收集原理
+## Log Collection Principles
 
-本示例通过以下方式实现日志收集：
+This example implements log collection through the following methods:
 
-1. 使用OpenTelemetry的HTTP协议收集日志和跟踪信息
-2. 通过Zap记录结构化日志
-3. 为日志添加TraceID，实现日志与跟踪的关联
-4. 使用OpenTelemetry Collector收集、处理和导出日志
+1. Using OpenTelemetry's HTTP protocol to collect logs and trace information
+2. Recording structured logs through Zap
+3. Adding TraceID to logs to associate logs with traces
+4. Using OpenTelemetry Collector to collect, process, and export logs
 
-通过这种方式，您可以实现应用日志的集中管理、分析和可视化，提高系统的可观测性。
+Through this approach, you can achieve centralized log management, analysis, and visualization, improving system observability.
