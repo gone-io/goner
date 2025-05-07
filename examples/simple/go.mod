@@ -6,8 +6,8 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner/g v1.1.1
-	github.com/gone-io/goner/viper v1.1.1
+	github.com/gone-io/goner/g v1.2.1
+	github.com/gone-io/goner/viper v1.2.1
 )
 
 replace github.com/gone-io/goner/g => ../../g

@@ -5,7 +5,7 @@ go 1.24.1
 require (
 	github.com/gone-io/gone/v2 v2.1.0
 	github.com/gone-io/goner v1.0.9
-	github.com/gone-io/goner/gin v1.1.1
+	github.com/gone-io/goner/gin v1.2.1
 )
 
 replace (
@@ -35,12 +35,12 @@ require (
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gone-io/goner/g v1.1.1 // indirect
-	github.com/gone-io/goner/tracer v1.1.1 // indirect
-	github.com/gone-io/goner/tracer/gid v1.1.1 // indirect
-	github.com/gone-io/goner/tracer/gls v1.1.1 // indirect
-	github.com/gone-io/goner/viper v1.1.1 // indirect
-	github.com/gone-io/goner/zap v1.1.1 // indirect
+	github.com/gone-io/goner/g v1.2.1 // indirect
+	github.com/gone-io/goner/tracer v1.2.1 // indirect
+	github.com/gone-io/goner/tracer/gid v1.2.1 // indirect
+	github.com/gone-io/goner/tracer/gls v1.2.1 // indirect
+	github.com/gone-io/goner/viper v1.2.1 // indirect
+	github.com/gone-io/goner/zap v1.2.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

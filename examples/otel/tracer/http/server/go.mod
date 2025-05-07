@@ -5,10 +5,10 @@ go 1.24.1
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner/g v1.1.1
-	github.com/gone-io/goner/gin v1.1.1
-	github.com/gone-io/goner/otel/tracer/http v1.1.1
-	github.com/gone-io/goner/viper v1.1.1
+	github.com/gone-io/goner/g v1.2.1
+	github.com/gone-io/goner/gin v1.2.1
+	github.com/gone-io/goner/otel/tracer/http v1.2.1
+	github.com/gone-io/goner/viper v1.2.1
 	go.opentelemetry.io/otel v1.35.0
 )
 
@@ -37,8 +37,8 @@ require (
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gone-io/goner/otel v1.1.1 // indirect
-	github.com/gone-io/goner/otel/tracer v1.1.1 // indirect
+	github.com/gone-io/goner/otel v1.2.1 // indirect
+	github.com/gone-io/goner/otel/tracer v1.2.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

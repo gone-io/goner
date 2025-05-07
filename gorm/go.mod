@@ -11,7 +11,7 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require github.com/gone-io/goner/g v1.1.1
+require github.com/gone-io/goner/g v1.2.1
 
 replace github.com/gone-io/goner/g => ../g
 

@@ -4,15 +4,15 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner/g v1.1.1
-	github.com/gone-io/goner/otel v1.1.1 // indirect
-	github.com/gone-io/goner/otel/log v1.1.1 // indirect
-	github.com/gone-io/goner/otel/log/http v1.1.1
-	github.com/gone-io/goner/otel/tracer v1.1.1 // indirect
-	github.com/gone-io/goner/otel/tracer/http v1.1.1
-	github.com/gone-io/goner/tracer/gid v1.1.1
-	github.com/gone-io/goner/viper v1.1.1
-	github.com/gone-io/goner/zap v1.1.1
+	github.com/gone-io/goner/g v1.2.1
+	github.com/gone-io/goner/otel v1.2.1 // indirect
+	github.com/gone-io/goner/otel/log v1.2.1 // indirect
+	github.com/gone-io/goner/otel/log/http v1.2.1
+	github.com/gone-io/goner/otel/tracer v1.2.1 // indirect
+	github.com/gone-io/goner/otel/tracer/http v1.2.1
+	github.com/gone-io/goner/tracer/gid v1.2.1
+	github.com/gone-io/goner/viper v1.2.1
+	github.com/gone-io/goner/zap v1.2.1
 )
 
 replace (
@@ -23,6 +23,7 @@ replace (
 	github.com/gone-io/goner/otel/tracer => ./../../../../otel/tracer
 	github.com/gone-io/goner/otel/tracer/http => ./../../../../otel/tracer/http
 	github.com/gone-io/goner/tracer/gid => ./../../../../tracer/gid
+	github.com/gone-io/goner/viper => ./../../../../viper
 	github.com/gone-io/goner/zap => ./../../../../zap
 )
 

@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner/g v1.1.1
+	github.com/gone-io/goner/g v1.2.1
 	github.com/mark3labs/mcp-go v0.23.1
 	github.com/stretchr/testify v1.10.0
 )

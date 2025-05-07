@@ -5,12 +5,12 @@ go 1.24.1
 require (
 	examples/otel/tracer/oltp/grpc v1.0.0
 	github.com/gone-io/gone/v2 v2.1.0
-	github.com/gone-io/goner/g v1.1.1
-	github.com/gone-io/goner/grpc v1.1.1
-	github.com/gone-io/goner/otel v1.1.1 // indirect
-	github.com/gone-io/goner/otel/tracer v1.1.1 // indirect
-	github.com/gone-io/goner/otel/tracer/grpc v1.1.1
-	github.com/gone-io/goner/viper v1.1.1
+	github.com/gone-io/goner/g v1.2.1
+	github.com/gone-io/goner/grpc v1.2.1
+	github.com/gone-io/goner/otel v1.2.1 // indirect
+	github.com/gone-io/goner/otel/tracer v1.2.1 // indirect
+	github.com/gone-io/goner/otel/tracer/grpc v1.2.1
+	github.com/gone-io/goner/viper v1.2.1
 )
 
 replace (
