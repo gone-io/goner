@@ -55,12 +55,16 @@ func (s *providerHelper) Provide(tagConf string) (otelTrace.Tracer, error) {
 	return otel.Tracer(name), nil
 }
 
+var h = &providerHelper{}
+
 // Register for openTelemetry TracerProvider
 func Register(loader gone.Loader) error {
+	if g.IsLoaded(loader, h) {
+		return nil
+	}
 	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (g.IsOtelTracerLoaded, error) {
 		return true, nil
 	}))
-
-	loader.MustLoad(&providerHelper{})
+	loader.MustLoad(h)
 	return otelHelper.HelpSetPropagator(loader)
 }

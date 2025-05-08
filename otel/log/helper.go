@@ -64,8 +64,14 @@ func (s *isOtelLogLoadedProvider) Provide(_ string) (g.IsOtelLogLoaded, error) {
 	return true, nil
 }
 
+var h = &helper{}
+
 // Register for openTelemetry LoggerProvider
 func Register(loader gone.Loader) error {
+	if g.IsLoaded(loader, h) {
+		return nil
+	}
+
 	loader.MustLoad(&isOtelLogLoadedProvider{})
 
 	loader.MustLoad(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (otelLog.Logger, error) {
@@ -73,6 +79,6 @@ func Register(loader gone.Loader) error {
 		return global.Logger(name), nil
 	}))
 
-	loader.MustLoad(&helper{})
+	loader.MustLoad(h)
 	return otelHelper.HelpSetPropagator(loader)
 }
