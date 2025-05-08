@@ -11,6 +11,9 @@ import (
 func TestRegister(t *testing.T) {
 	gone.
 		NewApp(Register).
+		Loads(func(loader gone.Loader) error {
+			return Register(loader)
+		}).
 		Run(func(is g.IsOtelTracerLoaded, tracer trace.Tracer) {
 			assert.True(t, bool(is))
 			assert.NotNil(t, tracer)
