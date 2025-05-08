@@ -20,6 +20,9 @@ func TestRegister(t *testing.T) {
 	t.Run("use stdout exporter", func(t *testing.T) {
 		gone.
 			NewApp(Register).
+			Loads(func(loader gone.Loader) error {
+				return Register(loader)
+			}).
 			Run(func(is g.IsOtelMeterLoaded, meter otelMetric.Meter) {
 				assert.True(t, bool(is))
 				assert.NotNil(t, meter)
