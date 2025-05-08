@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"github.com/gone-io/gone/v2"
-	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -13,7 +12,8 @@ type YourComponent struct {
 }
 
 func (c *YourComponent) HandleRequest(ctx context.Context) {
-	tracer := otel.Tracer("otel-tracer")
+	// tracer := otel.Tracer("otel-tracer")
+	tracer := c.tracer
 
 	// 创建新的 Span
 	ctx, span := tracer.Start(ctx, "handle-request")
