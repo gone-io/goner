@@ -114,13 +114,13 @@ gonectl run ./cmd
 ### 访问API接口
 
 ```bash
-curl http://localhost:9090/hello
+curl http://localhost:8080/hello
 ```
 
 ### 查看指标数据
 
 ```bash
-curl http://localhost:9090/metrics
+curl http://localhost:8080/metrics
 ```
 
 ## 使用Prometheus采集数据
@@ -168,7 +168,7 @@ docker compose up -d
 ### 2. 在Prometheus界面查看指标
 
 1. 访问Prometheus Web界面：http://localhost:9090/graph
-2. 多次访问API接口：http://localhost:9090/hello
+2. 多次访问API接口：http://localhost:8080/hello
 3. 在Prometheus查询框中输入：`api_counter_total`
 
 ![Prometheus指标查询结果](screenshot.png)
