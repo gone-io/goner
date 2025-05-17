@@ -1,7 +1,7 @@
 package nacos
 
 import (
-	mock "github.com/gone-io/gone"
+	mock "github.com/gone-io/gone/v2"
 	"strings"
 	"testing"
 

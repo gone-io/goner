@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/cohesion-org/deepseek-go v1.2.10
-	github.com/gone-io/gone/v2 v2.2.0
+	github.com/gone-io/gone/v2 v2.2.1
 	github.com/stretchr/testify v1.10.0
 )
 

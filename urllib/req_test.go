@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"testing"
 
-	gonemock "github.com/gone-io/gone"
 	"github.com/gone-io/gone/v2"
+	gonemock "github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/g/mock"
 	"github.com/imroc/req/v3"

@@ -73,7 +73,7 @@ database.cluster.slaves[2].dsn=root:123456@tcp(slave-db-1-host:3306)/test?charse
 ```
 ## 在代码中注入数据库引擎
 ```go
-import "github.com/gone-io/gone"
+import "github.com/gone-io/gone/v2"
 
 type struct dbUser struct {
 	gone.Flag
@@ -121,7 +121,7 @@ func (d *dbUser) GetBookById(id int64) (book *Book, err error) {
 
 ### 2. 多数据库注入
 ```go
-import "github.com/gone-io/gone"
+import "github.com/gone-io/gone/v2"
 
 type struct dbUser struct {
 	gone.Flag
