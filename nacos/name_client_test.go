@@ -2,7 +2,7 @@ package nacos
 
 import (
 	"errors"
-	mock "github.com/gone-io/gone/mock/v2"
+	mock "github.com/gone-io/gone"
 	"github.com/nacos-group/nacos-sdk-go/v2/model"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 	"go.uber.org/mock/gomock"

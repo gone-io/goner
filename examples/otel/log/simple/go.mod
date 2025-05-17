@@ -3,7 +3,7 @@ module examples/otel/log/simple
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/gone/v2 v2.2.0
 	github.com/gone-io/goner/g v1.2.1
 	github.com/gone-io/goner/otel v1.2.1 // indirect
 	github.com/gone-io/goner/otel/log v1.2.1
@@ -48,6 +48,7 @@ require (
 	go.opentelemetry.io/otel/log v0.11.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.35.0 // indirect
 	go.opentelemetry.io/otel/sdk/log v0.11.0 // indirect
+	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect

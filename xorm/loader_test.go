@@ -1,7 +1,7 @@
 package xorm
 
 import (
-	mock "github.com/gone-io/gone/mock/v2"
+	mock "github.com/gone-io/gone"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 	"testing"

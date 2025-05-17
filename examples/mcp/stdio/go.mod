@@ -9,7 +9,7 @@ replace github.com/gone-io/goner/g => ../../../g
 replace github.com/gone-io/goner/viper => ../../../viper
 
 require (
-	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/gone/v2 v2.2.0
 	github.com/gone-io/goner/mcp v1.2.1
 	github.com/gone-io/goner/viper v1.2.1
 	github.com/mark3labs/mcp-go v0.23.1
@@ -31,6 +31,7 @@ require (
 	github.com/spf13/viper v1.20.1 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
+	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect

@@ -1,7 +1,7 @@
 package gin
 
 import (
-	"github.com/gone-io/gone/mock/v2"
+	mock "github.com/gone-io/gone/v2"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

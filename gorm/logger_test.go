@@ -3,7 +3,7 @@ package gorm
 import (
 	"context"
 	"errors"
-	mock "github.com/gone-io/gone/mock/v2"
+	mock "github.com/gone-io/gone"
 	"testing"
 	"time"
 

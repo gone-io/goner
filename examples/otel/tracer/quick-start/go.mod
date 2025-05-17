@@ -3,7 +3,7 @@ module examples/otel/tracer/oltp/http/quickstart
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/gone/v2 v2.2.0
 	github.com/gone-io/goner/g v1.2.1
 	github.com/gone-io/goner/otel/tracer/http v1.2.1
 	github.com/gone-io/goner/viper v1.2.1
@@ -48,6 +48,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
+	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect

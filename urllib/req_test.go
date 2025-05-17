@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"testing"
 
-	goneMock "github.com/gone-io/gone/mock/v2"
+	gonemock "github.com/gone-io/gone"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/g/mock"

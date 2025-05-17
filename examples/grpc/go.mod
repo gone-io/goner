@@ -3,7 +3,7 @@ module example/grpc
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/gone/v2 v2.2.0
 	github.com/gone-io/goner/grpc v1.2.1
 	github.com/gone-io/goner/viper v1.2.1
 	google.golang.org/grpc v1.72.0

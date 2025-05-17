@@ -3,7 +3,7 @@ module examples/http_use_discovery
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/gone/v2 v2.2.0
 	github.com/gone-io/goner v1.0.9
 	github.com/gone-io/goner/balancer v1.2.1
 	github.com/gone-io/goner/gin v1.2.1

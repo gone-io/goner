@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	mock "github.com/gone-io/gone/mock/v2"
+	mock "github.com/gone-io/gone"
 	"github.com/gone-io/goner/g"
 	gMock "github.com/gone-io/goner/g/mock"
 	"github.com/stretchr/testify/assert"
