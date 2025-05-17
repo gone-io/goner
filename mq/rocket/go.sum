@@ -70,6 +70,7 @@ github.com/gone-io/gone/mock/v2 v2.1.0 h1:lFV6pfqGoJX6C6N/XPd3MniEkB+QoNkrB5KXvJ
 github.com/gone-io/gone/mock/v2 v2.1.0/go.mod h1:DsK6cGGruBuJxRT12Im2p6nHJfWYj3wgOqcvSsveKRo=
 github.com/gone-io/gone/v2 v2.1.1 h1:DIAjFbNdOpeXNoTuho3Gw3rfFddV9hVpNBbFQ5CcTkY=
 github.com/gone-io/gone/v2 v2.1.1/go.mod h1:0sq/CIesYji/YSNE71m8sSe8EDIXRtio3NOasb4w45A=
+github.com/gone-io/gone/v2 v2.2.2/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
 github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ5JPQ=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
