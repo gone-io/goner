@@ -3,7 +3,7 @@ module examples/otel/tracer/oltp/http/quickstart
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.1
+	github.com/gone-io/gone/v2 v2.2.2
 	github.com/gone-io/goner/g v1.2.1
 	github.com/gone-io/goner/otel/tracer/http v1.2.1
 	github.com/gone-io/goner/viper v1.2.1

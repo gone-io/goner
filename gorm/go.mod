@@ -10,7 +10,7 @@ require (
 )
 
 require (
-	github.com/gone-io/gone/v2 v2.2.1
+	github.com/gone-io/gone/v2 v2.2.2
 	github.com/gone-io/goner/g v1.2.1
 )
 

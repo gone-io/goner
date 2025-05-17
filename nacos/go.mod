@@ -6,7 +6,7 @@ require (
 	github.com/bytedance/sonic v1.13.2
 	github.com/go-viper/encoding/javaproperties v0.1.0
 	github.com/goccy/go-json v0.10.5
-	github.com/gone-io/gone/v2 v2.2.1
+	github.com/gone-io/gone/v2 v2.2.2
 	github.com/gone-io/goner/g v1.2.1
 	github.com/gone-io/goner/viper v1.2.1
 	github.com/google/go-cmp v0.7.0

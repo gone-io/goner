@@ -3,7 +3,7 @@ module examples/otel/log/simple
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.1
+	github.com/gone-io/gone/v2 v2.2.2
 	github.com/gone-io/goner/g v1.2.1
 	github.com/gone-io/goner/otel v1.2.1 // indirect
 	github.com/gone-io/goner/otel/log v1.2.1

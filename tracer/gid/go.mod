@@ -3,7 +3,7 @@ module github.com/gone-io/goner/tracer/gid
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.1
+	github.com/gone-io/gone/v2 v2.2.2
 	github.com/gone-io/goner/g v1.2.1-00010101000000-000000000000
 	github.com/google/uuid v1.6.0
 	github.com/petermattis/goid v0.0.0-20250319124200-ccd6737f222a
