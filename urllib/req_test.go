@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"testing"
 
-	goneMock "github.com/gone-io/gone/mock/v2"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/g/mock"
@@ -126,7 +125,7 @@ func Test_r_trip_InnerService(t *testing.T) {
 			tripper := NewMockRoundTripper(controller)
 			tripper.EXPECT().RoundTrip(gomock.Any()).Return(nil, nil).AnyTimes()
 
-			logger := goneMock.NewMockLogger(controller)
+			logger := gone.NewMockLogger(controller)
 			logger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 
 			// 初始化请求处理器
