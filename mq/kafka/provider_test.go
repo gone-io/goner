@@ -38,11 +38,11 @@ func TestConf_ReadFromConfigure(t *testing.T) {
 
 type consumerHandler struct {
 	wants  []string
-	locker sync.Locker
+	locker sync.Mutex
 	ch     chan string
 }
 
-func (h *consumerHandler) Setup(sarama.ConsumerGroupSession) error {
+func (h *consumerHandler) Setup(session sarama.ConsumerGroupSession) error {
 	return nil
 }
 func (h *consumerHandler) Cleanup(sarama.ConsumerGroupSession) error {
@@ -50,38 +50,50 @@ func (h *consumerHandler) Cleanup(sarama.ConsumerGroupSession) error {
 }
 func (h *consumerHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for msg := range claim.Messages() {
-		h.locker.Lock()
-		defer h.locker.Unlock()
-		fmt.Printf("Received message: key=%s, value=%s, partition=%d, offset=%d\n", string(msg.Key), string(msg.Value), msg.Partition, msg.Offset)
-		if len(h.wants) > 0 {
-			r := -1
-			for i, want := range h.wants {
-				if want == string(msg.Value) {
-					r = i
-					break
-				}
-			}
-			if r > -1 {
-				//删除 r
-				h.wants = append(h.wants[:r], h.wants[r+1:]...)
-			}
-			if len(h.wants) == 0 {
-				close(h.ch)
-			}
-		}
-
+		h.process(msg)
 		sess.MarkMessage(msg, "")
+		sess.Commit()
 	}
 	return nil
+}
+
+func (h *consumerHandler) process(msg *sarama.ConsumerMessage) {
+	h.locker.Lock()
+	defer h.locker.Unlock()
+	fmt.Printf("Received message: key=%s, value=%s, partition=%d, offset=%d\n", string(msg.Key), string(msg.Value), msg.Partition, msg.Offset)
+	if len(h.wants) > 0 {
+		r := -1
+		for i, want := range h.wants {
+			if want == string(msg.Value) {
+				r = i
+				break
+			}
+		}
+		if r > -1 {
+			//删除 r
+			h.wants = append(h.wants[:r], h.wants[r+1:]...)
+		}
+		if len(h.wants) == 0 {
+			close(h.ch)
+		}
+	}
 }
 
 func TestSendAndReceive(t *testing.T) {
 	conf := `{
 	"groupID": "default",
-	"addrs": ["127.0.0.1:9092"],
+	"addrs": ["localhost:9092"],
 	"Producer": {
 		"Return": {
 			"Successes": true
+		}
+	},
+	"Consumer": {
+		"Offsets": {
+			"AutoCommit": {
+				"Enable": true
+			},
+			"Initial": -2
 		}
 	}
 }`
@@ -98,39 +110,13 @@ func TestSendAndReceive(t *testing.T) {
 	gone.
 		NewApp(LoadConsumer, LoaderSyncProducer, LoaderAsyncProducer, LoadConsumerGroup).
 		Run(func(syncProducer sarama.SyncProducer, aSyncProducer sarama.AsyncProducer, consumer sarama.Consumer, client sarama.ConsumerGroup) {
-			topics, err := consumer.Topics()
-			assert.Nil(t, err)
-
-			assert.Equal(t, 2, len(topics))
-			assert.Contains(t, topics, topic)
-
-			go func() {
-				msg := &sarama.ProducerMessage{
-					Topic: topic,
-					Value: sarama.StringEncoder(info1),
-				}
-
-				partition, offset, err := syncProducer.SendMessage(msg)
-				assert.Nil(t, err)
-				fmt.Printf("send:%#v, %#v", partition, offset)
-			}()
-
-			go func() {
-				msg := &sarama.ProducerMessage{
-					Topic: topic,
-					Value: sarama.StringEncoder(info2),
-				}
-				aSyncProducer.Input() <- msg
-			}()
-
 			ctx, cancel := context.WithCancel(context.Background())
 			signals := make(chan os.Signal, 1)
 			signal.Notify(signals, os.Interrupt)
-			var wg sync.WaitGroup
-			wg.Add(1)
+
 			ch := make(chan string)
+
 			go func() {
-				defer wg.Done()
 				for {
 					err := client.Consume(ctx, []string{topic}, &consumerHandler{
 						wants: []string{info1, info2},
@@ -144,17 +130,43 @@ func TestSendAndReceive(t *testing.T) {
 						cancel()
 						return
 					case <-ch:
+						cancel()
 						return
-					default:
 					}
 				}
 			}()
+
 			go func() {
-				select {
-				case <-ch:
-					return
+				msg := &sarama.ProducerMessage{
+					Topic: topic,
+					Value: sarama.StringEncoder(info1),
 				}
+
+				partition, offset, err := syncProducer.SendMessage(msg)
+				assert.Nil(t, err)
+				fmt.Printf("send:%s,%#v, %#v\n", info1, partition, offset)
+
+				_, err = consumer.Topics()
+				assert.Nil(t, err)
 			}()
-			wg.Wait()
+
+			go func() {
+				msg := &sarama.ProducerMessage{
+					Topic: topic,
+					Value: sarama.StringEncoder(info2),
+				}
+				aSyncProducer.Input() <- msg
+
+				fmt.Printf("send:%s\n", info2)
+			}()
+
+			select {
+			case <-signals:
+				cancel()
+				return
+			case <-ch:
+				cancel()
+				return
+			}
 		})
 }

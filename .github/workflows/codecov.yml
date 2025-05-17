@@ -58,6 +58,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
       - name: Start Consul Containers
         run:  docker compose -f ".github/workflows/consul/docker-compose.yml" up -d --build
+      - name: Start kafka
+        run:  docker compose -f ".github/workflows/kafka/docker-compose.yml" up -d --build
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage
