@@ -25,8 +25,6 @@ jobs:
         go-version:
           - '1.24'
     services:
-      # Etcd service.
-      # docker run -d --name etcd -p 2379:2379 -e ALLOW_NONE_AUTHENTICATION=yes bitnami/etcd:3.4.24
       etcd:
         image: bitnami/etcd:3.4.24
         env:
@@ -54,12 +52,15 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Install SQLite
-        run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
-      - name: Start Consul Containers
-        run:  docker compose -f ".github/workflows/consul/docker-compose.yml" up -d --build
       - name: Start kafka
         run:  docker compose -f ".github/workflows/kafka/docker-compose.yml" up -d --build
+
+      - name: Install SQLite
+        run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
+
+      - name: Start Consul Containers
+        run:  docker compose -f ".github/workflows/consul/docker-compose.yml" up -d --build
+
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage
