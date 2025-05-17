@@ -3,7 +3,7 @@ module github.com/gone-io/goner/gorm/sqlite
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.1.0
+	github.com/gone-io/gone/v2 v2.2.2
 	github.com/gone-io/goner/viper v1.2.1
 	github.com/stretchr/testify v1.10.0
 	gorm.io/driver/sqlite v1.5.7
@@ -32,6 +32,7 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/spf13/viper v1.20.1 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
+	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
