@@ -20,3 +20,9 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_CREATE_TOPICS="my-topic:1:1,another-topic:2:1"
+    networks:
+      - kafka
+
+networks:
+  kafka:
+    driver: bridge
