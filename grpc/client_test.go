@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	mock "github.com/gone-io/gone/mock/v2"
 	"github.com/gone-io/gone/v2"
+	mock "github.com/gone-io/gone/v2"
 	gMock "github.com/gone-io/goner/g/mock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"

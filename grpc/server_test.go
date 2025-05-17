@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"github.com/gone-io/gone/mock/v2"
+	mock "github.com/gone-io/gone/v2"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc"
 	"testing"

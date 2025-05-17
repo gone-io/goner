@@ -2,7 +2,7 @@ package gin
 
 import (
 	"errors"
-	"github.com/gone-io/gone/mock/v2"
+	mock "github.com/gone-io/gone/v2"
 	"net/http"
 	"strings"
 	"testing"

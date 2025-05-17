@@ -12,6 +12,7 @@ require (
 	go.opentelemetry.io/otel v1.35.0 // indirect
 	go.opentelemetry.io/otel/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
+	go.uber.org/mock v0.5.2 // indirect
 )
 
-require github.com/gone-io/gone/v2 v2.0.11
+require github.com/gone-io/gone/v2 v2.2.2
