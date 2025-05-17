@@ -82,7 +82,7 @@ func (h *consumerHandler) process(msg *sarama.ConsumerMessage) {
 func TestSendAndReceive(t *testing.T) {
 	conf := `{
 	"groupID": "default",
-	"addrs": ["localhost:9092"],
+	"addrs": ["127.0.0.1:9092"],
 	"Producer": {
 		"Return": {
 			"Successes": true
