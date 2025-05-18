@@ -1,16 +1,107 @@
 package rocket
 
 import (
-	"context"
-	"fmt"
 	"github.com/gone-io/gone/v2"
-	"os"
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 	"reflect"
 	"testing"
 	"time"
 
-	mq "github.com/apache/rocketmq-clients/golang"
+	mq "github.com/apache/rocketmq-clients/golang/v5"
 )
+
+func TestProducerOption_ToOptions(t *testing.T) {
+	var Expect = func(maxAttempts1 *int32, topics1 []string) func() {
+		withMaxAttemptsExecuted := false
+		withTopicsExecuted := false
+
+		withMaxAttempts = func(maxAttempts int32) mq.ProducerOption {
+			if *maxAttempts1 != maxAttempts {
+				t.Errorf("withMaxAttempts() = %v, want %v", maxAttempts1, maxAttempts)
+			}
+			withMaxAttemptsExecuted = true
+			return mq.WithMaxAttempts(maxAttempts)
+		}
+		withTopics = func(topics ...string) mq.ProducerOption {
+			if !reflect.DeepEqual(topics1, topics) {
+				t.Errorf("withTopics() = %v, want %v", topics1, topics)
+			}
+			withTopicsExecuted = true
+			return mq.WithTopics(topics...)
+		}
+
+		return func() {
+			if maxAttempts1 != nil && !withMaxAttemptsExecuted {
+				t.Errorf("withMaxAttempts() not executed")
+			}
+			if topics1 != nil && !withTopicsExecuted {
+				t.Errorf("withTopics() not executed")
+			}
+		}
+	}
+
+	type fields struct {
+		MaxAttempts int32
+		Topics      []string
+	}
+	tests := []struct {
+		name   string
+		setUp  func(fields fields) func()
+		fields fields
+	}{
+		{
+			name: "empty option",
+			setUp: func(fields fields) func() {
+				return Expect(nil, nil)
+			},
+			fields: fields{
+				MaxAttempts: 0,
+				Topics:      nil,
+			},
+		},
+		{
+			name: "only max attempts",
+			setUp: func(fields fields) func() {
+				return Expect(&fields.MaxAttempts, nil)
+			},
+			fields: fields{
+				MaxAttempts: 3,
+				Topics:      nil,
+			},
+		},
+		{
+			name: "only topics",
+			setUp: func(fields fields) func() {
+				return Expect(nil, fields.Topics)
+			},
+			fields: fields{
+				MaxAttempts: 0,
+				Topics:      []string{"topic1", "topic2"},
+			},
+		},
+		{
+			name: "both max attempts and topics",
+			setUp: func(fields fields) func() {
+				return Expect(&fields.MaxAttempts, fields.Topics)
+			},
+			fields: fields{
+				MaxAttempts: 5,
+				Topics:      []string{"topic1", "topic2", "topic3"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer tt.setUp(tt.fields)()
+			p := &ProducerOption{
+				MaxAttempts: tt.fields.MaxAttempts,
+				Topics:      tt.fields.Topics,
+			}
+			_ = p.ToOptions()
+		})
+	}
+}
 
 func TestConsumerOption_ToOptions(t *testing.T) {
 
@@ -121,6 +212,26 @@ func TestConsumerOption_ToOptions(t *testing.T) {
 			},
 		},
 		{
+			name: "only topic",
+			setUp: func(fields fields) func() {
+				return Expect(nil, map[string]*mq.FilterExpression{
+					"test-topic": mq.NewFilterExpressionWithType("*", mq.TAG),
+				})
+			},
+			fields: fields{
+				AwaitDuration: 0,
+				Expressions: []struct {
+					Topic      string `json:"topic"`
+					Type       string `json:"type"`
+					Expression string `json:"expression"`
+				}{
+					{
+						Topic: "test-topic",
+					},
+				},
+			},
+		},
+		{
 			name: "multiple expressions with await duration",
 			setUp: func(fields fields) func() {
 				return Expect(&fields.AwaitDuration, map[string]*mq.FilterExpression{
@@ -161,85 +272,37 @@ func TestConsumerOption_ToOptions(t *testing.T) {
 	}
 }
 
-func TestSendAndReceive(t *testing.T) {
-	var topic = "test-topic"
-	var maxMessageNum int32 = 16
-	var invisibleDuration = time.Second * 20
-	var info = "hello `gone`"
+func TestProvideConsumer(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
 
-	_ = os.Setenv("GONE_ROCKETMQ_DEFAULT", `{
-	"Endpoint":"127.0.0.1:8081",
-	"ConsumerGroup": "x-test",
-	"NameSpace": "xxxx",
-	"Credentials": {
-		"accessKey":"",
-		"accessSecret":"",
-		"securityToken":""
+	mockConsumer := NewMockSimpleConsumer(controller)
+	mockConsumer.EXPECT().Start().Return(nil)
+	mockConsumer.EXPECT().GracefulStop().Return(nil)
+
+	newSimpleConsumer = func(config *mq.Config, opts ...mq.SimpleConsumerOption) (mq.SimpleConsumer, error) {
+		return mockConsumer, nil
 	}
-}`)
-
-	_ = os.Setenv("GONE_ROCKETMQ_DEFAULT_CONSUMER", fmt.Sprintf(`{
-	"awaitDuration": "10s",
-	"expressions": [{
-		"topic": "%s"
-	}]
-}`, topic))
-
-	_ = os.Setenv("GONE_ROCKETMQ_DEFAULT_PRODUCER", fmt.Sprintf(`{
-	"maxAttempts": 3,
-	"topics": ["%s"]
-}`, topic))
-
-	_ = os.Setenv(mq.CLIENT_LOG_ROOT, "./testdata/logs")
-	mq.ResetLogger()
-
-	defer func() {
-		_ = os.Unsetenv("GONE_ROCKETMQ_DEFAULT")
-		_ = os.Unsetenv("GONE_ROCKETMQ_DEFAULT_CONSUMER")
-		_ = os.Unsetenv("GONE_ROCKETMQ_DEFAULT_PRODUCER")
-		_ = os.Unsetenv(mq.CLIENT_LOG_ROOT)
-	}()
 
 	gone.
-		NewApp(LoadConsumer, LoadProducer).
-		Run(func(simpleConsumer mq.SimpleConsumer, producer mq.Producer) {
-			go func() {
-				for {
-					fmt.Println("start receive message")
-					mvs, err := simpleConsumer.Receive(context.TODO(), maxMessageNum, invisibleDuration)
-					if err != nil {
-						fmt.Println(err)
-					}
+		NewApp(LoadConsumer).
+		Run(func(simpleConsumer mq.SimpleConsumer) {
+			assert.Equal(t, mockConsumer, simpleConsumer)
+		})
+}
 
-					// ack message
-					for _, mv := range mvs {
-						_ = simpleConsumer.Ack(context.TODO(), mv)
-						fmt.Println(mv)
-					}
-					fmt.Println("wait a moment")
-					fmt.Println()
-					time.Sleep(time.Second * 3)
-				}
-			}()
+func TestProvideProducer(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	mockProducer := NewMockProducer(controller)
+	mockProducer.EXPECT().Start().Return(nil)
+	mockProducer.EXPECT().GracefulStop().Return(nil)
 
-			go func() {
-				msg := &mq.Message{
-					Topic: topic,
-					Body:  []byte(info),
-				}
-				// set keys and tag
-				msg.SetKeys("a", "b")
-				msg.SetTag("ab")
-				// send message in sync
-				resp, err := producer.Send(context.TODO(), msg)
-				if err != nil {
-					t.Error(err)
-					return
-				}
-				for i := 0; i < len(resp); i++ {
-					fmt.Printf("%#v\n", resp[i])
-				}
-			}()
-			time.Sleep(time.Minute)
+	newProducer = func(config *mq.Config, opts ...mq.ProducerOption) (mq.Producer, error) {
+		return mockProducer, nil
+	}
+	gone.NewApp(LoadProducer).
+		Run(func(producer mq.Producer) {
+			assert.Equal(t, mockProducer, producer)
 		})
 }

@@ -2,7 +2,7 @@ package rocket
 
 import (
 	"fmt"
-	mq "github.com/apache/rocketmq-clients/golang"
+	mq "github.com/apache/rocketmq-clients/golang/v5"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
 	"time"
@@ -45,6 +45,8 @@ func (o *ConsumerOption) ToOptions() []mq.SimpleConsumerOption {
 	return options
 }
 
+var newSimpleConsumer = mq.NewSimpleConsumer
+
 func ProvideConsumer(tagConf string, param struct {
 	configure  gone.Configure  `gone:"configure"`
 	beforeStop gone.BeforeStop `gone:"*"`
@@ -63,7 +65,7 @@ func ProvideConsumer(tagConf string, param struct {
 	var option ConsumerOption
 	_ = param.configure.Get(fmt.Sprintf("rocketmq.%s.consumer", name), &option, "")
 
-	consumer, err := mq.NewSimpleConsumer(&conf, option.ToOptions()...)
+	consumer, err := newSimpleConsumer(&conf, option.ToOptions()...)
 
 	g.PanicIfErr(gone.ToErrorWithMsg(err, "can not create rocketmq consumer"))
 
@@ -82,16 +84,21 @@ type ProducerOption struct {
 	Topics      []string `json:"topics,omitempty"`
 }
 
+var withMaxAttempts = mq.WithMaxAttempts
+var withTopics = mq.WithTopics
+
 func (p *ProducerOption) ToOptions() []mq.ProducerOption {
 	options := make([]mq.ProducerOption, 0)
 	if p.MaxAttempts > 0 {
-		options = append(options, mq.WithMaxAttempts(p.MaxAttempts))
+		options = append(options, withMaxAttempts(p.MaxAttempts))
 	}
 	if len(p.Topics) > 0 {
-		options = append(options, mq.WithTopics(p.Topics...))
+		options = append(options, withTopics(p.Topics...))
 	}
 	return options
 }
+
+var newProducer = mq.NewProducer
 
 func ProvideProducer(tagConf string, param struct {
 	configure  gone.Configure   `gone:"configure"`
@@ -116,9 +123,9 @@ func ProvideProducer(tagConf string, param struct {
 		options = append(options, mq.WithTransactionChecker(checker))
 	}
 
-	producer, err := mq.NewProducer(&conf, options...)
-
+	producer, err := newProducer(&conf, options...)
 	g.PanicIfErr(gone.ToErrorWithMsg(err, "can not create rocketmq producer"))
+
 	err = producer.Start()
 	g.PanicIfErr(gone.ToErrorWithMsg(err, "can not start rocketmq producer"))
 
