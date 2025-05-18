@@ -17,10 +17,13 @@ type ConsumerOption struct {
 	} `json:"expressions"`
 }
 
+var withAwaitDuration = mq.WithAwaitDuration
+var withSubscriptionExpressions = mq.WithSubscriptionExpressions
+
 func (o *ConsumerOption) ToOptions() []mq.SimpleConsumerOption {
 	options := make([]mq.SimpleConsumerOption, 0)
 	if o.AwaitDuration > 0 {
-		options = append(options, mq.WithAwaitDuration(o.AwaitDuration))
+		options = append(options, withAwaitDuration(o.AwaitDuration))
 	}
 	if len(o.Expressions) > 0 {
 		m := make(map[string]*mq.FilterExpression)
@@ -29,18 +32,23 @@ func (o *ConsumerOption) ToOptions() []mq.SimpleConsumerOption {
 			switch v.Type {
 			case "sql":
 				t = mq.SQL92
-			default:
+				m[v.Topic] = mq.NewFilterExpressionWithType(v.Expression, t)
+			case "tag":
 				t = mq.TAG
+				m[v.Topic] = mq.NewFilterExpressionWithType(v.Expression, t)
+			default:
+				m[v.Topic] = mq.SUB_ALL
 			}
-			m[v.Topic] = mq.NewFilterExpressionWithType(v.Expression, t)
 		}
-		options = append(options, mq.WithSubscriptionExpressions(m))
+		options = append(options, withSubscriptionExpressions(m))
 	}
 	return options
 }
 
 func ProvideConsumer(tagConf string, param struct {
-	configure gone.Configure `gone:"configure"`
+	configure  gone.Configure  `gone:"configure"`
+	beforeStop gone.BeforeStop `gone:"*"`
+	logger     gone.Logger     `gone:"*"`
 }) (mq.SimpleConsumer, error) {
 	name, _ := gone.ParseGoneTag(tagConf)
 	if name == "" {
@@ -50,15 +58,23 @@ func ProvideConsumer(tagConf string, param struct {
 
 	var conf mq.Config
 	err := param.configure.Get(confKey, &conf, "")
-	if err != nil {
-		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", confKey))
-	}
+	g.PanicIfErr(gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", confKey)))
 
 	var option ConsumerOption
 	_ = param.configure.Get(fmt.Sprintf("rocketmq.%s.consumer", name), &option, "")
 
 	consumer, err := mq.NewSimpleConsumer(&conf, option.ToOptions()...)
-	return consumer, gone.ToErrorWithMsg(err, "can not create rocketmq consumer")
+
+	g.PanicIfErr(gone.ToErrorWithMsg(err, "can not create rocketmq consumer"))
+
+	err = consumer.Start()
+	g.PanicIfErr(gone.ToErrorWithMsg(err, "can not start rocketmq consumer"))
+
+	param.beforeStop(func() {
+		g.ErrorPrinter(param.logger, consumer.GracefulStop(), "close kafka consumer group failed")
+	})
+
+	return consumer, nil
 }
 
 type ProducerOption struct {
@@ -78,8 +94,10 @@ func (p *ProducerOption) ToOptions() []mq.ProducerOption {
 }
 
 func ProvideProducer(tagConf string, param struct {
-	configure gone.Configure   `gone:"configure"`
-	keeper    gone.GonerKeeper `gone:"*"`
+	configure  gone.Configure   `gone:"configure"`
+	keeper     gone.GonerKeeper `gone:"*"`
+	beforeStop gone.BeforeStop  `gone:"*"`
+	logger     gone.Logger      `gone:"*"`
 }) (mq.Producer, error) {
 	name, _ := gone.ParseGoneTag(tagConf)
 	if name == "" {
@@ -89,10 +107,7 @@ func ProvideProducer(tagConf string, param struct {
 
 	var conf mq.Config
 	err := param.configure.Get(confKey, &conf, "")
-	if err != nil {
-		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", confKey))
-	}
-
+	g.PanicIfErr(gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", confKey)))
 	var option ProducerOption
 	_ = param.configure.Get(fmt.Sprintf("rocketmq.%s.producer", name), &option, "")
 	options := option.ToOptions()
@@ -102,5 +117,13 @@ func ProvideProducer(tagConf string, param struct {
 	}
 
 	producer, err := mq.NewProducer(&conf, options...)
-	return producer, gone.ToErrorWithMsg(err, "can not create rocketmq producer")
+
+	g.PanicIfErr(gone.ToErrorWithMsg(err, "can not create rocketmq producer"))
+	err = producer.Start()
+	g.PanicIfErr(gone.ToErrorWithMsg(err, "can not start rocketmq producer"))
+
+	param.beforeStop(func() {
+		g.ErrorPrinter(param.logger, producer.GracefulStop(), "close kafka consumer group failed")
+	})
+	return producer, nil
 }

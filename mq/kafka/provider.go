@@ -32,13 +32,14 @@ func (c *Conf) ReadFromConfigure(name string, configure gone.Configure) ([]strin
 func ProvideSyncProducer(tagConf string, param struct {
 	configure  gone.Configure  `gone:"configure"`
 	beforeStop gone.BeforeStop `gone:"*"`
+	logger     gone.Logger     `gone:"*"`
 }) (sarama.SyncProducer, error) {
 	var conf Conf
 	name, _ := gone.ParseGoneTag(tagConf)
 	producer, err := sarama.NewSyncProducer(conf.ReadFromConfigure(name, param.configure))
 	g.PanicIfErr(gone.ToErrorWithMsg(err, "create kafka sync producer failed"))
 	param.beforeStop(func() {
-		g.PanicIfErr(producer.Close())
+		g.ErrorPrinter(param.logger, producer.Close(), "close kafka sync producer failed")
 	})
 
 	return producer, nil
@@ -47,6 +48,7 @@ func ProvideSyncProducer(tagConf string, param struct {
 func ProvideAsyncProducer(tagConf string, param struct {
 	configure  gone.Configure  `gone:"configure"`
 	beforeStop gone.BeforeStop `gone:"*"`
+	logger     gone.Logger     `gone:"*"`
 }) (sarama.AsyncProducer, error) {
 	var conf Conf
 	name, _ := gone.ParseGoneTag(tagConf)
@@ -54,7 +56,7 @@ func ProvideAsyncProducer(tagConf string, param struct {
 	g.PanicIfErr(gone.ToErrorWithMsg(err, "create kafka async producer failed"))
 
 	param.beforeStop(func() {
-		g.PanicIfErr(producer.Close())
+		g.ErrorPrinter(param.logger, producer.Close(), "close kafka async producer failed")
 	})
 
 	return producer, nil
@@ -63,13 +65,14 @@ func ProvideAsyncProducer(tagConf string, param struct {
 func ProvideConsumer(tagConf string, param struct {
 	configure  gone.Configure  `gone:"configure"`
 	beforeStop gone.BeforeStop `gone:"*"`
+	logger     gone.Logger     `gone:"*"`
 }) (sarama.Consumer, error) {
 	var conf Conf
 	name, _ := gone.ParseGoneTag(tagConf)
 	consumer, err := sarama.NewConsumer(conf.ReadFromConfigure(name, param.configure))
 	g.PanicIfErr(gone.ToErrorWithMsg(err, "create kafka consumer failed"))
 	param.beforeStop(func() {
-		g.PanicIfErr(consumer.Close())
+		g.ErrorPrinter(param.logger, consumer.Close(), "close kafka kafka consumer failed")
 	})
 	return consumer, nil
 }
@@ -77,6 +80,7 @@ func ProvideConsumer(tagConf string, param struct {
 func ProvideConsumerGroup(tagConf string, param struct {
 	configure  gone.Configure  `gone:"configure"`
 	beforeStop gone.BeforeStop `gone:"*"`
+	logger     gone.Logger     `gone:"*"`
 }) (sarama.ConsumerGroup, error) {
 	var conf Conf
 	name, _ := gone.ParseGoneTag(tagConf)
@@ -84,7 +88,7 @@ func ProvideConsumerGroup(tagConf string, param struct {
 	consumerGroup, err := sarama.NewConsumerGroup(brokers, conf.GroupID, config)
 	g.PanicIfErr(gone.ToErrorWithMsg(err, "create kafka consumer group failed"))
 	param.beforeStop(func() {
-		g.PanicIfErr(consumerGroup.Close())
+		g.ErrorPrinter(param.logger, consumerGroup.Close(), "close kafka consumer group failed")
 	})
 	return consumerGroup, nil
 }

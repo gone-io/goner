@@ -7,7 +7,7 @@ func LoadConsumer(loader gone.Loader) error {
 	return loader.Load(gone.WrapFunctionProvider(ProvideConsumer))
 }
 
-// LoaderProducer is for loading Rocket MQ producer.
-func LoaderProducer(loader gone.Loader) error {
+// LoadProducer is for loading Rocket MQ producer.
+func LoadProducer(loader gone.Loader) error {
 	return loader.Load(gone.WrapFunctionProvider(ProvideProducer))
 }

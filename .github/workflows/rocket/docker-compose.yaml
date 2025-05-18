@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  rmqbroker:
+    image: apache/rocketmq:5.3.2
+    container_name: rmqbroker
+    ports:
+      - "9876:9876"
+      - "10912:10912"
+      - "10911:10911"
+      - "10909:10909"
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - "NAMESRV_ADDR=localhost:9876"
+    volumes:
+      - ./data/broker/conf/broker.conf:/home/rocketmq/rocketmq-5.3.2/conf/broker.conf
+    command: sh -c "sh mqnamesrv & sh mqbroker --enable-proxy -c /home/rocketmq/rocketmq-5.3.2/conf/broker.conf"
