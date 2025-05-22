@@ -174,24 +174,61 @@ func (p *proxy) buildProxyFn(x HandlerFunc, funcName string, last bool) gin.Hand
 
 		//call the func x
 		values := fv.Call(parameters)
+		p.resultProcess(values, context, funcName, last)
 
-		var results []any
-		for i := 0; i < len(values); i++ {
-			arg := values[i]
-
-			if arg.Kind() == reflect.Interface {
-				elem := arg.Elem()
-				switch elem.Kind() {
-				case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
-					if elem.IsNil() {
-						results = append(results, nil)
-						continue
-					}
-				default:
-				}
-			}
-			results = append(results, arg.Interface())
-		}
-		p.responser.ProcessResults(context, context.Writer, last, funcName, results...)
+		//var results []any
+		//for i := 0; i < len(values); i++ {
+		//	arg := values[i]
+		//
+		//	if arg.Kind() == reflect.Interface {
+		//		elem := arg.Elem()
+		//		switch elem.Kind() {
+		//		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
+		//			if elem.IsNil() {
+		//				results = append(results, nil)
+		//				continue
+		//			}
+		//		default:
+		//		}
+		//	}
+		//	results = append(results, arg.Interface())
+		//}
+		//p.responser.ProcessResults(context, context.Writer, last, funcName, results...)
 	}
 }
+
+func (p *proxy) resultProcess(values []reflect.Value, context *gin.Context, funcName string, last bool) {
+	var results []any
+	for i := 0; i < len(values); i++ {
+		arg := values[i]
+
+		if arg.Kind() == reflect.Interface {
+			elem := arg.Elem()
+			switch elem.Kind() {
+			case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
+				if elem.IsNil() {
+					results = append(results, nil)
+					continue
+				}
+			default:
+			}
+		}
+		results = append(results, arg.Interface())
+	}
+	p.responser.ProcessResults(context, context.Writer, last, funcName, results...)
+}
+
+//
+//func (p *proxy) buildProxyFnV2(x HandlerFunc, funcName string, last bool) gin.HandlerFunc {
+//	prepare, err := p.httpInjector.Prepare(x)
+//	g.PanicIfErr(err)
+//
+//	return func(context *gin.Context) {
+//		values, err := prepare(context)
+//		if err != nil {
+//			p.responser.Failed(context, err)
+//		}
+//
+//		p.resultProcess(values, context, funcName, last)
+//	}
+//}
