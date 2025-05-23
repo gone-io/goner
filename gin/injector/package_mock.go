@@ -18,6 +18,7 @@ import (
 
 // MockNameParser is a mock of NameParser interface.
 type MockNameParser[P any] struct {
+	gone.Flag
 	ctrl     *gomock.Controller
 	recorder *MockNameParserMockRecorder[P]
 	isgomock struct{}
@@ -71,6 +72,7 @@ func (mr *MockNameParserMockRecorder[P]) Name() *gomock.Call {
 
 // MockTypeParser is a mock of TypeParser interface.
 type MockTypeParser[P any] struct {
+	gone.Flag
 	ctrl     *gomock.Controller
 	recorder *MockTypeParserMockRecorder[P]
 	isgomock struct{}

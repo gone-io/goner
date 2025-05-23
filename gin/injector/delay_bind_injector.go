@@ -1,9 +1,7 @@
 package injector
 
 import (
-	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/google/uuid"
 	"reflect"
 )
 
@@ -37,10 +35,6 @@ func (h *delayBindInjector[P]) getFieldBindMap(fieldValue reflect.Value) FieldSe
 }
 
 func (h *delayBindInjector[P]) Inject(tagConf string, field reflect.StructField, fieldValue reflect.Value) error {
-	newUUID, _ := uuid.NewUUID()
-	tag := fmt.Sprintf(`%s %s:""`, field.Tag, newUUID)
-	field.Tag = reflect.StructTag(tag)
-
 	if fn, err := h.bindExecutor.FindFieldSetter(tagConf, field); err != nil {
 		return err
 	} else {
