@@ -16,5 +16,5 @@ func (c *httpRequestTypeParser) Parse(context *gin.Context) (reflect.Value, erro
 }
 
 func (c *httpRequestTypeParser) Type() reflect.Type {
-	return reflect.TypeOf((*http.Request)(nil))
+	return reflect.TypeOf(&http.Request{})
 }

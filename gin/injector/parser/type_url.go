@@ -15,5 +15,5 @@ func (c *urlTypeParser) Parse(context *gin.Context) (reflect.Value, error) {
 	return reflect.ValueOf(context.Request.URL), nil
 }
 func (c *urlTypeParser) Type() reflect.Type {
-	return reflect.TypeOf((*url.URL)(nil)).Elem()
+	return gone.GetInterfaceType(new(*url.URL))
 }
