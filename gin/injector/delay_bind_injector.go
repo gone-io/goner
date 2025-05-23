@@ -75,7 +75,7 @@ func (h *delayBindInjector[P]) Prepare(f any) (CompiledFunc[P], error) {
 
 func (h *delayBindInjector[P]) link(values []reflect.Value) func(context P) (list []reflect.Value, err error) {
 	var binds []BindFunc[P]
-	var BindFuncType = reflect.TypeOf((*BindFunc[P])(nil)).Elem()
+	var BindFuncType = gone.GetInterfaceType(new(BindFunc[P])) // reflect.TypeOf((*BindFunc[P])(nil)).Elem()
 
 	for _, v := range values {
 		if v.Type() == BindFuncType {
@@ -91,10 +91,15 @@ func (h *delayBindInjector[P]) link(values []reflect.Value) func(context P) (lis
 			binds = append(binds, bindFunc)
 		case reflect.Ptr:
 			pointValue := v.Elem()
-
 			if pointValue.Type().Kind() == reflect.Struct {
 				bindFunc := h.buildStructBindFunc(pointValue)
-				binds = append(binds, bindFunc)
+				binds = append(binds, func(p P) (reflect.Value, error) {
+					value, err := bindFunc(p)
+					if err != nil {
+						return reflect.Value{}, err
+					}
+					return value.Addr(), nil
+				})
 				continue
 			}
 			fallthrough

@@ -1,6 +1,7 @@
 package injector
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gone-io/gone/v2"
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 	"testing"
 )
 
-func Test_hi_Prepare(t *testing.T) {
+func Test_Prepare(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
@@ -93,5 +94,65 @@ func Test_hi_Prepare(t *testing.T) {
 			for i := 0; i < 1000; i++ {
 				go x()
 			}
+		})
+}
+
+func TestDelayBindInjector(t *testing.T) {
+	type Ctx struct{}
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+	executor := NewMockBindExecutor[Ctx](controller)
+
+	gone.NewApp().
+		Load(executor).
+		Load(&delayBindInjector[Ctx]{name: "x"}).
+		Load(gone.WrapFunctionProvider(func(tagConf string, param struct{}) (*string, error) {
+			var str = "hello"
+			return &str, nil
+		})).
+		Run(func(injector DelayBindInjector[Ctx]) {
+			t.Run("FindFieldSetter error", func(t *testing.T) {
+				executor.EXPECT().FindFieldSetter(gomock.Any(), gomock.Any()).Return(nil, fmt.Errorf("error"))
+				executor.EXPECT().InjectedByType(gomock.Any()).Return(nil)
+				prepare, err := injector.Prepare(func(i struct {
+					x int `gone:"x,test"`
+				}) {
+				})
+				assert.Nil(t, prepare)
+				assert.Error(t, err)
+			})
+			t.Run("FindFieldSetter suc but parse err", func(t *testing.T) {
+				executor.EXPECT().FindFieldSetter(gomock.Any(), gomock.Any()).Return(FieldSetter[Ctx](func(ctx Ctx, fieldValue reflect.Value) error {
+					return errors.New("parse error")
+				}), nil)
+				executor.EXPECT().InjectedByType(gomock.Any()).Return(nil).AnyTimes()
+				fn, err := injector.Prepare(func(i *struct {
+					x int `gone:"x,test"`
+				}) int {
+					return i.x
+				})
+				assert.Nil(t, err)
+				_, err = fn(Ctx{})
+				assert.Error(t, err)
+			})
+			t.Run("success", func(t *testing.T) {
+				executor.EXPECT().FindFieldSetter(gomock.Any(), gomock.Any()).Return(FieldSetter[Ctx](func(ctx Ctx, fieldValue reflect.Value) error {
+					fieldValue.Set(reflect.ValueOf(1))
+					return nil
+				}), nil)
+				executor.EXPECT().InjectedByType(gomock.Any()).Return(nil).AnyTimes()
+
+				fn, err := injector.Prepare(func(i *struct {
+					X int `gone:"x,test"`
+				}, x *string) (int, string) {
+					return i.X, *x
+				})
+				assert.Nil(t, err)
+				values, err := fn(Ctx{})
+				assert.Nil(t, err)
+				assert.Equal(t, 1, values[0].Interface())
+				assert.Equal(t, "hello", values[1].Interface())
+			})
+
 		})
 }
