@@ -3,7 +3,7 @@ package parser
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
-	goneGin "github.com/gone-io/goner/gin"
+	goneGin "github.com/gone-io/goner/gin/internal"
 	"reflect"
 )
 

@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	goneGin "github.com/gone-io/goner/gin"
+	goneGin "github.com/gone-io/goner/gin/internal"
 	"reflect"
 	"testing"
 

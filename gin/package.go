@@ -6,4 +6,4 @@ package gin
 
 //go:generate mockgen -package=gin  -destination=origin_mock.go github.com/gin-gonic/gin ResponseWriter
 
-//go:generate mockgen -package=gin  -destination=gin_mock.go github.com/gone-io/goner/gin Responser,HttInjector,XContext,HandleProxyToGin,Middleware,Controller
+//go:generate mockgen -package=gin  -destination=gin_mock.go github.com/gone-io/goner/gin Responser,XContext,HandleProxyToGin,Middleware,Controller

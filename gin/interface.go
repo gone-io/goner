@@ -4,13 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
-	"reflect"
+	"github.com/gone-io/goner/gin/internal"
 )
 
 // Context is a wrapper of gin.Context
-type Context struct {
-	*gin.Context
-}
+type Context = internal.Context
 
 type ResponseWriter = gin.ResponseWriter
 type HandlerFunc = g.HandlerFunc
@@ -72,13 +70,13 @@ type Responser interface {
 // allowing the same interface to have the ability to return different business codes and business data in special cases
 type BusinessError = gone.BusinessError
 
-type BindFieldFunc func(context *gin.Context, structVale reflect.Value) error
-type BindStructFunc func(*gin.Context, reflect.Value) (reflect.Value, error)
+//type BindFieldFunc func(context *gin.Context, structVale reflect.Value) error
+//type BindStructFunc func(*gin.Context, reflect.Value) (reflect.Value, error)
 
-type HttInjector interface {
-	StartBindFuncs()
-	BindFuncs() BindStructFunc
-}
+//type HttInjector interface {
+//	StartBindFuncs()
+//	BindFuncs() BindStructFunc
+//}
 
 type Middleware interface {
 	Process(ctx *gin.Context)

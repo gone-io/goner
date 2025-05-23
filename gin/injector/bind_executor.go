@@ -28,7 +28,7 @@ func (s *bindExecutor[P]) Init() error {
 		}
 	}
 
-	s.typeParserMap = make(map[reflect.Type]TypeParser[P])
+	s.nameParserMap = make(map[string]NameParser[P])
 	for _, parser := range s.nameParsers {
 		t := parser.Name()
 		if _, ok := s.nameParserMap[t]; ok {
