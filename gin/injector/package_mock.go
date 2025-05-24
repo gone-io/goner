@@ -180,6 +180,7 @@ func (mr *MockBindExecutorMockRecorder[P]) InjectedByType(pt any) *gomock.Call {
 
 // MockDelayBindInjector is a mock of DelayBindInjector interface.
 type MockDelayBindInjector[P any] struct {
+	gone.Flag
 	ctrl     *gomock.Controller
 	recorder *MockDelayBindInjectorMockRecorder[P]
 	isgomock struct{}

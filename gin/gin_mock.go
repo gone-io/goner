@@ -10,6 +10,7 @@
 package gin
 
 import (
+	"github.com/gone-io/gone/v2"
 	reflect "reflect"
 
 	gin "github.com/gin-gonic/gin"
@@ -18,6 +19,7 @@ import (
 
 // MockResponser is a mock of Responser interface.
 type MockResponser struct {
+	gone.Flag
 	ctrl     *gomock.Controller
 	recorder *MockResponserMockRecorder
 	isgomock struct{}

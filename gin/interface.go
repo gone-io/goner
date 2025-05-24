@@ -93,7 +93,7 @@ func (r *RequestBody[T]) Get() T {
 }
 
 type Query[T any] struct {
-	v T `gone:"http,query"`
+	v T `gone:"http,query=*"`
 }
 
 func (q *Query[T]) Get() T {

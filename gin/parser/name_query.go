@@ -25,7 +25,7 @@ func (s *queryNameParser) BuildParser(keyMap map[string]string, field reflect.St
 			query := context.Request.URL.Query()
 			return reflect.ValueOf(query.Encode()), nil
 		}, nil
-	case keyMap[anyName] == "true" && (t.Kind() == reflect.Struct || t.Kind() == reflect.Map || t == anyType):
+	case (keyMap[anyName] == "true" || mainKey == "*") && (t.Kind() == reflect.Struct || t.Kind() == reflect.Map || t == anyType):
 		return func(context *gin.Context) (reflect.Value, error) {
 			value := reflect.New(t)
 			if err := context.ShouldBindQuery(value.Interface()); err != nil {
@@ -34,7 +34,7 @@ func (s *queryNameParser) BuildParser(keyMap map[string]string, field reflect.St
 			return value.Elem(), nil
 		}, nil
 
-	case keyMap[anyName] == "true" && (t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Struct):
+	case (keyMap[anyName] == "true" || mainKey == "*") && (t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Struct):
 		return func(context *gin.Context) (reflect.Value, error) {
 			value := reflect.New(t.Elem())
 			if err := context.ShouldBindQuery(value.Interface()); err != nil {
