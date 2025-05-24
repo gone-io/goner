@@ -1,12 +1,14 @@
 package gin
 
 import (
+	"bytes"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/gin/injector"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
+	"io"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -163,8 +165,13 @@ func TestProxy(t *testing.T) {
 		Load(mockResponser).
 		Run(func(p *proxy) {
 
-			fn := p.proxyOne(func(query Query[string], u *url.URL) (any, *x, string, *url.URL, error) {
-				return x1, nil, query.Get(), u, nil
+			type Req struct {
+				X int    `json:"x"`
+				Y string `json:"y"`
+			}
+
+			fn := p.proxyOne(func(query Query[string], req RequestBody[Req], u *url.URL) (any, *x, string, *url.URL, Req, error) {
+				return x1, nil, query.Get(), u, req.Get(), nil
 			}, true)
 
 			addr, _ := url.Parse("http://localhost/?test=ok")
@@ -172,9 +179,13 @@ func TestProxy(t *testing.T) {
 			ctx := &gin.Context{
 				Request: &http.Request{
 					URL: addr,
+					Header: http.Header{
+						"Content-Type": []string{"application/json"},
+					},
+					Body: io.NopCloser(bytes.NewBufferString(`{"x":1,"y":"2"}`)),
 				},
 			}
-			mockResponser.EXPECT().ProcessResults(ctx, nil, true, gomock.Any(), x1, nil, "test=ok", addr, nil)
+			mockResponser.EXPECT().ProcessResults(ctx, nil, true, gomock.Any(), x1, nil, "test=ok", addr, Req{X: 1, Y: "2"}, nil)
 			fn(ctx)
 		})
 }
