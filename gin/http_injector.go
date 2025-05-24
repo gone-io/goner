@@ -10,7 +10,7 @@ import (
 // LoadGinHttpInjector load http injector
 func LoadGinHttpInjector(loader gone.Loader) error {
 	loader.
-		MustLoadX(injector.BuildLoad[*gin.Context]("http")).
+		MustLoadX(injector.BuildLoad[*gin.Context](IdHttpInjector)).
 		MustLoadX(parser.Load)
 	return nil
 }

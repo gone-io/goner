@@ -7,14 +7,14 @@ import (
 )
 
 // *gin.Context
-type originContextTypeParser struct {
+type ginContextTypeParser struct {
 	gone.Flag
 }
 
-func (c *originContextTypeParser) Parse(context *gin.Context) (reflect.Value, error) {
+func (c *ginContextTypeParser) Parse(context *gin.Context) (reflect.Value, error) {
 	return reflect.ValueOf(context), nil
 }
 
-func (c *originContextTypeParser) Type() reflect.Type {
+func (c *ginContextTypeParser) Type() reflect.Type {
 	return reflect.TypeOf((*gin.Context)(nil))
 }

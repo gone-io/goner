@@ -21,7 +21,7 @@ func Test_originContextTypeParser_Type(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &originContextTypeParser{}
+			c := &ginContextTypeParser{}
 			assert.Equalf(t, tt.want, c.Type(), "Type()")
 		})
 	}
@@ -50,7 +50,7 @@ func Test_originContextTypeParser_Parse(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &originContextTypeParser{}
+			c := &ginContextTypeParser{}
 			got, err := c.Parse(tt.args.context)
 			if !tt.wantErr(t, err, fmt.Sprintf("Parse(%v)", tt.args.context)) {
 				return

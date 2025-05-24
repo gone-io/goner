@@ -40,53 +40,15 @@ func (p *proxy) ProxyForMiddleware(handlers ...HandlerFunc) (arr []gin.HandlerFu
 
 func (p *proxy) proxyOne(x HandlerFunc, last bool) gin.HandlerFunc {
 	funcName := gone.GetFuncName(x)
+	prepare, err := p.injector.Prepare(x)
+	g.PanicIfErr(err)
 
-	switch f := x.(type) {
-	case func(*Context) (any, error):
-		return func(context *gin.Context) {
-			data, err := f(&Context{Context: context})
-			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
+	return func(context *gin.Context) {
+		values, err := prepare(context)
+		if err != nil {
+			p.responser.Failed(context, err)
 		}
-	case func(*Context) error:
-		return func(context *gin.Context) {
-			err := f(&Context{Context: context})
-			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
-		}
-	case func(*Context):
-		return func(context *gin.Context) {
-			f(&Context{Context: context})
-			p.responser.ProcessResults(context, context.Writer, last, funcName)
-		}
-	case func(ctx *gin.Context):
-		return x.(func(ctx *gin.Context))
-
-	case func(ctx *gin.Context) (any, error):
-		return func(context *gin.Context) {
-			data, err := f(context)
-			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
-		}
-	case func(ctx *gin.Context) error:
-		return func(context *gin.Context) {
-			err := f(context)
-			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
-		}
-	case func():
-		return func(context *gin.Context) {
-			f()
-			p.responser.ProcessResults(context, context.Writer, last, funcName)
-		}
-	case func() (any, error):
-		return func(context *gin.Context) {
-			data, err := f()
-			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
-		}
-	case func() error:
-		return func(context *gin.Context) {
-			err := f()
-			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
-		}
-	default:
-		return p.buildProxyFn(x, funcName, last)
+		p.resultProcess(values, context, funcName, last)
 	}
 }
 
@@ -109,18 +71,4 @@ func (p *proxy) resultProcess(values []reflect.Value, context *gin.Context, func
 		results = append(results, arg.Interface())
 	}
 	p.responser.ProcessResults(context, context.Writer, last, funcName, results...)
-}
-
-func (p *proxy) buildProxyFn(x HandlerFunc, funcName string, last bool) gin.HandlerFunc {
-	prepare, err := p.injector.Prepare(x)
-	g.PanicIfErr(err)
-
-	return func(context *gin.Context) {
-		values, err := prepare(context)
-		if err != nil {
-			p.responser.Failed(context, err)
-		}
-
-		p.resultProcess(values, context, funcName, last)
-	}
 }

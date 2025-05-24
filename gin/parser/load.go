@@ -9,8 +9,7 @@ func Load(loader gone.Loader) error {
 		MustLoad(&headerNameParser{}).
 		MustLoad(&paramNameParser{}).
 		MustLoad(&queryNameParser{}).
-		MustLoad(&contextTypeParser{}).
-		MustLoad(&originContextTypeParser{}).
+		MustLoad(&ginContextTypeParser{}).
 		MustLoad(&httpRequestTypeParser{}).
 		MustLoad(&httpHeaderTypeParser{}).
 		MustLoad(&urlTypeParser{}).

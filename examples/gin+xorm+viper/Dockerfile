@@ -20,6 +20,7 @@ RUN --mount=type=cache,target=/go,id=go go mod download
 
 COPY cmd cmd
 COPY internal internal
+COPY *.go ./
 
 #编译
 RUN --mount=type=cache,target=/go,id=go  go generate ./... && \
