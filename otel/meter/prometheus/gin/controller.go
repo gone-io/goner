@@ -17,7 +17,7 @@ type controller struct {
 
 func (c *controller) Mount() (err g.MountError) {
 	var handler = promhttp.Handler()
-	c.router.Any(c.metricsPath, func(ctx gin.Context) {
+	c.router.Any(c.metricsPath, func(ctx *gin.Context) {
 		handler.ServeHTTP(ctx.Writer, ctx.Request)
 	})
 	return nil
