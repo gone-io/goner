@@ -6,8 +6,7 @@
 
 ## 概述
 
-Gone-Gin 的 HTTP 注入器（HttpInjector）是一个强大的依赖注入系统，能够自动将 HTTP
-请求中的各种参数注入到处理函数的参数中。通过反射机制和标签解析，实现了类型安全的参数绑定和自动类型转换。
+goner/gin 的 HTTP 注入器（HttpInjector）是一个强大的依赖注入系统，能够自动将HTTP请求中的各种参数注入到处理函数的参数中。通过反射机制和标签解析，实现了类型安全的参数绑定和自动类型转换。
 
 ## HTTP 依赖注入标签的格式
 
@@ -77,7 +76,7 @@ router.GET("/search", function(in struct{
 | **请求头单值注入**   | number \| string                                              |    header     |    缺省取字段名    | 以键值`${key}`为`key`获取请求头，属性类型支持 简单类型<sub>[1]</sub>，解析不了会返回参数错误。通过 `headerNameParser` 实现。                                                          |
 | **URL路径参数注入** | number \| string                                              |     param     |    缺省取字段名    | 以"注入键值`${key}`"为`key`调用函数`ctx.Param(key)`获取Url中定义的参数值，属性类型支持 简单类型<sub>[1]</sub>，解析不了会返回参数错误。通过 `paramNameParser` 实现。                            |
 | **Query参数注入** | number \| string \| []number \| []string \| 结构体 \| 结构体指针      |     query     |    缺省取字段名    | 以"注入键值`${key}`"为`key`获取Query中的参数，属性类型支持 简单类型<sub>[1]</sub>，**支持简单类型的数组**，支持结构体和结构体指针，解析不了会返回参数错误。通过 `queryNameParser` 实现。                       |
-| **Cookie注入**  | number \| string                                              |    cookie     |    缺省取字段名    | 以"注入键值`${key}`"为`key`调用函数`ctx.Cookie(key)`获取Cookie的值，属性类型支持 简单类型<sub>[1]</sub>，解析不了会返回参数错误。通过 `cookeNameParser` 实现。                             |
+| **Cookie注入**  | number \| string                                              |    cookie     |    缺省取字段名    | 以"注入键值`${key}`"为`key`调用函数`ctx.Cookie(key)`获取Cookie的值，属性类型支持 简单类型<sub>[1]</sub>，解析不了会返回参数错误。通过 `cookieNameParser` 实现。                             |
 
 ## 实现原理
 
@@ -120,7 +119,7 @@ func LoadGinHttpInjector(loader gone.Loader) error {
 - `headerNameParser` - 处理 `header` 标签的参数注入
 - `paramNameParser` - 处理 `param` 标签的参数注入
 - `queryNameParser` - 处理 `query` 标签的参数注入
-- `cookeNameParser` - 处理 `cookie` 标签的参数注入
+- `cookieNameParser` - 处理 `cookie` 标签的参数注入
 
 ## Query参数注入
 
@@ -279,7 +278,7 @@ ctr.rootRouter.
         "/hello",
         func (in struct {
             token string `gone:"http,cookie"`        //不指定参数名，使用属性名作为参数名
-            token2 string `gone:"http,header=token"` //使用key指定参数名
+            token2 string `gone:"http,cookie=token"` //使用key指定参数名
         }) string {
             return "hello, your token in cookie is" + in.token
         },
@@ -380,7 +379,7 @@ ctr.rootRouter.
 
 ### 类型直接作为函数参数
 
-Gone-Gin 的 HTTP 注入器不仅支持将参数包装在结构体中注入，还支持将特定类型直接作为函数参数使用。这种方式更加简洁，适用于只需要少量参数的场景。
+goner/gin 的 HTTP 注入器不仅支持将参数包装在结构体中注入，还支持将特定类型直接作为函数参数使用。这种方式更加简洁，适用于只需要少量参数的场景。
 
 支持直接作为函数参数的类型与类型解析器（TypeParser）支持的类型相同，包括：
 - `*gin.Context` - HTTP 请求上下文
@@ -422,7 +421,7 @@ ctr.rootRouter.
 
 ### 自定义参数解析器
 
-Gone-Gin 允许开发者自定义参数解析器，以支持更复杂的参数注入场景。
+goner/gin 允许开发者自定义参数解析器，以支持更复杂的参数注入场景。
 
 #### 自定义类型解析器（TypeParser）
 
@@ -495,7 +494,7 @@ Gone-Gin 允许开发者自定义参数解析器，以支持更复杂的参数�
     import (
     	"fmt"
     	"github.com/gone-io/gone/v2"
-        "github.com/gone-io/goner"
+    	"github.com/gone-io/goner/gin"
     )
 
     type MyController struct {
@@ -503,13 +502,13 @@ Gone-Gin 允许开发者自定义参数解析器，以支持更复杂的参数�
     	Router gin.IRouter `gone:"*"`
     }
 
-    func (ctr *MyController) GetUser(token Token, in struct{
-		token Token `gone:"http"
-	}) string { // 直接注入 Token 类型
-    	return fmt.Sprintf("User token: %s", token)
+    func (ctr *MyController) GetUser(in struct{
+    	token Token `gone:"http"`
+    }) string { // 直接注入 Token 类型
+    	return fmt.Sprintf("User token: %s", in.token)
     }
 
-    func (ctr *MyController) Mount() error {
+    func (ctr *MyController) Mount() gin.MountError {
     	ctr.Router.GET("/user", ctr.GetUser)
     	return nil
     }
@@ -517,11 +516,11 @@ Gone-Gin 允许开发者自定义参数解析器，以支持更复杂的参数�
 
     当请求 `/user` 接口并携带正确的 `Authorization: Bearer <your-token>` 请求头时，`token` 参数会被自动注入。
 
-通过这种方式，你可以灵活地扩展 Gone-Gin 的参数注入能力，以适应各种复杂的业务需求。
+通过这种方式，你可以灵活地扩展 goner/gin 的参数注入能力，以适应各种复杂的业务需求。
 
 #### 自定义名称解析器（NameParser）
 
-除了自定义类型解析器外，Gone-Gin 还允许你创建自定义的名称解析器（NameParser）。名称解析器用于处理那些通过 `gone:"http,kind=key"` 标签指定的参数注入。这为你提供了更细粒度的控制，可以根据特定的 `kind` 和 `key` 来实现自定义的参数解析逻辑。
+除了自定义类型解析器外，goner/gin 还允许你创建自定义的名称解析器（NameParser）。名称解析器用于处理那些通过 `gone:"http,kind=key"` 标签指定的参数注入。这为你提供了更细粒度的控制，可以根据特定的 `kind` 和 `key` 来实现自定义的参数解析逻辑。
 
 你需要实现 `injector.NameParser[*gin.Context]` 接口 来创建自定义的名称解析器。根据 `goner/gin/parser/name_query.go` 的示例，一个典型的名称解析器主要包含以下方法：
 
@@ -549,12 +548,11 @@ Gone-Gin 允许开发者自定义参数解析器，以支持更复杂的参数�
 
     	"github.com/gin-gonic/gin"
     	"github.com/gone-io/gone/v2"
-    	// 假设 injector 包路径，请根据你的项目调整
-    	// "github.com/gone-io/gone/v2/gin/injector"
+    	"github.com/gone-io/goner/gin/injector"
     )
 
-    // 假设接口名为 INameParser，请根据实际调整
-    // var _ injector.INameParser = (*csvQueryParser)(nil)
+    // 确保 csvQueryParser 实现了 NameParser 接口
+    var _ injector.NameParser[*gin.Context] = (*csvQueryParser)(nil)
 
     type csvQueryParser struct {
     	gone.Flag
@@ -645,14 +643,14 @@ Gone-Gin 允许开发者自定义参数解析器，以支持更复杂的参数�
     - `in.Name` 会被注入为 `"MyItem"` (通过内置的 `queryNameParser`)
     - `in.Tags` 会被注入为 `[]string{"urgent", "important"}` (通过你的 `csvQueryParser`)
 
-通过自定义名称解析器，你可以极大地增强 Gone-Gin 处理 HTTP 请求参数的灵活性和能力，使其适应各种复杂的 API 设计和数据格式。
+通过自定义名称解析器，你可以极大地增强 goner/gin 处理 HTTP 请求参数的灵活性和能力，使其适应各种复杂的 API 设计和数据格式。
 
 
 ## 性能优化
 
 ### 延迟绑定机制
 
-Gone-Gin 的 HTTP 注入器采用延迟绑定机制，在应用启动时预编译参数解析函数，在请求处理时直接执行，避免了运行时的反射开销，提供了优秀的性能表现。
+goner/gin 的 HTTP 注入器采用延迟绑定机制，在应用启动时预编译参数解析函数，在请求处理时直接执行，避免了运行时的反射开销，提供了优秀的性能表现。
 
 ### 类型安全
 
