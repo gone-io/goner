@@ -4,8 +4,8 @@
 package mock
 
 import (
-	entity "examples/gin_xorm_vi
-	"github.com/gone-io/gone/v2"
+	entity "examples/gin_xorm_viper/internal/interface/entity"
+	"github.com/gone-
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -37,10 +37,10 @@ func (m *MockIUserLogin) EXPECT() *MockIUserLoginMockRecorder {
 }
 
 // GetUserIdFromToken mocks base method.
-func (m *MockIUserLogin) GetUserIdFromToken(token string) (int64, error) {
+func (m *MockIUserLogin) GetUserIdFromToken(token string) (uint64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserIdFromToken", token)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(uint64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -121,7 +121,7 @@ func (m *MockIUser) EXPECT() *MockIUserMockRecorder {
 }
 
 // GetUserById mocks base method.
-func (m *MockIUser) GetUserById(userId int64) (*entity.User, error) {
+func (m *MockIUser) GetUserById(userId uint64) (*entity.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserById", userId)
 	ret0, _ := ret[0].(*entity.User)

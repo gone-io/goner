@@ -59,7 +59,7 @@ func (s *iUser) Register(registerParam *entity.RegisterParam) (*entity.LoginResu
 	}, nil
 }
 
-func (s *iUser) GetUserIdFromToken(token string) (userId int64, err error) {
+func (s *iUser) GetUserIdFromToken(token string) (userId uint64, err error) {
 	userId, err = s.iUserToken.ParseToken(token)
 	if err != nil {
 		s.log.Warnf("parse token failed, token: %s, err: %v", token, err)
@@ -97,7 +97,7 @@ func (s *iUser) Logout(token string) error {
 	return s.iUserToken.DestroyToken(token)
 }
 
-func (s *iUser) GetUserById(userId int64) (*entity.User, error) {
+func (s *iUser) GetUserById(userId uint64) (*entity.User, error) {
 	var user entity.User
 	has, err := s.db.ID(userId).Get(&user)
 	if err != nil {

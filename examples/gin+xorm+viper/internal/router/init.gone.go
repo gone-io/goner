@@ -6,5 +6,6 @@ import "github.com/gone-io/gone/v2"
 func init() {
 	gone.
 		Load(&authRouter{}).
+		Load(&tokenParser{}).
 		Load(&pubRouter{})
 }

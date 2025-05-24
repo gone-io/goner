@@ -9,17 +9,17 @@ import (
 
 const UserIdKey = "user-id"
 
-func SetUserId(ctx *gin.Context, userId int64) {
+func SetUserId(ctx *gin.Context, userId uint64) {
 	ctx.Set(UserIdKey, userId)
 }
 
-func GetUserId(ctx *gin.Context) int64 {
+func GetUserId(ctx *gin.Context) uint64 {
 	value, exists := ctx.Get(UserIdKey)
 
 	if !exists {
 		panic(gone.ToError("user id not found in context"))
 	}
-	return value.(int64)
+	return value.(uint64)
 }
 
 func GetBearerToken(authorizationHeader string) (string, error) {
