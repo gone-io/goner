@@ -2,8 +2,12 @@ package entity
 
 import "time"
 
+type Token struct {
+	UserId uint64
+}
+
 type User struct {
-	Id       int64  `json:"id" xorm:"pk autoincr"`
+	Id       uint64 `json:"id" xorm:"pk autoincr"`
 	Username string `json:"username"`
 	Password string `json:"-"`
 

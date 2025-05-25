@@ -33,9 +33,8 @@ func (c *userCtr) Mount() gin.MountError {
 		})
 
 	c.a.
-		GET("/users/me", func(ctx *gin.Context) (any, error) {
-			userId := utils.GetUserId(ctx)
-			return c.iUser.GetUserById(userId)
+		GET("/users/me", func(token entity.Token) (any, error) {
+			return c.iUser.GetUserById(token.UserId)
 		}).
 		POST("/users/logout", func(in struct {
 			authorization string `gone:"http,header"`

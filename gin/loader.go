@@ -19,6 +19,6 @@ func Load(loader gone.Loader) error {
 		MustLoad(&SysMiddleware{}).
 		MustLoad(&proxy{}, gone.IsDefault(new(HandleProxyToGin))).
 		MustLoad(NewGinResponser()).
-		MustLoad(&httpInjector{})
+		MustLoadX(LoadGinHttpInjector)
 	return loader.Load(NewGinServer())
 }

@@ -1,20 +1,21 @@
 package gin
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
+	"github.com/gone-io/goner/gin/injector"
 	"reflect"
 	"time"
 )
 
 type proxy struct {
 	gone.Flag
-	log          gone.Logger       `gone:"*"`
-	funcInjector gone.FuncInjector `gone:"*"`
-	responser    Responser         `gone:"*"`
-	injector     HttInjector       `gone:"*"`
-	stat         bool              `gone:"config,server.proxy.stat,default=false"`
+	log          gone.Logger                              `gone:"*"`
+	funcInjector gone.FuncInjector                        `gone:"*"`
+	responser    Responser                                `gone:"*"`
+	injector     injector.DelayBindInjector[*gin.Context] `gone:"*"`
+	stat         bool                                     `gone:"config,server.proxy.stat,default=false"`
 }
 
 func (p *proxy) GonerName() string {
@@ -38,160 +39,40 @@ func (p *proxy) ProxyForMiddleware(handlers ...HandlerFunc) (arr []gin.HandlerFu
 	return arr
 }
 
-var ctxPtr *gin.Context
-var ctxPointType = reflect.TypeOf(ctxPtr)
-var ctxType = ctxPointType.Elem()
-
-var goneContextPtr *Context
-var goneContextPointType = reflect.TypeOf(goneContextPtr)
-var goneContextType = goneContextPointType.Elem()
-
-type placeholder struct {
-	Type reflect.Type
-}
-
-var placeholderType = reflect.TypeOf(placeholder{})
-
-type bindStructFuncAndType struct {
-	Fn   BindStructFunc
-	Type reflect.Type
-}
-
 func (p *proxy) proxyOne(x HandlerFunc, last bool) gin.HandlerFunc {
 	funcName := gone.GetFuncName(x)
+	prepare, err := p.injector.Prepare(x)
+	g.PanicIfErr(err)
 
-	switch f := x.(type) {
-	case func(*Context) (any, error):
-		return func(context *gin.Context) {
-			data, err := f(&Context{Context: context})
-			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
-		}
-	case func(*Context) error:
-		return func(context *gin.Context) {
-			err := f(&Context{Context: context})
-			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
-		}
-	case func(*Context):
-		return func(context *gin.Context) {
-			f(&Context{Context: context})
-			p.responser.ProcessResults(context, context.Writer, last, funcName)
-		}
-	case func(ctx *gin.Context):
-		return x.(func(ctx *gin.Context))
-
-	case func(ctx *gin.Context) (any, error):
-		return func(context *gin.Context) {
-			data, err := f(context)
-			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
-		}
-	case func(ctx *gin.Context) error:
-		return func(context *gin.Context) {
-			err := f(context)
-			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
-		}
-	case func():
-		return func(context *gin.Context) {
-			f()
-			p.responser.ProcessResults(context, context.Writer, last, funcName)
-		}
-	case func() (any, error):
-		return func(context *gin.Context) {
-			data, err := f()
-			p.responser.ProcessResults(context, context.Writer, last, funcName, data, err)
-		}
-	case func() error:
-		return func(context *gin.Context) {
-			err := f()
-			p.responser.ProcessResults(context, context.Writer, last, funcName, err)
-		}
-	default:
-		return p.buildProxyFn(x, funcName, last)
-	}
-}
-
-func (p *proxy) buildProxyFn(x HandlerFunc, funcName string, last bool) gin.HandlerFunc {
-	m := make(map[int]*bindStructFuncAndType)
-	args, err := p.funcInjector.InjectFuncParameters(
-		x,
-		func(pt reflect.Type, i int, injected bool) any {
-			switch pt {
-			case ctxPointType, ctxType, goneContextPointType, goneContextType:
-				return placeholder{
-					Type: pt,
-				}
-			}
-			p.injector.StartBindFuncs()
-			return nil
-		},
-		func(pt reflect.Type, i int, injected bool) any {
-			m[i] = &bindStructFuncAndType{
-				Fn:   p.injector.BindFuncs(),
-				Type: pt,
-			}
-			return nil
-		},
-	)
-
-	if err != nil {
-		err = gone.ToErrorWithMsg(err, fmt.Sprintf("build Proxy func for \033[31m%s\033[0m error:\n\n", funcName))
-		panic(err)
-	}
-
-	fv := reflect.ValueOf(x)
 	return func(context *gin.Context) {
 		if p.stat {
 			defer TimeStat(funcName+"-inject-proxy", time.Now(), p.log.Infof)
 		}
-
-		parameters := make([]reflect.Value, 0, len(args))
-		for i, arg := range args {
-			switch arg.Type() {
-			case placeholderType:
-				holder := arg.Interface().(placeholder)
-				switch holder.Type {
-				case ctxPointType:
-					parameters = append(parameters, reflect.ValueOf(context))
-				case ctxType:
-					parameters = append(parameters, reflect.ValueOf(context).Elem())
-				case goneContextPointType:
-					parameters = append(parameters, reflect.ValueOf(&Context{Context: context}))
-				case goneContextType:
-					parameters = append(parameters, reflect.ValueOf(Context{Context: context}))
-				}
-			default:
-				if f, ok := m[i]; ok {
-					parameter, err := f.Fn(context, arg)
-					if err != nil {
-						p.responser.Failed(context, err)
-						return
-					}
-					parameters = append(parameters, parameter)
-				} else {
-					parameters = append(parameters, arg)
-				}
-			}
+		values, err := prepare(context)
+		if err != nil {
+			p.responser.Failed(context, err)
+			return
 		}
+		p.resultProcess(values, context, funcName, last)
+	}
+}
 
-		//call the func x
-		values := fv.Call(parameters)
-
-		var results []any
-		for i := 0; i < len(values); i++ {
-			arg := values[i]
-
-			if arg.Kind() == reflect.Interface {
-				elem := arg.Elem()
-				switch elem.Kind() {
-				case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
-					if elem.IsNil() {
-						results = append(results, nil)
-						continue
-					}
-				default:
-				}
+func (p *proxy) resultProcess(values []reflect.Value, context *gin.Context, funcName string, last bool) {
+	var results []any
+	for i := 0; i < len(values); i++ {
+		arg := values[i]
+		switch arg.Kind() {
+		case reflect.Invalid:
+			results = append(results, nil)
+		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
+			if arg.IsNil() {
+				results = append(results, nil)
+				continue
 			}
+			fallthrough
+		default:
 			results = append(results, arg.Interface())
 		}
-		p.responser.ProcessResults(context, context.Writer, last, funcName, results...)
 	}
+	p.responser.ProcessResults(context, context.Writer, last, funcName, results...)
 }

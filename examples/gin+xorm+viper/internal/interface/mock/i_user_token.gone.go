@@ -36,7 +36,7 @@ func (m *MockIUserToken) EXPECT() *MockIUserTokenMockRecorder {
 }
 
 // CreateToken mocks base method.
-func (m *MockIUserToken) CreateToken(userId int64) (string, error) {
+func (m *MockIUserToken) CreateToken(userId uint64) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateToken", userId)
 	ret0, _ := ret[0].(string)
@@ -65,10 +65,10 @@ func (mr *MockIUserTokenMockRecorder) DestroyToken(token any) *gomock.Call {
 }
 
 // ParseToken mocks base method.
-func (m *MockIUserToken) ParseToken(token string) (int64, error) {
+func (m *MockIUserToken) ParseToken(token string) (uint64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ParseToken", token)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(uint64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

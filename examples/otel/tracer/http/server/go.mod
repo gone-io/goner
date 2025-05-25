@@ -3,7 +3,7 @@ module github.com/gone-io/goner/otel/tracer/http/server
 go 1.24.1
 
 require (
-	github.com/gin-gonic/gin v1.10.0
+	github.com/gin-gonic/gin v1.10.1
 	github.com/gone-io/gone/v2 v2.2.2
 	github.com/gone-io/goner/g v1.2.1
 	github.com/gone-io/goner/gin v1.2.1
