@@ -43,6 +43,8 @@
 ### Message Queue
 - [goner/mq/kafka](./mq/kafka) - Provides Kafka integration
 - [goner/mq/rocket](./mq/rocket) - Provides RocketMQ integration
+- [goner/mq/rabbitmq](./mq/rabbitmq) - Provides RabbitMQ integration
+- [goner/mq/mqtt](./mq/mqtt) - Provides MQTT integration
 
 ### Scheduling
 - [goner/schedule](./schedule) - Scheduled task component

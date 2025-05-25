@@ -40,6 +40,8 @@ Goner 是 [Gone](https://github.com/gone-io/gone) 框架的官方组件库，提
 ### 消息队列
 - [goner/mq/kafka](./mq/kafka) - 提供Kafka的接入
 - [goner/mq/rocket](./mq/rocket) - 提供RocketMQ的接入
+- [goner/mq/rabbitmq](./mq/rabbitmq) - 提供RabbitMQ的接入
+- [goner/mq/mqtt](./mq/mqtt) - 提供MQTT的接入
 
 ### 搜索
 - [goner/es](./es) - Elasticsearch 客户端封装，提供全文搜索功能

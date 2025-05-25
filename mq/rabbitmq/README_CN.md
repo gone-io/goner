@@ -1,3 +1,7 @@
+<p>
+    <a href="README.md">English</a>&nbsp ｜&nbsp 中文
+</p>
+
 # goner/mq/rabbitmq 组件 和 Gone RabbitMQ 集成
 
 本包为 Gone 应用程序提供 RabbitMQ 集成功能，基于官方 RabbitMQ Go 客户端库提供简单易用的 RabbitMQ 客户端配置和管理。
