@@ -4,9 +4,9 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/g v1.2.1
-	github.com/gone-io/goner/otel v1.2.1 // indirect
-	github.com/gone-io/goner/otel/meter v1.2.1
+	github.com/gone-io/goner/g v1.3.0
+	github.com/gone-io/goner/otel v1.3.0 // indirect
+	github.com/gone-io/goner/otel/meter v1.3.0
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v1.35.0
 	go.opentelemetry.io/otel/sdk/metric v1.35.0
 )
