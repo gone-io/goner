@@ -4,13 +4,13 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/g v1.2.1
-	github.com/gone-io/goner/gin v1.2.1
-	github.com/gone-io/goner/tracer v1.2.1
-	github.com/gone-io/goner/tracer/gid v1.2.1 // indirect
-	github.com/gone-io/goner/tracer/gls v1.2.1 // indirect
-	github.com/gone-io/goner/viper v1.2.1
-	github.com/gone-io/goner/zap v1.2.1
+	github.com/gone-io/goner/g v1.3.0
+	github.com/gone-io/goner/gin v1.3.0
+	github.com/gone-io/goner/tracer v1.3.0
+	github.com/gone-io/goner/tracer/gid v1.3.0 // indirect
+	github.com/gone-io/goner/tracer/gls v1.3.0 // indirect
+	github.com/gone-io/goner/viper v1.3.0
+	github.com/gone-io/goner/zap v1.3.0
 )
 
 replace (

@@ -4,8 +4,8 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/grpc v1.2.1
-	github.com/gone-io/goner/viper v1.2.1
+	github.com/gone-io/goner/grpc v1.3.0
+	github.com/gone-io/goner/viper v1.3.0
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.6
 )
@@ -22,7 +22,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/gone-io/goner/g v1.2.1 // indirect
+	github.com/gone-io/goner/g v1.3.0 // indirect
 	github.com/magiconair/properties v1.8.9 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect

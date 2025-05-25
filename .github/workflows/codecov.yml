@@ -25,8 +25,6 @@ jobs:
         go-version:
           - '1.24'
     services:
-      # Etcd service.
-      # docker run -d --name etcd -p 2379:2379 -e ALLOW_NONE_AUTHENTICATION=yes bitnami/etcd:3.4.24
       etcd:
         image: bitnami/etcd:3.4.24
         env:
@@ -49,6 +47,34 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      kafka:
+        image: docker.io/bitnami/kafka:4.0
+        env:
+          KAFKA_CFG_NODE_ID: 0
+          KAFKA_CFG_PROCESS_ROLES: controller,broker
+          KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:9093
+          KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+          KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+          KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+          KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+          KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+          KAFKA_CREATE_TOPICS: "my-topic:1:1,another-topic:2:1"
+        ports:
+          - 9092:9092
+        options: >-
+          --health-cmd "kafka-topics.sh --bootstrap-server localhost:9092 --list"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      rabbitmq:
+        image: rabbitmq:management
+        ports:
+          - 5672:5672
+        options:
+          --health-cmd "rabbitmqctl status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -56,8 +82,10 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Install SQLite
         run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
+
       - name: Start Consul Containers
         run:  docker compose -f ".github/workflows/consul/docker-compose.yml" up -d --build
+
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage

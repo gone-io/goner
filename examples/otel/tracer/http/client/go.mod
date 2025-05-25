@@ -4,10 +4,10 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/g v1.2.1
-	github.com/gone-io/goner/otel/tracer/http v1.2.1
-	github.com/gone-io/goner/urllib v1.2.1
-	github.com/gone-io/goner/viper v1.2.1
+	github.com/gone-io/goner/g v1.3.0
+	github.com/gone-io/goner/otel/tracer/http v1.3.0
+	github.com/gone-io/goner/urllib v1.3.0
+	github.com/gone-io/goner/viper v1.3.0
 	go.opentelemetry.io/otel v1.35.0
 )
 
@@ -31,8 +31,8 @@ require (
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/gone-io/goner/otel v1.2.1 // indirect
-	github.com/gone-io/goner/otel/tracer v1.2.1 // indirect
+	github.com/gone-io/goner/otel v1.3.0 // indirect
+	github.com/gone-io/goner/otel/tracer v1.3.0 // indirect
 	github.com/google/pprof v0.0.0-20250423184734-337e5dd93bb4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3 // indirect
