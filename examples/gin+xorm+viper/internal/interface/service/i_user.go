@@ -8,9 +8,9 @@ type IUserLogin interface {
 	Login(loginParam *entity.LoginParam) (*entity.LoginResult, error)
 	Logout(token string) error
 
-	GetUserIdFromToken(token string) (userId int64, err error)
+	GetUserIdFromToken(token string) (userId uint64, err error)
 }
 
 type IUser interface {
-	GetUserById(userId int64) (*entity.User, error)
+	GetUserById(userId uint64) (*entity.User, error)
 }
