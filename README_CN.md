@@ -37,6 +37,10 @@ Goner 是 [Gone](https://github.com/gone-io/gone) 框架的官方组件库，提
 ### 缓存与消息
 - [goner/redis](./redis) - Redis 客户端封装，提供缓存、分布式锁等功能
 
+### 消息队列
+- [goner/mq/kafka](./mq/kafka) - 提供Kafka的接入
+- [goner/mq/rocket](./mq/rocket) - 提供RocketMQ的接入
+
 ### 搜索
 - [goner/es](./es) - Elasticsearch 客户端封装，提供全文搜索功能
 

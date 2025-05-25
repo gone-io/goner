@@ -40,6 +40,10 @@
 ### Search
 - [goner/es](./es) - Elasticsearch client wrapper, providing full-text search functionality
 
+### Message Queue
+- [goner/mq/kafka](./mq/kafka) - Provides Kafka integration
+- [goner/mq/rocket](./mq/rocket) - Provides RocketMQ integration
+
 ### Scheduling
 - [goner/schedule](./schedule) - Scheduled task component
 
