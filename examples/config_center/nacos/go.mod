@@ -3,7 +3,7 @@ module examples/config_center/nacos
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/gone/v2 v2.2.4
 	github.com/gone-io/goner/nacos v1.3.1
 )
 

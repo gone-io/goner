@@ -13,7 +13,7 @@ replace (
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/gone/v2 v2.2.4
 	github.com/gone-io/goner/g v1.3.1
 	github.com/gone-io/goner/otel/meter/prometheus/gin v1.3.1
 	go.opentelemetry.io/otel v1.36.0

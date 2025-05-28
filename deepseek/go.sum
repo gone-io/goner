@@ -2,8 +2,8 @@ github.com/cohesion-org/deepseek-go v1.2.10 h1:j/X0CHFJ5z36r3r4oBPMHiy3SIxd9wLnf
 github.com/cohesion-org/deepseek-go v1.2.10/go.mod h1:nPPJT25HSnmxaQJCC4ZFAdbhKjoXN0GbZ4dSsHYxhG0=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/gone-io/gone/v2 v2.2.3 h1:YVV/52S4rIV7xrzV5xxqm4HiNMpf1N2/NQVy/fb/lHw=
-github.com/gone-io/gone/v2 v2.2.3/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
+github.com/gone-io/gone/v2 v2.2.4 h1:RhSmoEMMhgA5BTjY6G2h8NVMxEJdRQA2rEDIur9YJsA=
+github.com/gone-io/gone/v2 v2.2.4/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRIccs7FGNTlIRMkT8wgtp5eCXdBlqhYGL6U=

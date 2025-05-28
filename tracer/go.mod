@@ -3,7 +3,7 @@ module github.com/gone-io/goner/tracer
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/gone/v2 v2.2.4
 	github.com/gone-io/goner/g v1.3.1
 	github.com/gone-io/goner/tracer/gid v1.3.1-00010101000000-000000000000
 	github.com/gone-io/goner/tracer/gls v1.3.1-00010101000000-000000000000

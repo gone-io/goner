@@ -3,7 +3,7 @@ module example
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/gone/v2 v2.2.4
 	github.com/gone-io/goner/gin v1.3.1
 )
 

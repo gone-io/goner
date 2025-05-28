@@ -3,7 +3,7 @@ module github.com/gone-io/goner/otel/meter/http
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/gone/v2 v2.2.4
 	github.com/gone-io/goner/g v1.3.1
 	github.com/gone-io/goner/otel v1.3.1 // indirect
 	github.com/gone-io/goner/otel/meter v1.3.1
