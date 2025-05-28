@@ -3,10 +3,10 @@ module examples/grpc_use_discovery
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/grpc v1.3.0
-	github.com/gone-io/goner/nacos v1.3.0
-	github.com/gone-io/goner/viper v1.3.0
+	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/goner/grpc v1.3.1
+	github.com/gone-io/goner/nacos v1.3.1
+	github.com/gone-io/goner/viper v1.3.1
 	google.golang.org/grpc v1.71.1
 	google.golang.org/protobuf v1.36.6
 )
@@ -40,7 +40,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/gone-io/goner/g v1.3.0 // indirect
+	github.com/gone-io/goner/g v1.3.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -50,7 +50,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.7 // indirect
 	github.com/opentracing/opentracing-go v1.2.1-0.20220228012449-10b1cf09e00b // indirect
-	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.21.1 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
@@ -72,11 +72,11 @@ require (
 	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
+	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

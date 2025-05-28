@@ -5,8 +5,8 @@ go 1.24.1
 require (
 	github.com/elastic/go-elasticsearch/v8 v8.17.1
 	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/es v1.3.0
-	github.com/gone-io/goner/viper v1.3.0
+	github.com/gone-io/goner/es v1.3.1
+	github.com/gone-io/goner/viper v1.3.1
 )
 
 replace github.com/gone-io/goner/es => ../../es
@@ -35,7 +35,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

@@ -79,6 +79,8 @@ func Register(loader gone.Loader) error {
 		return global.Logger(name), nil
 	}))
 
-	loader.MustLoad(h)
-	return otelHelper.HelpSetPropagator(loader)
+	loader.
+		MustLoad(h).
+		MustLoadX(otelHelper.HelpSetPropagator)
+	return nil
 }

@@ -3,13 +3,13 @@ module examples/http_use_discovery
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.2
+	github.com/gone-io/gone/v2 v2.2.3
 	github.com/gone-io/goner v1.0.9
-	github.com/gone-io/goner/balancer v1.3.0
-	github.com/gone-io/goner/gin v1.3.0
-	github.com/gone-io/goner/nacos v1.3.0
-	github.com/gone-io/goner/urllib v1.3.0
-	github.com/gone-io/goner/viper v1.3.0
+	github.com/gone-io/goner/balancer v1.3.1
+	github.com/gone-io/goner/gin v1.3.1
+	github.com/gone-io/goner/nacos v1.3.1
+	github.com/gone-io/goner/urllib v1.3.1
+	github.com/gone-io/goner/viper v1.3.1
 )
 
 replace (
@@ -48,25 +48,25 @@ require (
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
-	github.com/gin-contrib/sse v1.0.0 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.9 // indirect
+	github.com/gin-contrib/sse v1.1.0 // indirect
 	github.com/gin-gonic/gin v1.10.1 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.25.0 // indirect
+	github.com/go-playground/validator/v10 v10.26.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/gone-io/goner/g v1.3.0 // indirect
-	github.com/gone-io/goner/tracer v1.3.0 // indirect
-	github.com/gone-io/goner/tracer/gid v1.3.0 // indirect
-	github.com/gone-io/goner/tracer/gls v1.3.0 // indirect
-	github.com/gone-io/goner/zap v1.3.0 // indirect
+	github.com/gone-io/goner/g v1.3.1 // indirect
+	github.com/gone-io/goner/tracer v1.3.1 // indirect
+	github.com/gone-io/goner/tracer/gid v1.3.1 // indirect
+	github.com/gone-io/goner/tracer/gls v1.3.1 // indirect
+	github.com/gone-io/goner/zap v1.3.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/pprof v0.0.0-20250317173921-a4b03ec1a45e // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -88,7 +88,7 @@ require (
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.7 // indirect
 	github.com/onsi/ginkgo/v2 v2.23.3 // indirect
 	github.com/opentracing/opentracing-go v1.2.1-0.20220228012449-10b1cf09e00b // indirect
-	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/petermattis/goid v0.0.0-20250319124200-ccd6737f222a // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.21.1 // indirect
@@ -107,7 +107,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
-	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/ugorji/go/codec v1.2.14 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/bridges/otelzap v0.10.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.60.0 // indirect
@@ -120,14 +120,14 @@ require (
 	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/arch v0.15.0 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/arch v0.17.0 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
 	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sync v0.12.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	golang.org/x/tools v0.31.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect

@@ -25,7 +25,10 @@ func (c *controller) Mount() (err g.MountError) {
 
 // Load prometheus http handler for metrics point
 func Load(loader gone.Loader) error {
-	loader.MustLoad(&controller{})
-	g.PanicIfErr(gin.Load(loader))
-	return prometheus.Load(loader)
+	loader.
+		MustLoad(&controller{}).
+		MustLoadX(gin.Load).
+		MustLoadX(prometheus.Load)
+
+	return nil
 }

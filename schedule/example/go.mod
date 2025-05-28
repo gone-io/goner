@@ -3,10 +3,10 @@ module example
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/redis v1.3.0
-	github.com/gone-io/goner/schedule v1.3.0
-	github.com/gone-io/goner/viper v1.3.0
+	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/goner/redis v1.3.1
+	github.com/gone-io/goner/schedule v1.3.1
+	github.com/gone-io/goner/viper v1.3.1
 )
 
 replace (
@@ -16,7 +16,7 @@ replace (
 	github.com/gone-io/goner/viper => ../../viper
 )
 
-require github.com/gone-io/goner/g v1.3.0 // indirect
+require github.com/gone-io/goner/g v1.3.1 // indirect
 
 require (
 	github.com/bytedance/sonic v1.13.2 // indirect
@@ -46,8 +46,8 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/arch v0.16.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/arch v0.17.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
