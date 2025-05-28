@@ -1,4 +1,4 @@
-VERSION := 1.3.0
+VERSION := 1.3.1
 
 
 # make bump-version VERSION=1.0.9
@@ -23,4 +23,8 @@ tidy:
 
 up:
 	make bump-version
+	make tidy
+
+gone-up:
+	@find . -name go.mod  | xargs -n1 dirname | xargs -L1 bash -c 'cd "$$0" && echo "Processing directory: $$0" && go get -u github.com/gone-io/gone'
 	make tidy

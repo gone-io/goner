@@ -84,6 +84,8 @@ func Provide(_ string, i struct {
 
 // Load for openTelemetry http metric.Exporter
 func Load(loader gone.Loader) error {
-	loader.MustLoad(gone.WrapFunctionProvider(Provide))
-	return meter.Register(loader)
+	loader.
+		MustLoad(gone.WrapFunctionProvider(Provide)).
+		MustLoadX(meter.Register)
+	return nil
 }

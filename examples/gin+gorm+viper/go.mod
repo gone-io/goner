@@ -3,14 +3,14 @@ module examples/gin_gorm_viper
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.2
-	github.com/gone-io/goner/g v1.3.0
-	github.com/gone-io/goner/gin v1.3.0
-	github.com/gone-io/goner/gorm v1.3.0
-	github.com/gone-io/goner/gorm/mysql v1.3.0
-	github.com/gone-io/goner/tracer/gls v1.3.0
-	github.com/gone-io/goner/viper v1.3.0
-	github.com/gone-io/goner/zap v1.3.0
+	github.com/gone-io/gone/v2 v2.2.4
+	github.com/gone-io/goner/g v1.3.1
+	github.com/gone-io/goner/gin v1.3.1
+	github.com/gone-io/goner/gorm v1.3.1
+	github.com/gone-io/goner/gorm/mysql v1.3.1
+	github.com/gone-io/goner/tracer/gls v1.3.1
+	github.com/gone-io/goner/viper v1.3.1
+	github.com/gone-io/goner/zap v1.3.1
 	gorm.io/gorm v1.26.0
 )
 
@@ -63,7 +63,7 @@ require (
 	github.com/spf13/viper v1.20.1 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
-	github.com/ugorji/go/codec v1.2.12 // indirect
+	github.com/ugorji/go/codec v1.2.14 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/bridges/otelzap v0.10.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.60.0 // indirect
@@ -74,11 +74,11 @@ require (
 	go.uber.org/mock v0.5.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/arch v0.16.0 // indirect
-	golang.org/x/crypto v0.37.0 // indirect
-	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/arch v0.17.0 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
+	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect

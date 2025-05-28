@@ -6,14 +6,14 @@ require (
 	github.com/bytedance/sonic v1.13.2
 	github.com/goccy/go-json v0.10.5
 	github.com/gomodule/redigo v1.9.2
-	github.com/gone-io/gone/v2 v2.2.2
+	github.com/gone-io/gone/v2 v2.2.4
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.2
 )
 
-require github.com/gone-io/goner/g v1.3.0
+require github.com/gone-io/goner/g v1.3.1
 
 replace github.com/gone-io/goner/g => ../g
 
@@ -28,8 +28,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
-	golang.org/x/arch v0.15.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/arch v0.17.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

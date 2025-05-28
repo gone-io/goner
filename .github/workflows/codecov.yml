@@ -35,6 +35,14 @@ jobs:
         image: redis
         ports:
           - 6379:6379
+      consul:
+        image: consul:1.15
+        ports:
+          - "8500:8500"
+          - "8600:8600/tcp"
+          - "8600:8600/udp"
+        options: --health-cmd "curl -f http://localhost:8500/v1/status/leader || exit 1"
+
       elasticsearch:
         image: elasticsearch:8.12.1
         env:
@@ -76,16 +84,12 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
+      - name: Install SQLite
+        run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Install SQLite
-        run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
-
-      - name: Start Consul Containers
-        run:  docker compose -f ".github/workflows/consul/docker-compose.yml" up -d --build
-
       - name: Gather dependencies
         run: go mod download
       - name: Run coverage

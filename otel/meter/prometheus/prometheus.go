@@ -15,6 +15,8 @@ func Provide(_ string, _ struct{}) (metric.Reader, error) {
 
 // Load for openTelemetry prometheus metric.Reader
 func Load(loader gone.Loader) error {
-	loader.MustLoad(gone.WrapFunctionProvider(Provide))
-	return meter.Register(loader)
+	loader.
+		MustLoad(gone.WrapFunctionProvider(Provide)).
+		MustLoadX(meter.Register)
+	return nil
 }

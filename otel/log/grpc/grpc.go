@@ -85,6 +85,8 @@ func Provide(_ string, i struct {
 
 // Load for openTelemetry grpc log.Exporter
 func Load(loader gone.Loader) error {
-	loader.MustLoad(gone.WrapFunctionProvider(Provide))
-	return logHelper.Register(loader)
+	loader.
+		MustLoad(gone.WrapFunctionProvider(Provide)).
+		MustLoadX(logHelper.Register)
+	return nil
 }

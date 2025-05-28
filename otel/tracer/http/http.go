@@ -85,6 +85,8 @@ func Provide(_ string, i struct {
 
 // Load for openTelemetry http trace.SpanExporter
 func Load(loader gone.Loader) error {
-	loader.MustLoad(gone.WrapFunctionProvider(Provide))
-	return tracer.Register(loader)
+	loader.
+		MustLoad(gone.WrapFunctionProvider(Provide)).
+		MustLoadX(tracer.Register)
+	return nil
 }

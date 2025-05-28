@@ -7,7 +7,8 @@ services:
       context: .
       args:
         ENVIRONMENT: ${ENVIRONMENT}
-
+    ports:
+      - "8080:8080"
     healthcheck: # 添加健康检测
       test: [ "CMD", "curl", "-f", "http://localhost:8080/api/health-check" ]
       interval: 30s

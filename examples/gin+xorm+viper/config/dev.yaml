@@ -1,0 +1,2 @@
+database:
+  dsn: root:123456@tcp(mysql:3306)/demo?charset=utf8mb4&loc=Local

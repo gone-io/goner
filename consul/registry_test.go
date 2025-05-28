@@ -2,6 +2,7 @@ package consul
 
 import (
 	"testing"
+	"time"
 
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
@@ -34,6 +35,7 @@ func TestRegistryLoad(t *testing.T) {
 					assert.Nil(t, stop())
 				}()
 				go func() {
+					time.Sleep(1 * time.Second)
 					var err = r.Deregister(service1)
 					assert.Nil(t, err)
 				}()

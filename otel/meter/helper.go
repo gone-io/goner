@@ -72,6 +72,8 @@ func Register(loader gone.Loader) error {
 	loader.MustLoad(gone.WrapFunctionProvider(func(_ string, _ struct{}) (g.IsOtelMeterLoaded, error) {
 		return true, nil
 	}))
-	loader.MustLoad(h)
-	return otelHelper.HelpSetPropagator(loader)
+	loader.
+		MustLoad(h).
+		MustLoadX(otelHelper.HelpSetPropagator)
+	return nil
 }
