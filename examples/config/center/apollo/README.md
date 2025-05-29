@@ -44,15 +44,15 @@ After the service starts, you can access the Apollo management interface at:
 1. Log in to Apollo Portal
 2. Create application `user-center` (application ID must match `apollo.appId` in the configuration file)
 
-   ![Create Application](./images/1.create-application.png)
+   ![Create Application](images/1.create-application.png)
 
 3. Create two namespaces:
    - `application` (default namespace)
    - `database.yaml` (custom namespace, YAML format)
 
-   ![Set Default Namespace](./images/2.set-default-namespace.png)
+   ![Set Default Namespace](images/2.set-default-namespace.png)
 
-   ![Create Database Namespace](./images/3.create-database-namespace.png)
+   ![Create Database Namespace](images/3.create-database-namespace.png)
 
 4. Add the following configuration items in the `application` namespace:
    ```properties
@@ -67,11 +67,11 @@ After the service starts, you can access the Apollo management interface at:
      password: config-demo-password
    ```
 
-   ![Edit and Release Database Namespace](./images/4.edit-and-release-database-ns.png)
+   ![Edit and Release Database Namespace](images/4.edit-and-release-database-ns.png)
 
 6. Release the configuration (click the "Release" button)
 
-   ![Set Secret](./images/5.set-secret.png)
+   ![Set Secret](images/5.set-secret.png)
 
 > Tip: This example provides preset configuration files in the `config-files` directory that can be directly imported into Apollo.
 

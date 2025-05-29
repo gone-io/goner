@@ -1,15 +1,16 @@
-module examples/config_center/etcd
+module examples/config/center/etcd
 
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.2
+	github.com/gone-io/gone/v2 v2.2.4
+	github.com/gone-io/goner/g v1.3.1
 	github.com/gone-io/goner/viper/remote v1.3.1
 )
 
 replace (
-	github.com/gone-io/goner/viper => ../../../viper
-	github.com/gone-io/goner/viper/remote => ../../../viper/remote
+	github.com/gone-io/goner/viper => ./../../../../viper
+	github.com/gone-io/goner/viper/remote => ./../../../../viper/remote
 )
 
 require (

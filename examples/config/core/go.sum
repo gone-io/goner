@@ -1,0 +1,4 @@
+github.com/gone-io/gone/v2 v2.2.4 h1:RhSmoEMMhgA5BTjY6G2h8NVMxEJdRQA2rEDIur9YJsA=
+github.com/gone-io/gone/v2 v2.2.4/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
+go.uber.org/mock v0.5.2 h1:LbtPTcP8A5k9WPXj54PPPbjcI4Y6lhyOZXn+VS7wNko=
+go.uber.org/mock v0.5.2/go.mod h1:wLlUxC2vVTPTaE3UD51E0BGOAElKrILxhVSDYQLld5o=

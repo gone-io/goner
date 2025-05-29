@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gone-io/gone/v2"
-	"github.com/gone-io/goner/apollo"
 	"time"
 )
 
@@ -14,7 +13,6 @@ type Database struct {
 
 func main() {
 	gone.
-		NewApp(apollo.Load).
 		Run(func(params struct {
 			serverName string `gone:"config,server.name"`
 			serverPort int    `gone:"config,server.port"`
