@@ -1,0 +1,9 @@
+app:
+  name: my-awesome-app
+  port: 9000
+  env: production
+  database:
+      host: localhost
+      port: 5432
+      username: admin
+      password: secret123

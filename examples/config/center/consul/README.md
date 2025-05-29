@@ -181,5 +181,5 @@ during runtime.
 ## Related Links
 
 - [Gone Framework](https://github.com/gone-io/gone)
-- [Goner Viper/remote Component](../../../viper/remote)
+- [Goner Viper/remote Component](../../../../viper/remote)
 - [Consul Official Documentation](https://www.consul.io/docs)

@@ -176,5 +176,5 @@ func main() {
 ## 相关链接
 
 - [Gone 框架](https://github.com/gone-io/gone)
-- [Goner Viper/remote 组件](../../../viper/remote)
+- [Goner Viper/remote 组件](../../../../viper/remote)
 - [Consul 官方文档](https://www.consul.io/docs)

@@ -44,15 +44,15 @@ docker-compose up -d
 1. 登录Apollo Portal
 2. 创建应用`user-center`（应用ID需与配置文件中的`apollo.appId`一致）
 
-   ![创建应用](./images/1.create-application.png)
+   ![创建应用](images/1.create-application.png)
 
 3. 创建两个命名空间：
    - `application`（默认命名空间）
    - `database.yaml`（自定义命名空间，YAML格式）
 
-   ![设置默认命名空间](./images/2.set-default-namespace.png)
+   ![设置默认命名空间](images/2.set-default-namespace.png)
 
-   ![创建数据库命名空间](./images/3.create-database-namespace.png)
+   ![创建数据库命名空间](images/3.create-database-namespace.png)
 
 4. 在`application`命名空间中添加以下配置项：
    ```properties
@@ -67,11 +67,11 @@ docker-compose up -d
      password: config-demo-password
    ```
 
-   ![编辑和发布数据库命名空间](./images/4.edit-and-release-database-ns.png)
+   ![编辑和发布数据库命名空间](images/4.edit-and-release-database-ns.png)
 
 6. 发布配置（点击「发布」按钮）
 
-   ![设置密钥](./images/5.set-secret.png)
+   ![设置密钥](images/5.set-secret.png)
 
 > 提示：本示例在`config-files`目录中提供了预设的配置文件，可以直接导入到Apollo中。
 
