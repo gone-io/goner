@@ -3,7 +3,7 @@ module github.com/gone-io/goner/otel
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.3
+	github.com/gone-io/gone/v2 v2.2.5
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel v1.36.0
 	go.opentelemetry.io/otel/sdk v1.36.0

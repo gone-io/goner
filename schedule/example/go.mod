@@ -3,7 +3,7 @@ module example
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.4
+	github.com/gone-io/gone/v2 v2.2.5
 	github.com/gone-io/goner/redis v1.3.1
 	github.com/gone-io/goner/schedule v1.3.1
 	github.com/gone-io/goner/viper v1.3.1
@@ -19,7 +19,7 @@ replace (
 require github.com/gone-io/goner/g v1.3.1 // indirect
 
 require (
-	github.com/bytedance/sonic v1.13.2 // indirect
+	github.com/bytedance/sonic v1.13.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect

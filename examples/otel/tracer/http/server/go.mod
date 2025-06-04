@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/gone-io/gone/v2 v2.2.4
+	github.com/gone-io/gone/v2 v2.2.5
 	github.com/gone-io/goner/g v1.3.1
 	github.com/gone-io/goner/gin v1.3.1
 	github.com/gone-io/goner/otel/tracer/http v1.3.1
@@ -22,7 +22,7 @@ replace (
 )
 
 require (
-	github.com/bytedance/sonic v1.13.2 // indirect
+	github.com/bytedance/sonic v1.13.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.2 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect

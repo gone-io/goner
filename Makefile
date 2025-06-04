@@ -26,5 +26,5 @@ up:
 	make tidy
 
 gone-up:
-	@find . -name go.mod  | xargs -n1 dirname | xargs -L1 bash -c 'cd "$$0" && echo "Processing directory: $$0" && go get -u github.com/gone-io/gone'
+	@find . -name go.mod  | xargs -n1 dirname | xargs -L1 bash -c 'cd "$$0" && echo "Processing directory: $$0" && go get -u github.com/gone-io/gone/v2'
 	make tidy
