@@ -4,6 +4,7 @@ import (
 	"github.com/apolloconfig/agollo/v4/storage"
 	"github.com/gone-io/gone/v2"
 	"github.com/gone-io/goner/g"
+	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/viper"
 	"strings"
 )
@@ -40,6 +41,10 @@ func (c *changeListener) SetViper(v *viper.Viper) {
 func (c *changeListener) AddViper(namespace string, v *viper.Viper) {
 	c.vipers = append(c.vipers, v)
 	c.vipersMap[namespace] = v
+}
+
+func compare(a, b any) (equal bool) {
+	return cmp.Equal(a, b)
 }
 
 func (c *changeListener) OnChange(event *storage.ChangeEvent) {
@@ -85,7 +90,7 @@ func (c *changeListener) OnChange(event *storage.ChangeEvent) {
 	for key, fn := range c.watchMap {
 		oldVal := oldValue[key]
 		newVal := c.viper.Get(key)
-		if oldVal != newVal {
+		if !compare(oldVal, newVal) {
 			fn(oldVal, newVal)
 		}
 	}
