@@ -1,6 +1,7 @@
 package apollo
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apolloconfig/agollo/v4"
@@ -17,7 +18,7 @@ func TestApolloConfigureInitMethod(t *testing.T) {
 	// Mock dependencies
 	mockClient := NewMockClient(ctrl)
 	mockCache := NewMockCacheInterface(ctrl)
-	mockLocalConfigure := NewMockConfigure(ctrl)
+	mockLocalConfigure := gone.NewMockConfigure(ctrl)
 	mockViper := originViper.New()
 
 	// Mock behavior
@@ -70,10 +71,7 @@ func TestApolloConfigureInitMethod(t *testing.T) {
 		}).AnyTimes()
 		mockClient.EXPECT().AddChangeListener(gomock.Any()).Times(1)
 
-		err := configure.Init()
-		if err != nil {
-			t.Errorf("Expected no error, got %v", err)
-		}
+		configure.Init()
 	})
 
 	t.Run("success case without watch", func(t *testing.T) {
@@ -91,10 +89,7 @@ func TestApolloConfigureInitMethod(t *testing.T) {
 			f("key2", "value2")
 		}).AnyTimes()
 
-		err := configure.Init()
-		if err != nil {
-			t.Errorf("Expected no error, got %v", err)
-		}
+		configure.Init()
 	})
 
 	t.Run("error case - client initialization fails", func(t *testing.T) {
@@ -111,9 +106,10 @@ func TestApolloConfigureInitMethod(t *testing.T) {
 			changeListener: &changeListener{},
 		}
 
-		err := configure.Init()
-		if err == nil {
-			t.Error("Expected error, got nil")
-		}
+		err := gone.SafeExecute(func() error {
+			configure.Init()
+			return nil
+		})
+		assert.Error(t, err)
 	})
 }

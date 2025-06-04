@@ -1,6 +1,9 @@
 package apollo
 
 import (
+	"github.com/apolloconfig/agollo/v4/agcache"
+	"github.com/apolloconfig/agollo/v4/storage"
+	"go.uber.org/mock/gomock"
 	"testing"
 
 	"github.com/apolloconfig/agollo/v4"
@@ -97,4 +100,116 @@ func TestApolloConfigureInit(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_apolloConfigure_Notify(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	var l storage.ChangeListener
+
+	mockClient := NewMockClient(controller)
+	mockClient.EXPECT().AddChangeListener(gomock.Any()).DoAndReturn(func(listener storage.ChangeListener) {
+		l = listener
+	})
+
+	applicationCache := NewMockCacheInterface(controller)
+	applicationCache.EXPECT().Range(gomock.Any()).DoAndReturn(func(fn func(key, value any) bool) {
+		fn("test.key", "test.value1")
+	})
+
+	testCache := NewMockCacheInterface(controller)
+	testCache.EXPECT().Range(gomock.Any()).DoAndReturn(func(fn func(key, value any) bool) {
+		fn("test.key", "test.value2")
+	})
+
+	mockClient.EXPECT().GetConfigCache(gomock.Any()).DoAndReturn(func(key string) agcache.CacheInterface {
+		if key == "application" {
+			return applicationCache
+		}
+		return testCache
+	}).Times(2)
+
+	startWithConfig = func(loadAppConfig func() (*config.AppConfig, error)) (agollo.Client, error) {
+		return mockClient, nil
+	}
+
+	gone.
+		NewApp(Load).
+		Test(func(watcher gone.ConfWatcher) {
+			key := "test.key"
+
+			var oldVal, newVal any
+
+			watcher(key, func(o, n any) {
+				oldVal, newVal = o, n
+			})
+
+			event := storage.ChangeEvent{
+				Changes: map[string]*storage.ConfigChange{
+					key: {
+						OldValue:   "test.value2",
+						NewValue:   "test.updated",
+						ChangeType: storage.MODIFIED,
+					},
+				},
+			}
+			event.Namespace = "test.yml"
+
+			l.OnChange(&event)
+			assert.Equal(t, "test.value2", oldVal)
+			assert.Equal(t, "test.updated", newVal)
+
+			event.Changes = map[string]*storage.ConfigChange{
+				key: {
+					OldValue:   "test.value1",
+					NewValue:   "test.updated2",
+					ChangeType: storage.MODIFIED,
+				},
+			}
+
+			l.OnChange(&event)
+			assert.Equal(t, "test.updated", oldVal)
+			assert.Equal(t, "test.updated2", newVal)
+
+			event.Changes = map[string]*storage.ConfigChange{
+				key: {
+					OldValue:   "test.value1",
+					NewValue:   "test.updated2",
+					ChangeType: storage.DELETED,
+				},
+			}
+
+			l.OnChange(&event)
+			assert.Equal(t, "test.updated2", oldVal)
+			assert.Equal(t, "test.value1", newVal)
+
+			watcher("test.key2", func(o, n any) {
+				oldVal, newVal = o, n
+			})
+
+			event.Changes = map[string]*storage.ConfigChange{
+				"test.key2": {
+					OldValue:   "test.value2",
+					NewValue:   "test.updated2",
+					ChangeType: storage.ADDED,
+				},
+			}
+
+			l.OnChange(&event)
+			assert.Equal(t, nil, oldVal)
+			assert.Equal(t, "test.updated2", newVal)
+
+			event.Changes = map[string]*storage.ConfigChange{
+				"test.key2": {
+					OldValue:   "test.value2",
+					NewValue:   "test.updated2",
+					ChangeType: storage.DELETED,
+				},
+			}
+
+			l.OnChange(&event)
+			assert.Equal(t, "test.updated2", oldVal)
+			assert.Equal(t, nil, newVal)
+		})
 }

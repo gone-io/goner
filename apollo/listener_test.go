@@ -26,6 +26,7 @@ func TestChangeListener_OnChange(t *testing.T) {
 		initialValue   map[string]interface{}
 		expectedValue  map[string]interface{}
 		expectedErrors bool
+		watch          gone.ConfWatchFunc
 	}{
 		{
 			name:      "add new config",
@@ -40,6 +41,10 @@ func TestChangeListener_OnChange(t *testing.T) {
 			initialValue:   map[string]interface{}{},
 			expectedValue:  map[string]interface{}{"test.key": "new value"},
 			expectedErrors: false,
+			watch: func(oldVal, newVal any) {
+				assert.Equal(t, nil, oldVal)
+				assert.Equal(t, "new value", newVal)
+			},
 		},
 		{
 			name:      "modify existing config",
@@ -51,9 +56,17 @@ func TestChangeListener_OnChange(t *testing.T) {
 					ChangeType: storage.MODIFIED,
 				},
 			},
-			initialValue:   map[string]interface{}{"test.key": "old value"},
+			initialValue: map[string]interface{}{
+				"test": map[string]any{
+					"key": "old value",
+				},
+			},
 			expectedValue:  map[string]interface{}{"test.key": "updated value"},
 			expectedErrors: false,
+			watch: func(oldVal, newVal any) {
+				assert.Equal(t, "old value", oldVal)
+				assert.Equal(t, "updated value", newVal)
+			},
 		},
 		{
 			name:      "delete config",
@@ -65,9 +78,17 @@ func TestChangeListener_OnChange(t *testing.T) {
 					ChangeType: storage.DELETED,
 				},
 			},
-			initialValue:   map[string]interface{}{"test.key": "old value"},
+			initialValue: map[string]interface{}{
+				"test": map[string]any{
+					"key": "old value",
+				},
+			},
 			expectedValue:  map[string]interface{}{"test.key": nil},
 			expectedErrors: false,
+			watch: func(oldVal, newVal any) {
+				assert.Equal(t, "old value", oldVal)
+				assert.Equal(t, nil, newVal)
+			},
 		},
 	}
 
@@ -84,6 +105,7 @@ func TestChangeListener_OnChange(t *testing.T) {
 
 			// 初始化viper实例
 			v := viper.New()
+			_ = v.MergeConfigMap(tt.initialValue)
 			listener.viper = v
 
 			// 创建namespace对应的viper
@@ -100,6 +122,7 @@ func TestChangeListener_OnChange(t *testing.T) {
 
 			var str = "test"
 			listener.Put("test.key", &str)
+			listener.Watch("test.key", tt.watch)
 
 			// 触发配置变更
 			listener.OnChange(event)

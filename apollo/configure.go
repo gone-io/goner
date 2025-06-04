@@ -4,6 +4,7 @@ import (
 	"github.com/apolloconfig/agollo/v4"
 	"github.com/apolloconfig/agollo/v4/env/config"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/gone-io/goner/viper"
 	originViper "github.com/spf13/viper"
 	"strings"
@@ -65,21 +66,15 @@ var startWithConfig = agollo.StartWithConfig
 var viperNew = viper.New
 var originViperNew = originViper.New
 
-func (s *apolloConfigure) Init() error {
+func (s *apolloConfigure) Init() {
 	configure := viperNew(s.testFlag)
 	appConfig, err := s.init(configure)
-	if err != nil {
-		return gone.ToError(err)
-	}
+	g.PanicIfErr(err)
 
 	s.client, err = startWithConfig(func() (*config.AppConfig, error) {
 		return appConfig, nil
 	})
-
-	if err != nil {
-		return gone.ToError(err)
-	}
-
+	g.PanicIfErr(err)
 	namespaces := strings.Split(s.namespace, ",")
 
 	total := originViperNew()
@@ -95,9 +90,7 @@ func (s *apolloConfigure) Init() error {
 					return true
 				})
 				err = total.MergeConfigMap(v.AllSettings())
-				if err != nil {
-					return gone.ToError(err)
-				}
+				g.PanicIfErr(err)
 				s.changeListener.AddViper(ns, v)
 			} else {
 				cache.Range(func(key, value interface{}) bool {
@@ -114,5 +107,8 @@ func (s *apolloConfigure) Init() error {
 		s.client.AddChangeListener(s.changeListener)
 		s.changeListener.SetViper(total)
 	}
-	return nil
+}
+
+func (s *apolloConfigure) Notify(key string, callback gone.ConfWatchFunc) {
+	s.changeListener.Watch(key, callback)
 }

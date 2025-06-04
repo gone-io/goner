@@ -7,6 +7,7 @@ require (
 	github.com/bytedance/sonic v1.13.3
 	github.com/goccy/go-json v0.10.5
 	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/goner/g v1.3.1
 	github.com/gone-io/goner/viper v1.3.1
 	github.com/json-iterator/go v1.1.12
 	github.com/spf13/viper v1.20.1
@@ -14,9 +15,11 @@ require (
 	go.uber.org/mock v0.5.2
 )
 
-replace github.com/gone-io/goner/g => ../g
+replace (
+	github.com/gone-io/goner/g => ../g
+	github.com/gone-io/goner/viper => ../viper
+)
 
-replace github.com/gone-io/goner/viper => ../viper
 
 require (
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
