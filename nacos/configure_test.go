@@ -2,6 +2,7 @@ package nacos
 
 import (
 	mock "github.com/gone-io/gone/v2"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -364,7 +365,7 @@ func Test_configure_OnChange(t *testing.T) {
 		c.OnChange("", "test-group", "", invalidContent)
 
 		// 验证配置未发生变化
-		assert.Empty(t, c.groupConfMap["test-group"])
+		assert.Empty(t, c.groupConfMap["test-group"].AllSettings())
 	})
 
 	t.Run("Config Merge Error", func(t *testing.T) {
@@ -396,7 +397,7 @@ func Test_configure_OnChange(t *testing.T) {
 		c.OnChange("", "test-group", "", invalidContent)
 
 		// 验证配置未发生变化
-		assert.Empty(t, c.groupConfMap["test-group"])
+		assert.Empty(t, c.groupConfMap["test-group"].AllSettings())
 	})
 
 	t.Run("Value Update", func(t *testing.T) {
@@ -429,4 +430,66 @@ func Test_configure_OnChange(t *testing.T) {
 		assert.Equal(t, "new-value1", testValue)
 		assert.Equal(t, "new-value1", c.viper.GetString("key1"))
 	})
+}
+
+func Test_configure_Notify(t *testing.T) {
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	client := NewMockIConfigClient(controller)
+	client.EXPECT().GetConfig(gomock.Any()).DoAndReturn(func(param vo.ConfigParam) (string, error) {
+		if param.Group == "DEFAULT_GROUP" {
+			return `
+test1.key2=my-test
+`, nil
+
+		} else {
+			return `test1:
+  key1: 100`, nil
+		}
+	}).Times(2)
+
+	var onChange func(namespace, group, dataId, data string)
+	client.EXPECT().ListenConfig(gomock.Any()).DoAndReturn(func(param vo.ConfigParam) error {
+		onChange = param.OnChange
+		return nil
+	}).Times(2)
+
+	newConfigClient = func(param vo.NacosClientParam) (iClient config_client.IConfigClient, err error) {
+		return client, nil
+	}
+
+	gone.
+		NewApp(Load).
+		Test(func(watcher gone.ConfWatcher) {
+			key := "test1"
+			var oldVal, newVal any
+			watcher(key, func(o, n any) {
+				oldVal, newVal = o, n
+			})
+			onChange("", "database", "", `
+test1:
+  key1: 100
+  key2: my-test2
+`)
+
+			assert.True(t, reflect.DeepEqual(oldVal, map[string]any{
+				"key1": 100,
+				"key2": "my-test",
+			}))
+			assert.True(t, reflect.DeepEqual(newVal, map[string]any{
+				"key1": 100,
+				"key2": "my-test2",
+			}))
+
+			onChange("", "database", "", ``)
+
+			assert.True(t, reflect.DeepEqual(oldVal, map[string]any{
+				"key1": 100,
+				"key2": "my-test2",
+			}))
+			assert.True(t, reflect.DeepEqual(newVal, map[string]any{
+				"key2": "my-test",
+			}))
+		})
 }
