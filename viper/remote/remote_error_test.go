@@ -60,6 +60,7 @@ func TestRemoteConfigure_Init_AddRemoteProviderFail(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockViper
 	}
+	newRemoteViper = newViper
 
 	// 执行测试
 	err := remoteCfg.init(mockLocalConfigure, mockViper)
@@ -122,6 +123,7 @@ func TestRemoteConfigure_Init_AddSecureRemoteProviderFail(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockViper
 	}
+	newRemoteViper = newViper
 
 	// 执行测试
 	err := remoteCfg.init(mockLocalConfigure, mockViper)
@@ -184,6 +186,7 @@ func TestRemoteConfigure_Init_ReadRemoteConfigFail(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockViper
 	}
+	newRemoteViper = newViper
 
 	// 执行测试
 	err := remoteCfg.init(mockLocalConfigure, mockViper)
@@ -248,6 +251,7 @@ func TestRemoteConfigure_Init_MergeConfigMapFail(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockViper
 	}
+	newRemoteViper = newViper
 
 	// 执行测试
 	err := remoteCfg.init(mockLocalConfigure, mockViper)

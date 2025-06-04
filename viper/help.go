@@ -3,6 +3,7 @@ package viper
 import (
 	"flag"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/sagikazarmark/locafero"
 	"github.com/spf13/afero"
 	"os"
@@ -48,17 +49,13 @@ func GetConfDir() string {
 
 func MustGetExecutableConfDir() string {
 	dir, err := os.Executable()
-	if err != nil {
-		panic(gone.ToError(err))
-	}
+	g.PanicIfErr(gone.ToError(err))
 	return path.Join(filepath.Dir(dir), ConPath)
 }
 
 func MustGetWorkDir() string {
 	workDir, err := os.Getwd()
-	if err != nil {
-		panic(gone.ToError(err))
-	}
+	g.PanicIfErr(gone.ToError(err))
 	return workDir
 }
 
