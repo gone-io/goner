@@ -1,0 +1,7 @@
+viper.remote:
+  providers:
+    - provider: consul
+      endpoint:  http://127.0.0.1:8848
+      path: /config.yaml
+      configType: yaml
+  watch: true

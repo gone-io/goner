@@ -29,13 +29,17 @@ type Provider struct {
 	Path       string
 	ConfigType string
 
-	//Viper uses crypt to retrieve configuration from the K/V store, which means that you can store your configuration values encrypted and have them automatically decrypted if you have the correct gpg keyring. Encryption is optional.
+	// Viper uses crypt to retrieve configuration from the K/V store, which means that you can store your configuration
+	// values encrypted and have them automatically decrypted if you have the correct gpg keyring.
+	// Encryption is optional.
 	Keyring string //gpg keyring
 }
 
 var newViper = func() ViperInterface {
 	return viper.New()
 }
+var newRemoteViper = newViper
+
 var newGonerViper = goneViper.New
 
 func (s *remoteConfigure) Init() error {
@@ -54,7 +58,7 @@ func (s *remoteConfigure) init(localConfigure gone.Configure, v ViperInterface) 
 	}
 
 	for _, p := range s.providers {
-		v2 := newViper()
+		v2 := newRemoteViper()
 		v2.SetConfigType(p.ConfigType)
 
 		if p.Keyring == "" {
@@ -85,4 +89,8 @@ func (s *remoteConfigure) init(localConfigure gone.Configure, v ViperInterface) 
 		s.w,
 	)
 	return nil
+}
+
+func (s *remoteConfigure) Notify(key string, callback gone.ConfWatchFunc) {
+	s.w.Watch(key, callback)
 }

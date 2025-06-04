@@ -102,6 +102,7 @@ func TestWatcher_DoWatch_Success(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockAllViper
 	}
+	newRemoteViper = newViper
 
 	// 创建测试对象
 	w := &watcher{
@@ -121,7 +122,7 @@ func TestWatcher_DoWatch_Success(t *testing.T) {
 	// 设置Mock行为
 	mockRemoteViper.EXPECT().ReadRemoteConfig().Return(nil)
 	mockAllViper.EXPECT().MergeConfigMap(gomock.Any()).Return(nil)
-	mockAllViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue})
+	mockAllViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue}).AnyTimes()
 	mockRemoteViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue})
 
 	mockViper.EXPECT().Get(testKey).Return(oldValue)
@@ -132,7 +133,7 @@ func TestWatcher_DoWatch_Success(t *testing.T) {
 			p.Value = newValue
 			return nil
 		})
-	mockViper.EXPECT().MergeConfigMap(gomock.Any()).Return(nil)
+	mockViper.EXPECT().MergeConfigMap(gomock.Any()).Return(nil).AnyTimes()
 
 	// 执行测试
 	w.doWatch()
@@ -188,6 +189,7 @@ func TestWatcher_DoWatch_MergeConfigFail(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockAllViper
 	}
+	newRemoteViper = newViper
 
 	// 创建测试对象
 	w := &watcher{
@@ -227,6 +229,7 @@ func TestWatcher_DoWatch_NoValueChange(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockAllViper
 	}
+	newRemoteViper = newViper
 
 	// 创建测试对象
 	w := &watcher{
@@ -262,6 +265,7 @@ func TestWatcher_DoWatch_UnmarshalKeyFail(t *testing.T) {
 
 	// 创建Mock对象
 	mockLogger := NewMockLogger(ctrl)
+	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 	mockViper := NewMockViperInterface(ctrl)
 	mockRemoteViper := NewMockViperInterface(ctrl)
 	mockAllViper := NewMockViperInterface(ctrl)
@@ -274,6 +278,7 @@ func TestWatcher_DoWatch_UnmarshalKeyFail(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockAllViper
 	}
+	newRemoteViper = newViper
 
 	// 创建测试对象
 	w := &watcher{
@@ -293,14 +298,14 @@ func TestWatcher_DoWatch_UnmarshalKeyFail(t *testing.T) {
 	// 设置Mock行为 - UnmarshalKey失败
 	mockRemoteViper.EXPECT().ReadRemoteConfig().Return(nil)
 	mockAllViper.EXPECT().MergeConfigMap(gomock.Any()).Return(nil)
-	mockAllViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue})
+	mockAllViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue}).AnyTimes()
 	mockRemoteViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue})
 
 	mockViper.EXPECT().Get(testKey).Return(oldValue)
 	mockAllViper.EXPECT().Get(testKey).Return(newValue)
 	mockAllViper.EXPECT().UnmarshalKey(testKey, gomock.Any()).Return(gone.ToError("unmarshal key failed"))
-	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any())
-	mockViper.EXPECT().MergeConfigMap(gomock.Any()).Return(nil)
+	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any()).AnyTimes()
+	mockViper.EXPECT().MergeConfigMap(gomock.Any()).Return(nil).AnyTimes()
 
 	// 执行测试
 	w.doWatch()
@@ -327,6 +332,7 @@ func TestWatcher_DoWatch_FinalMergeConfigFail(t *testing.T) {
 	newViper = func() ViperInterface {
 		return mockAllViper
 	}
+	newRemoteViper = newViper
 
 	// 创建测试对象
 	w := &watcher{
@@ -346,7 +352,7 @@ func TestWatcher_DoWatch_FinalMergeConfigFail(t *testing.T) {
 	// 设置Mock行为 - 最终MergeConfigMap失败
 	mockRemoteViper.EXPECT().ReadRemoteConfig().Return(nil)
 	mockAllViper.EXPECT().MergeConfigMap(gomock.Any()).Return(nil)
-	mockAllViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue})
+	mockAllViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue}).AnyTimes()
 	mockRemoteViper.EXPECT().AllSettings().Return(map[string]any{testKey: newValue})
 
 	mockViper.EXPECT().Get(testKey).Return(oldValue)
@@ -357,8 +363,8 @@ func TestWatcher_DoWatch_FinalMergeConfigFail(t *testing.T) {
 			p.Value = newValue
 			return nil
 		})
-	mockViper.EXPECT().MergeConfigMap(gomock.Any()).Return(gone.ToError("final merge config failed"))
-	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any())
+	mockViper.EXPECT().MergeConfigMap(gomock.Any()).Return(gone.ToError("final merge config failed")).AnyTimes()
+	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any()).AnyTimes()
 
 	// 执行测试
 	w.doWatch()
