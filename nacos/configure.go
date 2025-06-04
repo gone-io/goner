@@ -3,6 +3,7 @@ package nacos
 import (
 	"github.com/go-viper/encoding/javaproperties"
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	goneViper "github.com/gone-io/goner/viper"
 	"github.com/google/go-cmp/cmp"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
@@ -33,11 +34,12 @@ type configure struct {
 	useLocalConfIfKeyNotExist bool        //`gone:"config,nacos.useLocalConfIfKeyNotExist"`
 
 	groupConfMap map[string]*viper.Viper
+	watchMap     map[string]gone.ConfWatchFunc
 	viper        *viper.Viper
 	keyMap       map[string][]any
 }
 
-func (s *configure) OnChange(namespace, group, dataId, content string) {
+func (s *configure) newConf(group, content string) *viper.Viper {
 	var format = "yaml"
 	for _, v := range s.groups {
 		if v.Group == group {
@@ -45,27 +47,20 @@ func (s *configure) OnChange(namespace, group, dataId, content string) {
 			break
 		}
 	}
-
-	v2, err := newViperByFormat(format)
-	if err != nil {
-		s.logger.Errorf("OnChange:%v", err)
-		return
-	}
+	v2, _ := newViperByFormat(format)
 	v2.SetConfigType(format)
-	err = v2.ReadConfig(strings.NewReader(content))
-	if err != nil {
-		s.logger.Errorf("failed to read config file, err: %v", err)
-		return
-	}
-	s.groupConfMap[group] = v2
+	err := v2.ReadConfig(strings.NewReader(content))
+	g.ErrorPrinter(s.logger, err, "failed to read config file")
+	return v2
+}
+
+func (s *configure) OnChange(_, group, _, content string) {
+	s.groupConfMap[group] = s.newConf(group, content)
 
 	tmpViper := viper.New()
-	for _, g := range s.groups {
-		err = tmpViper.MergeConfigMap(s.groupConfMap[g.Group].AllSettings())
-		if err != nil {
-			s.logger.Errorf("failed to merge config, err: %v", err)
-			return
-		}
+	for _, gro := range s.groups {
+		err := tmpViper.MergeConfigMap(s.groupConfMap[gro.Group].AllSettings())
+		g.ErrorPrinter(s.logger, err, "failed to merge config")
 	}
 
 	for k, values := range s.keyMap {
@@ -75,12 +70,19 @@ func (s *configure) OnChange(namespace, group, dataId, content string) {
 			continue
 		}
 		for _, ani := range values {
-			if err := tmpViper.UnmarshalKey(k, ani); err != nil {
-				s.logger.Warnf("try to set `%s` value err:%v\n", k, err)
-			}
+			err := tmpViper.UnmarshalKey(k, ani)
+			g.ErrorPrinter(s.logger, err, "try to unmarshal key")
 		}
-		s.viper.Set(k, newValue)
 	}
+
+	for key, value := range s.watchMap {
+		oldVal := s.viper.Get(key)
+		newVal := tmpViper.Get(key)
+		if !compare(oldVal, newVal) {
+			value(oldVal, newVal)
+		}
+	}
+	s.viper = tmpViper
 }
 func compare(a, b any) (equal bool) {
 	return cmp.Equal(a, b)
@@ -118,26 +120,26 @@ func (s *configure) getConfigContent(localConfigure gone.Configure, client confi
 	s.groupConfMap = make(map[string]*viper.Viper)
 	s.viper = viper.New()
 
-	for _, g := range s.groups {
+	for _, group := range s.groups {
 		param := vo.ConfigParam{
 			DataId: s.dataId,
-			Group:  g.Group,
+			Group:  group.Group,
 		}
 
 		content, err := client.GetConfig(param)
 		if err != nil {
 			return gone.ToError(err)
 		}
-		v2, err := newViperByFormat(g.Format)
+		v2, err := newViperByFormat(group.Format)
 		if err != nil {
 			return gone.ToError(err)
 		}
-		v2.SetConfigType(g.Format)
+		v2.SetConfigType(group.Format)
 		err = v2.ReadConfig(strings.NewReader(content))
 		if err != nil {
 			return gone.ToError(err)
 		}
-		s.groupConfMap[g.Group] = v2
+		s.groupConfMap[group.Group] = v2
 		err = s.viper.MergeConfigMap(v2.AllSettings())
 		if err != nil {
 			return gone.ToError(err)
@@ -179,13 +181,17 @@ func (s *configure) init(
 	return configClient, gone.ToError(err)
 }
 
-func (s *configure) Init() (err error) {
+var newConfigClient = clients.NewConfigClient
+
+func (s *configure) Init() {
+	s.watchMap = make(map[string]gone.ConfWatchFunc)
 	s.localConfigure = goneViper.New(s.testFlag)
-	s.client, err = s.init(s.localConfigure, clients.NewConfigClient)
-	if err != nil {
-		return
-	}
-	return s.getConfigContent(s.localConfigure, s.client)
+	var err error
+
+	s.client, err = s.init(s.localConfigure, newConfigClient)
+	g.PanicIfErr(err)
+	err = s.getConfigContent(s.localConfigure, s.client)
+	g.PanicIfErr(err)
 }
 
 func (s *configure) Get(key string, value any, defaultVal string) error {
@@ -206,4 +212,8 @@ func (s *configure) Get(key string, value any, defaultVal string) error {
 		return s.localConfigure.Get(key, value, defaultVal)
 	}
 	return gone.ToError(err)
+}
+
+func (s *configure) Notify(key string, callback gone.ConfWatchFunc) {
+	s.watchMap[key] = callback
 }
