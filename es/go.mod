@@ -18,4 +18,4 @@ require (
 	golang.org/x/sys v0.33.0 // indirect
 )
 
-require github.com/gone-io/gone/v2 v2.2.2
+require github.com/gone-io/gone/v2 v2.2.5

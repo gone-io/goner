@@ -3,7 +3,7 @@ module examples/http_use_discovery
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.4
+	github.com/gone-io/gone/v2 v2.2.5
 	github.com/gone-io/goner v1.0.9
 	github.com/gone-io/goner/balancer v1.3.1
 	github.com/gone-io/goner/gin v1.3.1
@@ -41,7 +41,7 @@ require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/bytedance/sonic v1.13.2 // indirect
+	github.com/bytedance/sonic v1.13.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudflare/circl v1.6.0 // indirect

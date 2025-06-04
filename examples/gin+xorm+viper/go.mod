@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/go-sql-driver/mysql v1.9.2
-	github.com/gone-io/gone/v2 v2.2.4
+	github.com/gone-io/gone/v2 v2.2.5
 	github.com/gone-io/goner/g v1.3.1
 	github.com/gone-io/goner/gin v1.3.1
 	github.com/gone-io/goner/tracer v1.3.1
@@ -32,7 +32,7 @@ replace (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/bytedance/sonic v1.13.2 // indirect
+	github.com/bytedance/sonic v1.13.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect

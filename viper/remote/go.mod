@@ -3,7 +3,7 @@ module github.com/gone-io/goner/viper/remote
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.2
+	github.com/gone-io/gone/v2 v2.2.5
 	github.com/gone-io/goner/viper v1.3.1
 	github.com/google/go-cmp v0.7.0
 	github.com/spf13/viper v1.20.1

@@ -17,8 +17,8 @@ github.com/go-viper/encoding/javaproperties v0.1.0 h1:4pQN/pez/rMy9ITZ++SgLH6VIN
 github.com/go-viper/encoding/javaproperties v0.1.0/go.mod h1:LGaThjx5J/GFdQRJscxLMQsYt0XKAM7IW9YzsJTv6jw=
 github.com/go-viper/mapstructure/v2 v2.2.1 h1:ZAaOCxANMuZx5RCeg0mBdEZk7DZasvvZIxtHqx8aGss=
 github.com/go-viper/mapstructure/v2 v2.2.1/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
-github.com/gone-io/gone/v2 v2.2.2 h1:m2KRPpUhKfVa+wToICneBMh1Tyzo3D9P1DV8bKeupuY=
-github.com/gone-io/gone/v2 v2.2.2/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
+github.com/gone-io/gone/v2 v2.2.5 h1:rL1pHfZYoy9cgBgzUaw2szEBxJaEY973hjY/JOBkung=
+github.com/gone-io/gone/v2 v2.2.5/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
