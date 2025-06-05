@@ -27,8 +27,11 @@ replace (
 	github.com/gone-io/goner/tracer/gls => ../../tracer/gls
 	github.com/gone-io/goner/viper => ../../viper
 	github.com/gone-io/goner/xorm => ../../xorm
+	github.com/gone-io/goner/xorm/mysql => ../../xorm/mysql
 	github.com/gone-io/goner/zap => ../../zap
 )
+
+require github.com/gone-io/goner/xorm/mysql v0.0.0-00010101000000-000000000000
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect

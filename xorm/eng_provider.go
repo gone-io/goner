@@ -2,6 +2,7 @@ package xorm
 
 import (
 	"github.com/gone-io/gone/v2"
+	"github.com/gone-io/goner/g"
 	"github.com/spf13/cast"
 	"reflect"
 )
@@ -49,9 +50,7 @@ func (s *engProvider) ProvideEngine(tagConf string) (Engine, error) {
 	if index, ok := m[slaveKey]; ok {
 		i := cast.ToInt(index)
 		group, err := s.xProvider.ProvideEngineGroup(tagConf)
-		if err != nil {
-			return nil, gone.ToError(err)
-		}
+		g.PanicIfErr(gone.ToErrorWithMsg(err, "can not create rocketmq consumer group"))
 		slaves := group.Slaves()
 		if i < 0 || i >= len(slaves) {
 			return nil, gone.ToError("slave index out of range")

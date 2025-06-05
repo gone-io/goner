@@ -7,7 +7,7 @@ import (
 	"github.com/gone-io/goner/gin"
 	"github.com/gone-io/goner/tracer"
 	"github.com/gone-io/goner/viper"
-	"github.com/gone-io/goner/xorm"
+	"github.com/gone-io/goner/xorm/mysql"
 	zap "github.com/gone-io/goner/zap"
 )
 
@@ -16,7 +16,7 @@ var loaders = []gone.LoadFunc{
 	gin.Load,
 	tracer.Load,
 	viper.Load,
-	xorm.Load,
+	mysql.Load,
 	zap.Load,
 }
 
