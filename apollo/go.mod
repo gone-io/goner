@@ -7,8 +7,8 @@ require (
 	github.com/bytedance/sonic v1.13.3
 	github.com/goccy/go-json v0.10.5
 	github.com/gone-io/gone/v2 v2.2.5
-	github.com/gone-io/goner/g v1.3.1
-	github.com/gone-io/goner/viper v1.3.1
+	github.com/gone-io/goner/g v1.3.2
+	github.com/gone-io/goner/viper v1.3.2
 	github.com/google/go-cmp v0.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/spf13/viper v1.20.1
