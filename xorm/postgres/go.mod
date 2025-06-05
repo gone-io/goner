@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.5
-	github.com/gone-io/goner/xorm v1.3.1
+	github.com/gone-io/goner/xorm v1.3.2
 	github.com/lib/pq v1.10.9
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.2
@@ -19,7 +19,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
-	github.com/gone-io/goner/g v1.3.1 // indirect
+	github.com/gone-io/goner/g v1.3.2 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

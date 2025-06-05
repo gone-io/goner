@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.5
-	github.com/gone-io/goner/g v1.3.1
+	github.com/gone-io/goner/g v1.3.2
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/stretchr/testify v1.10.0
 )

@@ -3,24 +3,26 @@ module examples/es
 go 1.24.1
 
 require (
-	github.com/elastic/go-elasticsearch/v8 v8.17.1
+	github.com/elastic/go-elasticsearch/v8 v8.18.0
 	github.com/gone-io/gone/v2 v2.2.5
-	github.com/gone-io/goner/es v1.3.1
-	github.com/gone-io/goner/viper v1.3.1
+	github.com/gone-io/goner/es v1.3.2
+	github.com/gone-io/goner/viper v1.3.2
 )
 
-replace github.com/gone-io/goner/es => ../../es
-
-replace github.com/gone-io/goner/viper => ../../viper
+replace (
+	github.com/gone-io/goner/es => ../../es
+	github.com/gone-io/goner/g => ../../g
+	github.com/gone-io/goner/viper => ../../viper
+)
 
 require (
-	github.com/elastic/elastic-transport-go/v8 v8.6.1 // indirect
+	github.com/elastic/elastic-transport-go/v8 v8.7.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/gone-io/goner/g v1.3.1 // indirect
+	github.com/gone-io/goner/g v1.3.2 // indirect
 	github.com/magiconair/properties v1.8.10 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/sagikazarmark/locafero v0.9.0 // indirect

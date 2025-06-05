@@ -5,14 +5,14 @@ go 1.24.1
 require (
 	github.com/go-sql-driver/mysql v1.9.2
 	github.com/gone-io/gone/v2 v2.2.5
-	github.com/gone-io/goner/g v1.3.1
-	github.com/gone-io/goner/gin v1.3.1
-	github.com/gone-io/goner/tracer v1.3.1
-	github.com/gone-io/goner/tracer/gid v1.3.1 // indirect
-	github.com/gone-io/goner/tracer/gls v1.3.1 // indirect
-	github.com/gone-io/goner/viper v1.3.1
-	github.com/gone-io/goner/xorm v1.3.1
-	github.com/gone-io/goner/zap v1.3.1
+	github.com/gone-io/goner/g v1.3.2
+	github.com/gone-io/goner/gin v1.3.2
+	github.com/gone-io/goner/tracer v1.3.2
+	github.com/gone-io/goner/tracer/gid v1.3.2 // indirect
+	github.com/gone-io/goner/tracer/gls v1.3.2 // indirect
+	github.com/gone-io/goner/viper v1.3.2
+	github.com/gone-io/goner/xorm v1.3.2
+	github.com/gone-io/goner/zap v1.3.2
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.2
@@ -31,7 +31,7 @@ replace (
 	github.com/gone-io/goner/zap => ../../zap
 )
 
-require github.com/gone-io/goner/xorm/mysql v0.0.0-00010101000000-000000000000
+require github.com/gone-io/goner/xorm/mysql v1.3.2-00010101000000-000000000000
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
