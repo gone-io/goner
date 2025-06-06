@@ -11,86 +11,84 @@
 
 # Goner
 
-Goner 是 [Gone](https://github.com/gone-io/gone) 框架的官方组件库，提供了一系列可即插即用的组件，帮助开发者快速构建高质量的 Go 应用程序。
+Goner 是 [Gone](https://github.com/gone-io/gone) 框架的官方组件库，提供了一系列可即插即用的组件，帮助开发者快速构建高质量的
+Go 应用程序。
 
 ## 组件列表
 
-### 本地配置
-- [goner/viper](./viper) - 配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper)
+- 配置管理
+    - 本地配置
+        - [goner/viper](./viper) - 配置管理组件，基于 [spf13/viper](https://github.com/spf13/viper)
+    - 远程配置/配置中心【微服务】
+        - [goner/apollo](./apollo) - 基于 [Apollo](https://www.apolloconfig.com/) 的配置中心组件，提供动态配置管理功能
+        - [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能
+        - [goner/viper/remote](./viper/remote) - 基于多种远程配置中心（如 etcd、consul 等）的配置组件，提供统一的配置管理功能
+- 日志管理
+    - [goner/zap](./zap) - 日志组件，基于 [uber-go/zap](https://github.com/uber-go/zap)
 
-### 日志管理
-- [goner/zap](./zap) - 日志组件，基于 [uber-go/zap](https://github.com/uber-go/zap)
+- 注册中心【微服务】
+    - [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能
+    - [goner/etcd](./etcd) - 基于 [etcd](https://etcd.io/) 的注册中心组件，提供服务注册、发现等功能
+    - [goner/consul](./consul) - 基于 [consul](https://www.consul.io/) 的注册中心组件，提供服务注册、发现
 
-### Web 框架
-- [goner/gin](./gin) - 基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，提供路由管理、中间件处理、HTTP 注入等功能
-- [goner/cmux](./cmux) - 基于 [soheilhy/cmux](https://github.com/soheilhy/cmux) 的多协议复用器，支持在同一端口上运行多种协议服务
+- 消息队列【微服务】【事件风暴】
+    - [goner/mq/kafka](./mq/kafka) - 提供Kafka的接入
+    - [goner/mq/rocket](./mq/rocket) - 提供RocketMQ的接入
+    - [goner/mq/rabbitmq](./mq/rabbitmq) - 提供RabbitMQ的接入
+    - [goner/mq/mqtt](./mq/mqtt) - 提供MQTT的接入
 
-### 数据库
-- [goner/xorm](./xorm) - 基于 [XORM](https://xorm.io/) 的 ORM 组件，提供简单高效的数据库操作，支持多种数据库 
-- [goner/gorm](./gorm) - 基于 [GORM](https://gorm.io/) 的 ORM 组件，支持 MySQL、PostgreSQL、SQLite、SQL Server 和 ClickHouse 等多种数据库
-  - [goner/gorm/mysql](./gorm/mysql) - 基于 MySQL 的 Gorm 驱动封装，提供数据库操作功能
-  - [goner/gorm/postgres](./gorm/postgres) - 基于 PostgreSQL 的 Gorm 驱动封装，提供数据库操作功能
-  - [goner/gorm/sqlite](./gorm/sqlite) - 基于 SQLite 的 Gorm 驱动封装，提供数据库操作功能
-  - [goner/gorm/clickhouse](./gorm/clickhouse) - 基于 ClickHouse 的 Gorm 驱动封装，提供数据库操作功能
-  - [goner/gorm/sqlserver](./gorm/sqlserver) - 基于 SqlServer 的 Gorm 驱动封装，提供数据库操作功能
+- 服务与远程调用【微服务】
+    - [goner/grpc](./grpc) - gRPC 客户端和服务端封装，简化微服务开发
+    - [goner/urllib](./urllib) - HTTP 客户端封装
+    - [goner/gin](./gin) - 基于 [gin-gonic/gin](https://github.com/gin-gonic/gin) 的 Web 框架封装，提供路由管理、中间件处理、HTTP 注入等功能
+    - [goner/cmux](./cmux) - 基于 [soheilhy/cmux](https://github.com/soheilhy/cmux) 的多协议复用器，支持在同一端口上运行多种协议服务
 
-### 缓存与消息
-- [goner/redis](./redis) - Redis 客户端封装，提供缓存、分布式锁等功能
+- 数据库
+    - 关系型数据库
+        - [goner/xorm](./xorm) - 基于 [XORM](https://xorm.io/) 的 ORM 组件，提供简单高效的数据库操作，支持多种数据库
+            - [goner/xorm/mysql](./xorm/mysql) - 基于 MySQL 的 Xorm 驱动封装，提供数据库操作功能
+            - [goner/xorm/postgres](./xorm/postgres) - 基于 PostgreSQL 的 Xorm 驱动封装，提供数据库操作功能
+            - [goner/xorm/sqlite](./xorm/sqlite) - 基于 SQLite 的 Xorm 驱动封装，提供数据库操作功能
+            - [goner/xorm/mssql](./xorm/mssql) - 基于 mssql 的 Xorm 驱动封装，提供数据库操作功能
+        - [goner/gorm](./gorm) - 基于 [GORM](https://gorm.io/) 的 ORM 组件，支持 MySQL、PostgreSQL、SQLite、SQL Server 和 ClickHouse 等多种数据库
+            - [goner/gorm/mysql](./gorm/mysql) - 基于 MySQL 的 Gorm 驱动封装，提供数据库操作功能
+            - [goner/gorm/postgres](./gorm/postgres) - 基于 PostgreSQL 的 Gorm 驱动封装，提供数据库操作功能
+            - [goner/gorm/sqlite](./gorm/sqlite) - 基于 SQLite 的 Gorm 驱动封装，提供数据库操作功能
+            - [goner/gorm/clickhouse](./gorm/clickhouse) - 基于 ClickHouse 的 Gorm 驱动封装，提供数据库操作功能
+            - [goner/gorm/sqlserver](./gorm/sqlserver) - 基于 SqlServer 的 Gorm 驱动封装，提供数据库操作功能
+    - NoSQL
+        - [goner/redis](./redis) - Redis 客户端封装，提供缓存、分布式锁等功能
+        - [goner/es](./es) - Elasticsearch 客户端封装，提供全文搜索功能
 
-### 消息队列
-- [goner/mq/kafka](./mq/kafka) - 提供Kafka的接入
-- [goner/mq/rocket](./mq/rocket) - 提供RocketMQ的接入
-- [goner/mq/rabbitmq](./mq/rabbitmq) - 提供RabbitMQ的接入
-- [goner/mq/mqtt](./mq/mqtt) - 提供MQTT的接入
+- 可观测性【微服务】
+    - [goner/otel](./otel) - OpenTelemetry 组件，提供分布式追踪、指标和日志收集功能
+        - [goner/otel/tracer](./otel/tracer) - 追踪组件
+            - [goner/otel/tracer/http](./otel/tracer/http) - 集成OLTP/HTTP协议的追踪Exporter
+            - [goner/otel/tracer/grpc](./otel/tracer/grpc) - 集成OLTP/GRPC协议的追踪Exporter
+            - [goner/otel/tracer/zipkin](./otel/tracer/zipkin) - 支持对接Zipkin的追踪Exporter
 
-### 搜索
-- [goner/es](./es) - Elasticsearch 客户端封装，提供全文搜索功能
+        - [goner/otel/meter](./otel/meter) - 指标组件
+            - [goner/otel/meter/http](./otel/meter/http) - 集成OLTP/HTTP协议的指标Exporter
+            - [goner/otel/meter/grpc](./otel/meter/grpc) - 集成OLTP/GRPC协议的指标Exporter
+            - [goner/otel/meter/prometheus](./otel/meter/prometheus) - 提供Prometheus对接的Reader
+                - [goner/otel/meter/prometheus/gin](./otel/meter/prometheus/gin) - 基于Gin的中间件，用于暴露Prometheus指标端点
 
-### 定时任务
-- [goner/schedule](./schedule) - 定时任务组件
+        - [goner/otel/log](./otel/log) - 日志组件
+            - [goner/otel/log/http](./otel/log/http) - 集成OLTP/HTTP协议的日志Exporter
+            - [goner/otel/log/grpc](./otel/log/grpc) - 集成OLTP/GRPC协议的日志Exporter
+    - [goner/tracer](./tracer) - 提供程序内部traceID隐形传参
 
-### 微服务
+- 定时任务
+    - [goner/schedule](./schedule) - 定时任务组件
 
-#### 配置中心
-- [goner/apollo](./apollo) - 基于 [Apollo](https://www.apolloconfig.com/) 的配置中心组件，提供动态配置管理功能
-- [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的配置中心组件，提供动态配置管理功能
-- [goner/viper/remote](./viper/remote) - 基于多种远程配置中心（如 etcd、consul 等）的配置组件，提供统一的配置管理功能
-
-#### 注册中心
-- [goner/nacos](./nacos) - 基于 [Nacos](https://nacos.io/) 的注册中心组件，提供服务注册、发现等功能
-- [goner/etcd](./etcd) - 基于 [etcd](https://etcd.io/) 的注册中心组件，提供服务注册、发现等功能
-- [goner/consul](./consul) - 基于 [consul](https://www.consul.io/) 的注册中心组件，提供服务注册、发现
-
-#### RPC
-- [goner/grpc](./grpc) - gRPC 客户端和服务端封装，简化微服务开发
-- [goner/urllib](./urllib) - HTTP 客户端封装
-
-### AI 组件
-- [goner/openai](./openai) - OpenAI 客户端封装，提供 GPT 等 AI 能力集成
-- [goner/deepseek](./deepseek) - Deepseek 客户端封装，提供国产大语言模型集成
-- [goner/mcp](./mcp) - 基于 `github.com/mark3labs/mcp-go` 进行封装的工具包，它能帮助开发者快速构建 MCP (Model Context Protocol)  的服务端和客户端应用。通过使用 Gone MCP 组件，您可以轻松地将 AI 模型与您的业务系统进行集成。
-
-### 可观测性
-- [goner/otel](./otel) - OpenTelemetry 组件，提供分布式追踪、指标和日志收集功能
-  - [goner/otel/tracer](./otel/tracer) - 追踪组件
-    - [goner/otel/tracer/http](./otel/tracer/http) - 集成OLTP/HTTP协议的追踪Exporter
-    - [goner/otel/tracer/grpc](./otel/tracer/grpc) - 集成OLTP/GRPC协议的追踪Exporter
-    - [goner/otel/tracer/zipkin](./otel/tracer/zipkin) - 支持对接Zipkin的追踪Exporter
-
-  - [goner/otel/meter](./otel/meter) - 指标组件
-    - [goner/otel/meter/http](./otel/meter/http) - 集成OLTP/HTTP协议的指标Exporter
-    - [goner/otel/meter/grpc](./otel/meter/grpc) - 集成OLTP/GRPC协议的指标Exporter
-    - [goner/otel/meter/prometheus](./otel/meter/prometheus) - 提供Prometheus对接的Reader
-		- [goner/otel/meter/prometheus/gin](./otel/meter/prometheus/gin) - 基于Gin的中间件，用于暴露Prometheus指标端点
-
-  - [goner/otel/log](./otel/log) - 日志组件
-    - [goner/otel/log/http](./otel/log/http) - 集成OLTP/HTTP协议的日志Exporter
-    - [goner/otel/log/grpc](./otel/log/grpc) - 集成OLTP/GRPC协议的日志Exporter
-- [goner/tracer](./tracer) - 提供程序内部traceID隐形传参
-
-
+- AI 组件【大模型】【人工智能】
+    - [goner/openai](./openai) - OpenAI 客户端封装，提供 GPT 等 AI 能力集成
+    - [goner/deepseek](./deepseek) - Deepseek 客户端封装，提供国产大语言模型集成
+    - [goner/mcp](./mcp) - 基于 `github.com/mark3labs/mcp-go` 进行封装的工具包，它能帮助开发者快速构建 MCP (Model Context
+      Protocol)  的服务端和客户端应用。通过使用 Gone MCP 组件，您可以轻松地将 AI 模型与您的业务系统进行集成。
 
 ## 安装
+
 ```bash
 # 安装 Gone 控制台工具
 go install github.com/gone-io/gonectl@latest
@@ -101,9 +99,11 @@ gonectl install goner/gin
 ```
 
 ## 快速开始
+
 使用 Gone 控制台工具创建一个基于 Gin、XORM 和 Viper 的应用程序：
 
 - 创建和安装依赖
+
 ```bash
 gonectl create -t gin+xorm+viper goner-demo
 cd goner-demo
@@ -111,6 +111,7 @@ go mod tidy
 ```
 
 - 运行应用程序
+
 ```bash
 # 启动数据库
 docker compose up -d
@@ -123,7 +124,6 @@ go run ./cmd
 ```
 
 > 示例代码，所在目录：[gin+xorm+viper](examples/gin%2Bxorm%2Bviper)
-
 
 ## 贡献指南
 
