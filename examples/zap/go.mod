@@ -11,9 +11,9 @@ replace (
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.2
-	github.com/gone-io/goner/tracer/gid v1.3.2-00010101000000-000000000000
-	github.com/gone-io/goner/zap v1.3.2-00010101000000-000000000000
+	github.com/gone-io/goner/g v1.3.3
+	github.com/gone-io/goner/tracer/gid v1.3.3-00010101000000-000000000000
+	github.com/gone-io/goner/zap v1.3.3-00010101000000-000000000000
 	go.uber.org/zap v1.27.0
 )
 

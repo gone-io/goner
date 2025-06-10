@@ -6,9 +6,9 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.2
-	github.com/gone-io/goner/gin v1.3.2
-	github.com/gone-io/goner/viper v1.3.2
+	github.com/gone-io/goner/g v1.3.3
+	github.com/gone-io/goner/gin v1.3.3
+	github.com/gone-io/goner/viper v1.3.3
 	github.com/google/uuid v1.6.0
 	go.uber.org/mock v0.5.2
 	golang.org/x/crypto v0.39.0

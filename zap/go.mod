@@ -10,7 +10,7 @@ require (
 )
 
 require (
-	github.com/gone-io/goner/g v1.3.2
+	github.com/gone-io/goner/g v1.3.3
 	go.opentelemetry.io/contrib/bridges/otelzap v0.10.0
 	go.opentelemetry.io/otel/log v0.11.0
 	go.opentelemetry.io/otel/trace v1.35.0
