@@ -9,7 +9,7 @@ replace (
 )
 
 require (
-	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner/g v1.3.2
 	github.com/gone-io/goner/otel/meter v1.3.2
 	go.opentelemetry.io/otel/metric v1.36.0

@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/go-viper/encoding/javaproperties v0.1.0
-	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner/g v1.3.2
 	github.com/sagikazarmark/locafero v0.9.0
 	github.com/spf13/afero v1.14.0

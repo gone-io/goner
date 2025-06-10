@@ -9,7 +9,7 @@ replace github.com/gone-io/goner/g => ../../../g
 replace github.com/gone-io/goner/viper => ../../../viper
 
 require (
-	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner/mcp v1.3.2
 	github.com/gone-io/goner/viper v1.3.2
 	github.com/mark3labs/mcp-go v0.23.1

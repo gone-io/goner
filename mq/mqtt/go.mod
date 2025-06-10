@@ -5,7 +5,7 @@ go 1.24.1
 require (
 	dario.cat/mergo v1.0.2
 	github.com/eclipse/paho.mqtt.golang v1.5.0
-	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/gone/v2 v2.2.6
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.2
 )

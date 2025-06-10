@@ -3,7 +3,7 @@ module github.com/gone-io/goner/tracer/gls
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner/g v1.3.2-00010101000000-000000000000
 	github.com/google/uuid v1.6.0
 	github.com/jtolds/gls v4.20.0+incompatible

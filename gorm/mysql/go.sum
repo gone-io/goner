@@ -5,8 +5,8 @@ github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8Yc
 github.com/go-sql-driver/mysql v1.7.0/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
 github.com/go-sql-driver/mysql v1.9.1 h1:FrjNGn/BsJQjVRuSa8CBrM5BWA9BWoXXat3KrtSb/iI=
 github.com/go-sql-driver/mysql v1.9.1/go.mod h1:qn46aNg1333BRMNU69Lq93t8du/dwxI64Gl8i5p1WMU=
-github.com/gone-io/gone/v2 v2.2.5 h1:rL1pHfZYoy9cgBgzUaw2szEBxJaEY973hjY/JOBkung=
-github.com/gone-io/gone/v2 v2.2.5/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
+github.com/gone-io/gone/v2 v2.2.6 h1:TYThfGrvjMXG8IVJU4cyfg058pzeNjb69uJ092UQ3JU=
+github.com/gone-io/gone/v2 v2.2.6/go.mod h1:ziwtUyHS+CJICGyh102JG2txvjPoeCp4oVoWYt7CfHs=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
