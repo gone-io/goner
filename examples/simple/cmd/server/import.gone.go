@@ -4,5 +4,5 @@ package main
 
 import (
 	_ "examples/simple"
-	_ "examples/simple/implement"
+	_ "examples/simple/internal/module/hello"
 )

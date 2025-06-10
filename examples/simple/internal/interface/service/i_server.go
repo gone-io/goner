@@ -1,5 +1,5 @@
 package service
 
-type Service interface {
+type IService interface {
 	SayHello(name string) string
 }

@@ -1,2 +1,5 @@
+# default config file
+
 app:
-  name: simple-app
+  name: root-app
+  env: dev
