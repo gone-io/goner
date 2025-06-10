@@ -3,7 +3,7 @@ module examples/grpc_use_discovery
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner/grpc v1.3.2
 	github.com/gone-io/goner/nacos v1.3.2
 	github.com/gone-io/goner/viper v1.3.2

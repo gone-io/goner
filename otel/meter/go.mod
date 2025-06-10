@@ -3,7 +3,7 @@ module github.com/gone-io/goner/otel/meter
 go 1.24.1
 
 require (
-	github.com/gone-io/gone/v2 v2.2.5
+	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner/g v1.3.2
 	github.com/gone-io/goner/otel v1.3.2
 	github.com/stretchr/testify v1.10.0
