@@ -5,18 +5,19 @@ go 1.24.1
 require (
 	github.com/go-sql-driver/mysql v1.9.2
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.2
-	github.com/gone-io/goner/gin v1.3.2
-	github.com/gone-io/goner/tracer v1.3.2
-	github.com/gone-io/goner/tracer/gid v1.3.2 // indirect
-	github.com/gone-io/goner/tracer/gls v1.3.2 // indirect
-	github.com/gone-io/goner/viper v1.3.2
-	github.com/gone-io/goner/xorm v1.3.2
-	github.com/gone-io/goner/zap v1.3.2
+	github.com/gone-io/goner/g v1.3.3
+	github.com/gone-io/goner/gin v1.3.3
+	github.com/gone-io/goner/tracer v1.3.3
+	github.com/gone-io/goner/tracer/gid v1.3.3 // indirect
+	github.com/gone-io/goner/tracer/gls v1.3.3 // indirect
+	github.com/gone-io/goner/viper v1.3.3
+	github.com/gone-io/goner/xorm v1.3.3
+	github.com/gone-io/goner/xorm/mysql v1.3.3
+	github.com/gone-io/goner/zap v1.3.3
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.2
-	golang.org/x/crypto v0.38.0
+	golang.org/x/crypto v0.39.0
 )
 
 replace (
@@ -30,8 +31,6 @@ replace (
 	github.com/gone-io/goner/xorm/mysql => ../../xorm/mysql
 	github.com/gone-io/goner/zap => ../../zap
 )
-
-require github.com/gone-io/goner/xorm/mysql v1.3.2-00010101000000-000000000000
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -84,11 +83,10 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/arch v0.17.0 // indirect
-	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/arch v0.18.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect

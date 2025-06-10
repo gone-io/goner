@@ -4,8 +4,8 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.2
-	github.com/gone-io/goner/viper v1.3.2
+	github.com/gone-io/goner/g v1.3.3
+	github.com/gone-io/goner/viper v1.3.3
 	github.com/google/go-cmp v0.7.0
 	github.com/spf13/viper v1.20.1
 	github.com/spf13/viper/remote v1.20.1

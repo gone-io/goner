@@ -1,12 +1,12 @@
-package implement
+package hello
 
 import (
-	"examples/simple/service"
+	"examples/simple/internal/interface/service"
 	"fmt"
 	"github.com/gone-io/gone/v2"
 )
 
-var _ service.Service = (*serviceImpl)(nil)
+var _ service.IService = (*serviceImpl)(nil)
 
 type serviceImpl struct {
 	gone.Flag

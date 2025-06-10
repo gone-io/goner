@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/urllib v1.3.2
+	github.com/gone-io/goner/urllib v1.3.3
 	github.com/imroc/req/v3 v3.50.0
 )
 
@@ -19,7 +19,7 @@ require (
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/gone-io/goner/g v1.3.2 // indirect
+	github.com/gone-io/goner/g v1.3.3 // indirect
 	github.com/google/pprof v0.0.0-20250403155104-27863c87afa6 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect

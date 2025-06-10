@@ -4,9 +4,9 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.2
-	github.com/gone-io/goner/otel v1.3.2 // indirect
-	github.com/gone-io/goner/otel/tracer v1.3.2
+	github.com/gone-io/goner/g v1.3.3
+	github.com/gone-io/goner/otel v1.3.3 // indirect
+	github.com/gone-io/goner/otel/tracer v1.3.3
 	go.opentelemetry.io/otel/exporters/zipkin v1.36.0
 	go.opentelemetry.io/otel/sdk v1.36.0
 )
