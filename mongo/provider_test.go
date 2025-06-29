@@ -2,10 +2,14 @@ package mongo
 
 import (
 	"context"
+	"github.com/gone-io/gone/v2"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"os"
 	"testing"
 	"time"
 
-	"github.com/gone-io/gone/v2"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -84,235 +88,53 @@ func TestConfig_ToMongoOptions(t *testing.T) {
 }
 
 func TestLoad(t *testing.T) {
-	// Test that Load function exists and can be called
-	// This is a basic test to ensure the function signature is correct
-	assert.NotNil(t, Load)
-}
+	_ = os.Setenv("GONE_MONGO", `{"uri":"mongodb://root:example@127.0.0.1:27017/"}`)
+	defer func() {
+		_ = os.Unsetenv("GONE_MONGO_URI")
+	}()
 
-// MockConfigure implements gone.Configure for testing
-type MockConfigure struct {
-	configs map[string]interface{}
-}
+	gone.
+		NewApp(Load).
+		Test(func(client *mongo.Client) {
+			assert.NotNil(t, client)
 
-func NewMockConfigure() *MockConfigure {
-	return &MockConfigure{
-		configs: make(map[string]interface{}),
-	}
-}
+			collection := client.Database("myapp").Collection("users")
 
-func (m *MockConfigure) Set(key string, value interface{}) {
-	m.configs[key] = value
-}
-
-func (m *MockConfigure) Get(key string, value any, defaultValue string) error {
-	if config, exists := m.configs[key]; exists {
-		switch v := value.(type) {
-		case *Config:
-			if configData, ok := config.(Config); ok {
-				*v = configData
+			type User struct {
+				ID        primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+				Name      string             `bson:"name" json:"name"`
+				Email     string             `bson:"email" json:"email"`
+				Age       int                `bson:"age" json:"age"`
+				CreatedAt time.Time          `bson:"created_at" json:"created_at"`
+				UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
 			}
-		}
-		return nil
-	}
-	
-	if defaultValue != "" {
-		// Handle default value if needed
-	}
-	
-	return nil
-}
 
-func (m *MockConfigure) GetString(key string, defaultValue ...string) string {
-	if config, exists := m.configs[key]; exists {
-		if str, ok := config.(string); ok {
-			return str
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return ""
-}
+			user := &User{
+				Name:      "gone",
+				Email:     "gone@goner.fun",
+				Age:       4,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}
 
-func (m *MockConfigure) GetInt(key string, defaultValue ...int) int {
-	if config, exists := m.configs[key]; exists {
-		if i, ok := config.(int); ok {
-			return i
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return 0
-}
+			result, err := collection.InsertOne(context.Background(), user)
+			if err != nil {
+				t.Fatalf("Failed to create user: %v", err)
+			}
+			user.ID = result.InsertedID.(primitive.ObjectID)
 
-func (m *MockConfigure) GetBool(key string, defaultValue ...bool) bool {
-	if config, exists := m.configs[key]; exists {
-		if b, ok := config.(bool); ok {
-			return b
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return false
-}
+			var updatedUser User
 
-func (m *MockConfigure) GetFloat64(key string, defaultValue ...float64) float64 {
-	if config, exists := m.configs[key]; exists {
-		if f, ok := config.(float64); ok {
-			return f
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return 0.0
-}
+			err = collection.FindOne(context.Background(), bson.M{"email": "gone@goner.fun"}).Decode(&updatedUser)
+			if err != nil {
+				t.Fatalf("Failed to get user: %v", err)
+			}
+			assert.Equal(t, user.Name, updatedUser.Name)
 
-func (m *MockConfigure) GetDuration(key string, defaultValue ...time.Duration) time.Duration {
-	if config, exists := m.configs[key]; exists {
-		if d, ok := config.(time.Duration); ok {
-			return d
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return 0
-}
-
-func (m *MockConfigure) GetStringSlice(key string, defaultValue ...[]string) []string {
-	if config, exists := m.configs[key]; exists {
-		if slice, ok := config.([]string); ok {
-			return slice
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return nil
-}
-
-func (m *MockConfigure) GetIntSlice(key string, defaultValue ...[]int) []int {
-	if config, exists := m.configs[key]; exists {
-		if slice, ok := config.([]int); ok {
-			return slice
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return nil
-}
-
-func (m *MockConfigure) GetStringMap(key string, defaultValue ...map[string]interface{}) map[string]interface{} {
-	if config, exists := m.configs[key]; exists {
-		if m, ok := config.(map[string]interface{}); ok {
-			return m
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return nil
-}
-
-func (m *MockConfigure) GetStringMapString(key string, defaultValue ...map[string]string) map[string]string {
-	if config, exists := m.configs[key]; exists {
-		if m, ok := config.(map[string]string); ok {
-			return m
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return nil
-}
-
-func (m *MockConfigure) GetStringMapStringSlice(key string, defaultValue ...map[string][]string) map[string][]string {
-	if config, exists := m.configs[key]; exists {
-		if m, ok := config.(map[string][]string); ok {
-			return m
-		}
-	}
-	if len(defaultValue) > 0 {
-		return defaultValue[0]
-	}
-	return nil
-}
-
-func (m *MockConfigure) IsSet(key string) bool {
-	_, exists := m.configs[key]
-	return exists
-}
-
-func (m *MockConfigure) AllKeys() []string {
-	keys := make([]string, 0, len(m.configs))
-	for k := range m.configs {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-func (m *MockConfigure) AllSettings() map[string]interface{} {
-	return m.configs
-}
-
-func (m *MockConfigure) Sub(key string) gone.Configure {
-	if config, exists := m.configs[key]; exists {
-		if subConfig, ok := config.(map[string]interface{}); ok {
-			newMock := NewMockConfigure()
-			newMock.configs = subConfig
-			return newMock
-		}
-	}
-	return NewMockConfigure()
-}
-
-func (m *MockConfigure) UnmarshalKey(key string, rawVal interface{}) error {
-	return nil
-}
-
-func (m *MockConfigure) Unmarshal(rawVal interface{}) error {
-	return nil
-}
-
-func (m *MockConfigure) BindEnv(input ...string) error {
-	return nil
-}
-
-func (m *MockConfigure) SetEnvPrefix(in string) {
-}
-
-func (m *MockConfigure) SetEnvKeyReplacer(r interface{}) {
-}
-
-func (m *MockConfigure) AutomaticEnv() {
-}
-
-func (m *MockConfigure) SetConfigFile(in string) {
-}
-
-func (m *MockConfigure) SetConfigName(in string) {
-}
-
-func (m *MockConfigure) SetConfigType(in string) {
-}
-
-func (m *MockConfigure) AddConfigPath(in string) {
-}
-
-func (m *MockConfigure) ReadInConfig() error {
-	return nil
-}
-
-func (m *MockConfigure) ReadConfig(in context.Context) error {
-	return nil
-}
-
-func (m *MockConfigure) WatchConfig() {
-}
-
-func (m *MockConfigure) OnConfigChange(run func(in interface{})) {
+			one, err := collection.DeleteOne(context.Background(), bson.M{"_id": user.ID})
+			if err != nil {
+				t.Fatalf("Failed to delete user: %v", err)
+			}
+			print(one)
+		})
 }
