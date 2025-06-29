@@ -1,0 +1,43 @@
+# MongoDB Configuration
+mongo:
+  # MongoDB connection URI
+  # Examples:
+  # - mongodb://localhost:27017
+  # - mongodb://username:password@localhost:27017
+  # - mongodb://localhost:27017,localhost:27018,localhost:27019
+  # - mongodb+srv://cluster.mongodb.net
+  uri: "mongodb://localhost:27017"
+  
+  # Default database name
+  database: "myapp"
+  
+  # Authentication (optional)
+  username: ""
+  password: ""
+  authSource: "admin"
+  
+  # Connection Pool Settings
+  maxPoolSize: 100          # Maximum number of connections in the pool
+  minPoolSize: 0            # Minimum number of connections in the pool
+  maxConnIdleTime: "30m"    # Maximum time a connection can remain idle
+  
+  # Timeout Settings
+  connectTimeout: "10s"             # Timeout for establishing connections
+  socketTimeout: "30s"              # Timeout for socket operations
+  serverSelectionTimeout: "30s"     # Timeout for server selection
+
+# Example: Multiple MongoDB connections
+# mongo-analytics:
+#   uri: "mongodb://analytics-server:27017"
+#   database: "analytics"
+#   username: "analytics_user"
+#   password: "analytics_pass"
+#   authSource: "analytics"
+#   maxPoolSize: 50
+#   connectTimeout: "5s"
+
+# mongo-logs:
+#   uri: "mongodb://logs-server:27017"
+#   database: "logs"
+#   maxPoolSize: 20
+#   minPoolSize: 5

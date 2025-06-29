@@ -57,6 +57,7 @@ Goner is the official component library for the [Gone](https://github.com/gone-i
             - [goner/gorm/sqlserver](./gorm/sqlserver) - SqlServer driver wrapper for Gorm, providing database operation functionality
     - NoSQL
         - [goner/redis](./redis) - Redis client wrapper, providing caching, distributed locking, and other features
+        - [goner/mongo](./mongo) - MongoDB client wrapper, providing document database operations with support for multiple database connections
         - [goner/es](./es) - Elasticsearch client wrapper, providing full-text search functionality
 
 - Observability [Microservices]

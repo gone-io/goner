@@ -1,0 +1,22 @@
+# MongoDB Configuration for Basic Example
+mongo:
+  # MongoDB connection URI
+  uri: "mongodb://root:example@127.0.0.1:27017/"
+  
+  # Default database name
+  database: "myapp"
+  
+  # Connection Pool Settings
+  maxPoolSize: 10
+  minPoolSize: 1
+  maxConnIdleTime: "10m"
+  
+  # Timeout Settings
+  connectTimeout: "10s"
+  socketTimeout: "30s"
+  serverSelectionTimeout: "5s"
+
+# Logging configuration
+logging:
+  level: "info"
+  format: "text"

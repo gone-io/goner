@@ -58,6 +58,7 @@ Go 应用程序。
             - [goner/gorm/sqlserver](./gorm/sqlserver) - 基于 SqlServer 的 Gorm 驱动封装，提供数据库操作功能
     - NoSQL
         - [goner/redis](./redis) - Redis 客户端封装，提供缓存、分布式锁等功能
+        - [goner/mongo](./mongo) - MongoDB 客户端封装，提供文档数据库操作功能，支持多数据库连接
         - [goner/es](./es) - Elasticsearch 客户端封装，提供全文搜索功能
 
 - 可观测性【微服务】
