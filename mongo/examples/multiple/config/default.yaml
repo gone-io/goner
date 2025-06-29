@@ -1,0 +1,43 @@
+# Multiple MongoDB Connections Configuration
+
+# Main application database
+mongo:
+  uri: "mongodb://root:example@127.0.0.1:27017/"
+  database: "myapp"
+  maxPoolSize: 50
+  minPoolSize: 5
+  maxConnIdleTime: "30m"
+  connectTimeout: "10s"
+  socketTimeout: "30s"
+  serverSelectionTimeout: "5s"
+
+# Analytics database (could be on a different server)
+mongo-analytics:
+  uri: "mongodb://root:example@127.0.0.1:27017/"  # In production, this might be a different server
+  database: "analytics"
+  # Optional authentication for analytics DB
+  # username: "analytics_user"
+  # password: "analytics_pass"
+  # authSource: "analytics"
+  maxPoolSize: 30
+  minPoolSize: 2
+  maxConnIdleTime: "20m"
+  connectTimeout: "5s"
+  socketTimeout: "60s"  # Longer timeout for analytics queries
+  serverSelectionTimeout: "10s"
+
+# Logs database (optimized for write-heavy operations)
+mongo-logs:
+  uri: "mongodb://root:example@127.0.0.1:27017/"  # In production, this might be a different server
+  database: "logs"
+  maxPoolSize: 100  # Higher pool size for high-volume logging
+  minPoolSize: 10
+  maxConnIdleTime: "15m"
+  connectTimeout: "5s"
+  socketTimeout: "10s"  # Shorter timeout for logs
+  serverSelectionTimeout: "3s"
+
+# Logging configuration
+logging:
+  level: "info"
+  format: "text"
