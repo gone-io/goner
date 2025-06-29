@@ -95,8 +95,12 @@ func TestLoad(t *testing.T) {
 
 	gone.
 		NewApp(Load).
-		Test(func(client *mongo.Client) {
+		Test(func(client *mongo.Client, i struct {
+			client  *mongo.Client `gone:"*"`
+			client2 *mongo.Client `gone:"*,test"`
+		}) {
 			assert.NotNil(t, client)
+			assert.Equal(t, client, i.client)
 
 			collection := client.Database("myapp").Collection("users")
 
