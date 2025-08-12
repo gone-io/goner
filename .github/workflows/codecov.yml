@@ -98,7 +98,7 @@ jobs:
     steps:
       - name: Install SQLite
         run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-dev
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
