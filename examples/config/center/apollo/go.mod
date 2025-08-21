@@ -18,7 +18,7 @@ require (
 	github.com/apolloconfig/agollo/v4 v4.4.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/encoding/javaproperties v0.1.0 // indirect
-	github.com/go-viper/mapstructure/v2 v2.3.0 // indirect
+	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/gone-io/goner/viper v1.3.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/magiconair/properties v1.8.10 // indirect
