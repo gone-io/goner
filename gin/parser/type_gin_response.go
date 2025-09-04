@@ -16,5 +16,5 @@ func (c *responseTypeParser) Parse(context *gin.Context) (reflect.Value, error) 
 }
 
 func (c *responseTypeParser) Type() reflect.Type {
-	return reflect.TypeOf((gin.ResponseWriter)(nil))
+	return gone.GetInterfaceType(new(gin.ResponseWriter))
 }

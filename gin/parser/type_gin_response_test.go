@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"github.com/gone-io/gone/v2"
 	"net/http/httptest"
 	"reflect"
 	"testing"
@@ -17,7 +18,7 @@ func Test_responseTypeParser_Type(t *testing.T) {
 	}{
 		{
 			name: "test",
-			want: reflect.TypeOf((gin.ResponseWriter)(nil)),
+			want: gone.GetInterfaceType(new(gin.ResponseWriter)),
 		},
 	}
 	for _, tt := range tests {

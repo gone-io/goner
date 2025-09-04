@@ -13,6 +13,7 @@ func Load(loader gone.Loader) error {
 		MustLoad(&httpRequestTypeParser{}).
 		MustLoad(&httpHeaderTypeParser{}).
 		MustLoad(&urlTypeParser{}).
-		MustLoad(&responseTypeParser{})
+		MustLoad(&responseTypeParser{}).
+		MustLoad(&httpResponseTypeParser{})
 	return nil
 }

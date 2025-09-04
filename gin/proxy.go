@@ -63,10 +63,10 @@ func (p *proxy) resultProcess(values []reflect.Value, context *gin.Context, func
 		arg := values[i]
 		switch arg.Kind() {
 		case reflect.Invalid:
-			results = append(results, nil)
+			//results = append(results, nil)
 		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
 			if arg.IsNil() {
-				results = append(results, nil)
+				//results = append(results, nil)
 				continue
 			}
 			fallthrough
