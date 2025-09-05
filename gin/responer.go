@@ -127,9 +127,19 @@ func (r *responser) Failed(ctx XContext, oErr error) {
 	ctx.JSON(err.GetStatusCode(), r.wrappedDataFunc(err.Code(), err.Msg(), error(nil)))
 }
 
-func (r *responser) ProcessResults(context XContext, writer gin.ResponseWriter, last bool, funcName string, results ...any) {
+func (r *responser) ProcessResults(context XContext, writer gin.ResponseWriter, last bool, funcName string, list ...any) {
+	var results []any
+	for _, result := range list {
+		if result == nil {
+			continue
+		}
+		results = append(results, result)
+	}
+
 	if writer.Written() {
-		r.Warnf("content had been written，check fn(%s)，maybe shouldn't return data", funcName)
+		if len(results) > 0 {
+			r.Warnf("content had been written，check fn(%s)，maybe shouldn't return data", funcName)
+		}
 		return
 	}
 
@@ -143,10 +153,6 @@ func (r *responser) ProcessResults(context XContext, writer gin.ResponseWriter, 
 
 	var multi []any
 	for _, result := range results {
-		if result == nil {
-			continue
-		}
-
 		of := reflect.TypeOf(result)
 		if of.Kind() == reflect.Chan {
 			r.processChan(result, writer)

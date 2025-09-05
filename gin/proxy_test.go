@@ -124,7 +124,7 @@ func Test_proxy(t *testing.T) {
 					}, nil)
 					var ctx = &gin.Context{}
 
-					mockResponser.EXPECT().ProcessResults(ctx, nil, true, gomock.Any(), nil, nil, x2, "test=ok")
+					mockResponser.EXPECT().ProcessResults(ctx, nil, true, gomock.Any(), x2, "test=ok")
 					fn := p.proxyOne(func(q Query[string]) (any, string) {
 						return nil, q.Get()
 					}, true)
@@ -185,7 +185,7 @@ func TestProxy(t *testing.T) {
 					Body: io.NopCloser(bytes.NewBufferString(`{"x":1,"y":"2"}`)),
 				},
 			}
-			mockResponser.EXPECT().ProcessResults(ctx, nil, true, gomock.Any(), x1, nil, "test=ok", addr, Req{X: 1, Y: "2"}, nil)
+			mockResponser.EXPECT().ProcessResults(ctx, nil, true, gomock.Any(), x1, "test=ok", addr, Req{X: 1, Y: "2"})
 			fn(ctx)
 		})
 }

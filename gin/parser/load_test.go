@@ -27,6 +27,6 @@ func TestLoad(t *testing.T) {
 		NewApp(Load).
 		Run(func(nameParser []NameParser[*gin.Context], typeParsers []TypeParser[*gin.Context]) {
 			assert.Equal(t, 5, len(nameParser))
-			assert.Equal(t, 5, len(typeParsers))
+			assert.Equal(t, 6, len(typeParsers))
 		})
 }
