@@ -6,7 +6,7 @@ require (
 	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner/g v1.3.5
 	github.com/mark3labs/mcp-go v0.39.1
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 )
 
 replace github.com/gone-io/goner/g => ../g

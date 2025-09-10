@@ -15,6 +15,11 @@ type xTransport struct {
 	gone.Flag
 }
 
+func (x xTransport) GetSessionId() string {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (x xTransport) Start(ctx context.Context) error {
 	//TODO implement me
 	panic("implement me")

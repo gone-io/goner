@@ -43,6 +43,10 @@ func newStdioClient(m map[string]string, config gone.Configure) (c *client.Clien
 		}
 	}
 
+	if conf.Command == "" {
+		return nil, gone.ToError("command is empty")
+	}
+
 	c, err = client.NewStdioMCPClient(conf.Command, conf.Env, conf.Args...)
 	if err != nil {
 		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("create mcp client failed by type=stdio"))
