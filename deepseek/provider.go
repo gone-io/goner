@@ -70,6 +70,10 @@ func Provide(tagConf string, param struct {
 		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("get %s config err", prefix))
 	}
 
+	if config.AuthToken == "" {
+		return nil, gone.NewInnerError(fmt.Sprintf("deepseek authToken is required in config %s.authToken", prefix), gone.ConfigError)
+	}
+
 	client, err := deepseek.NewClientWithOptions(config.AuthToken, config.ToDeepseekOptions(param.httpDoer)...)
 	if err != nil {
 		return nil, gone.ToErrorWithMsg(err, fmt.Sprintf("NewClientWithOptions by %s config err", prefix))

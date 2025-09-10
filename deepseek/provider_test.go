@@ -119,14 +119,30 @@ func TestLoad(t *testing.T) {
 	})
 
 	t.Run("load default", func(t *testing.T) {
-		gone.NewApp(Load).Run(func(in struct {
-			client *deepseek.Client `gone:"*"`
-		}) {
+		_ = os.Setenv("GONE_DEEPSEEK", `{"authToken":"--"}`)
+		defer func() {
+			_ = os.Unsetenv("GONE_DEEPSEEK")
+		}()
+		gone.
+			NewApp(Load).
+			Run(func(in struct {
+				client *deepseek.Client `gone:"*"`
+			}) {
 
-		})
+			})
 	})
 
 	t.Run("load multi", func(t *testing.T) {
+		_ = os.Setenv("GONE_DEEPSEEK", `{"authToken":"--"}`)
+		_ = os.Setenv("GONE_BAIDU", `{"authToken":"--"}`)
+		_ = os.Setenv("GONE_ALIYUN", `{"authToken":"--"}`)
+
+		defer func() {
+			_ = os.Unsetenv("GONE_DEEPSEEK")
+			_ = os.Unsetenv("GONE_BAIDU")
+			_ = os.Unsetenv("GONE_ALIYUN")
+		}()
+
 		gone.NewApp(Load).Run(func(in struct {
 			client  *deepseek.Client `gone:"*"`
 			client1 *deepseek.Client `gone:"*,baidu"`
