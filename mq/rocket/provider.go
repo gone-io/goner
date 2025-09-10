@@ -17,8 +17,8 @@ type ConsumerOption struct {
 	} `json:"expressions"`
 }
 
-var withAwaitDuration = mq.WithAwaitDuration
-var withSubscriptionExpressions = mq.WithSubscriptionExpressions
+var withAwaitDuration = mq.WithSimpleAwaitDuration
+var withSubscriptionExpressions = mq.WithSimpleSubscriptionExpressions
 
 func (o *ConsumerOption) ToOptions() []mq.SimpleConsumerOption {
 	options := make([]mq.SimpleConsumerOption, 0)

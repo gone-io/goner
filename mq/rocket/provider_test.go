@@ -114,14 +114,14 @@ func TestConsumerOption_ToOptions(t *testing.T) {
 				t.Errorf("withAwaitDuration() = %v, want %v", awaitDuration1, awaitDuration)
 			}
 			withAwaitDurationExecuted = true
-			return mq.WithAwaitDuration(awaitDuration)
+			return mq.WithSimpleAwaitDuration(awaitDuration)
 		}
 		withSubscriptionExpressions = func(subscriptionExpressions map[string]*mq.FilterExpression) mq.SimpleConsumerOption {
 			if !reflect.DeepEqual(subscriptionExpressions1, subscriptionExpressions) {
 				t.Errorf("withSubscriptionExpressions() = %v, want %v", subscriptionExpressions1, subscriptionExpressions)
 			}
 			withSubscriptionExpressionsExecuted = true
-			return mq.WithSubscriptionExpressions(subscriptionExpressions)
+			return mq.WithSimpleSubscriptionExpressions(subscriptionExpressions)
 		}
 
 		return func() {
