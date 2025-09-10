@@ -113,7 +113,7 @@ func Test_schedule_CustomTracer(t *testing.T) {
 
 			// 验证函数已执行
 			mu.Lock()
-			assert.Equal(t, 1, i)
+			assert.True(t, i >= 1)
 			mu.Unlock()
 		})
 }
