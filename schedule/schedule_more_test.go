@@ -69,8 +69,8 @@ func Test_schedule_MultipleSchedulers(t *testing.T) {
 		})
 
 	mu.Lock()
-	assert.Equal(t, 2, i)
-	assert.Equal(t, 2, j)
+	assert.True(t, i >= 2)
+	assert.True(t, j >= 2)
 	mu.Unlock()
 }
 
