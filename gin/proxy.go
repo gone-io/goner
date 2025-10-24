@@ -51,6 +51,7 @@ func (p *proxy) proxyOne(x HandlerFunc, last bool) gin.HandlerFunc {
 		values, err := prepare(context)
 		if err != nil {
 			p.responser.Failed(context, err)
+			context.Abort()
 			return
 		}
 		p.resultProcess(values, context, funcName, last)
