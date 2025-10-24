@@ -22,7 +22,7 @@ require (
 	github.com/icholy/digest v1.1.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
-	github.com/quic-go/quic-go v0.54.0 // indirect
+	github.com/quic-go/quic-go v0.54.1 // indirect
 	github.com/refraction-networking/utls v1.8.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.63.0 // indirect

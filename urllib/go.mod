@@ -27,7 +27,7 @@ require (
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
-	github.com/quic-go/quic-go v0.54.0 // indirect
+	github.com/quic-go/quic-go v0.54.1 // indirect
 	github.com/refraction-networking/utls v1.8.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
