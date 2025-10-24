@@ -5,15 +5,15 @@ go 1.24.1
 require (
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.5
-	github.com/gone-io/goner/gin v1.3.5
-	github.com/gone-io/goner/tracer v1.3.5
-	github.com/gone-io/goner/tracer/gid v1.3.5 // indirect
-	github.com/gone-io/goner/tracer/gls v1.3.5 // indirect
-	github.com/gone-io/goner/viper v1.3.5
-	github.com/gone-io/goner/xorm v1.3.5
-	github.com/gone-io/goner/xorm/mysql v1.3.5
-	github.com/gone-io/goner/zap v1.3.5
+	github.com/gone-io/goner/g v1.3.6
+	github.com/gone-io/goner/gin v1.3.6
+	github.com/gone-io/goner/tracer v1.3.6
+	github.com/gone-io/goner/tracer/gid v1.3.6 // indirect
+	github.com/gone-io/goner/tracer/gls v1.3.6 // indirect
+	github.com/gone-io/goner/viper v1.3.6
+	github.com/gone-io/goner/xorm v1.3.6
+	github.com/gone-io/goner/xorm/mysql v1.3.6
+	github.com/gone-io/goner/zap v1.3.6
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/mock v0.6.0

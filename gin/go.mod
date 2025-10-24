@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	github.com/gone-io/goner/g v1.3.5
+	github.com/gone-io/goner/g v1.3.6
 
 )
 

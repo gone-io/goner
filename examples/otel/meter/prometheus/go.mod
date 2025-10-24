@@ -14,8 +14,8 @@ replace (
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.5
-	github.com/gone-io/goner/otel/meter/prometheus/gin v1.3.5
+	github.com/gone-io/goner/g v1.3.6
+	github.com/gone-io/goner/otel/meter/prometheus/gin v1.3.6
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/metric v1.38.0
 )
@@ -35,10 +35,10 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.27.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
-	github.com/gone-io/goner/gin v1.3.5 // indirect
-	github.com/gone-io/goner/otel v1.3.5 // indirect
-	github.com/gone-io/goner/otel/meter v1.3.5 // indirect
-	github.com/gone-io/goner/otel/meter/prometheus v1.3.5 // indirect
+	github.com/gone-io/goner/gin v1.3.6 // indirect
+	github.com/gone-io/goner/otel v1.3.6 // indirect
+	github.com/gone-io/goner/otel/meter v1.3.6 // indirect
+	github.com/gone-io/goner/otel/meter/prometheus v1.3.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grafana/regexp v0.0.0-20250905093917-f7b3be9d1853 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

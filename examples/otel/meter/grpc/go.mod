@@ -12,11 +12,11 @@ replace (
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.5
-	github.com/gone-io/goner/otel v1.3.5 // indirect
-	github.com/gone-io/goner/otel/meter v1.3.5 // indirect
-	github.com/gone-io/goner/otel/meter/grpc v1.3.5
-	github.com/gone-io/goner/viper v1.3.5
+	github.com/gone-io/goner/g v1.3.6
+	github.com/gone-io/goner/otel v1.3.6 // indirect
+	github.com/gone-io/goner/otel/meter v1.3.6 // indirect
+	github.com/gone-io/goner/otel/meter/grpc v1.3.6
+	github.com/gone-io/goner/viper v1.3.6
 	go.opentelemetry.io/otel/metric v1.38.0
 )
 

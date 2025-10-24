@@ -1,4 +1,4 @@
-VERSION := 1.3.5
+VERSION := 1.3.6
 
 
 # make bump-version VERSION=1.0.9

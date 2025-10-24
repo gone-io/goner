@@ -6,7 +6,7 @@ require (
 	dario.cat/mergo v1.0.2
 	github.com/IBM/sarama v1.46.0
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.5
+	github.com/gone-io/goner/g v1.3.6
 	github.com/stretchr/testify v1.11.0
 	go.uber.org/mock v0.6.0
 )

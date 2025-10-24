@@ -10,14 +10,14 @@ replace github.com/gone-io/goner/viper => ../../../viper
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/mcp v1.3.5
+	github.com/gone-io/goner/mcp v1.3.6
 	github.com/mark3labs/mcp-go v0.39.1
 )
 
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/gone-io/goner/g v1.3.5 // indirect
+	github.com/gone-io/goner/g v1.3.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/invopop/jsonschema v0.13.0 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect

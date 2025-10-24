@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/urllib v1.3.5
+	github.com/gone-io/goner/urllib v1.3.6
 	github.com/imroc/req/v3 v3.55.0
 )
 
@@ -17,7 +17,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/gone-io/goner/g v1.3.5 // indirect
+	github.com/gone-io/goner/g v1.3.6 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/icholy/digest v1.1.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect

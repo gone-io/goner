@@ -8,7 +8,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 )
 
-require github.com/gone-io/goner/g v1.3.5
+require github.com/gone-io/goner/g v1.3.6
 
 replace github.com/gone-io/goner/g => ../g
 

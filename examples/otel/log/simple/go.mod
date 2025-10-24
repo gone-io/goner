@@ -4,11 +4,11 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.5
-	github.com/gone-io/goner/otel v1.3.5 // indirect
-	github.com/gone-io/goner/otel/log v1.3.5
-	github.com/gone-io/goner/viper v1.3.5
-	github.com/gone-io/goner/zap v1.3.5
+	github.com/gone-io/goner/g v1.3.6
+	github.com/gone-io/goner/otel v1.3.6 // indirect
+	github.com/gone-io/goner/otel/log v1.3.6
+	github.com/gone-io/goner/viper v1.3.6
+	github.com/gone-io/goner/zap v1.3.6
 )
 
 replace (

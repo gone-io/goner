@@ -5,11 +5,11 @@ go 1.24.1
 require (
 	github.com/gone-io/gone/v2 v2.2.6
 	github.com/gone-io/goner v1.0.9
-	github.com/gone-io/goner/balancer v1.3.5
-	github.com/gone-io/goner/gin v1.3.5
-	github.com/gone-io/goner/nacos v1.3.5
-	github.com/gone-io/goner/urllib v1.3.5
-	github.com/gone-io/goner/viper v1.3.5
+	github.com/gone-io/goner/balancer v1.3.6
+	github.com/gone-io/goner/gin v1.3.6
+	github.com/gone-io/goner/nacos v1.3.6
+	github.com/gone-io/goner/urllib v1.3.6
+	github.com/gone-io/goner/viper v1.3.6
 )
 
 replace (
@@ -72,11 +72,11 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/gone-io/goner/g v1.3.5 // indirect
-	github.com/gone-io/goner/tracer v1.3.5 // indirect
-	github.com/gone-io/goner/tracer/gid v1.3.5 // indirect
-	github.com/gone-io/goner/tracer/gls v1.3.5 // indirect
-	github.com/gone-io/goner/zap v1.3.5 // indirect
+	github.com/gone-io/goner/g v1.3.6 // indirect
+	github.com/gone-io/goner/tracer v1.3.6 // indirect
+	github.com/gone-io/goner/tracer/gid v1.3.6 // indirect
+	github.com/gone-io/goner/tracer/gls v1.3.6 // indirect
+	github.com/gone-io/goner/zap v1.3.6 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect

@@ -4,9 +4,9 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.5
-	github.com/gone-io/goner/tracer/gid v1.3.5-00010101000000-000000000000
-	github.com/gone-io/goner/tracer/gls v1.3.5-00010101000000-000000000000
+	github.com/gone-io/goner/g v1.3.6
+	github.com/gone-io/goner/tracer/gid v1.3.6-00010101000000-000000000000
+	github.com/gone-io/goner/tracer/gls v1.3.6-00010101000000-000000000000
 	github.com/stretchr/testify v1.10.0
 )
 

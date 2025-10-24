@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/gone-io/gone/v2 v2.2.6
-	github.com/gone-io/goner/g v1.3.5-00010101000000-000000000000
+	github.com/gone-io/goner/g v1.3.6-00010101000000-000000000000
 	github.com/google/uuid v1.6.0
 	github.com/jtolds/gls v4.20.0+incompatible
 	github.com/stretchr/testify v1.10.0

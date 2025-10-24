@@ -3,9 +3,9 @@ module github.com/gone-io/goner/otel/log/grpc
 go 1.24.1
 
 require (
-	github.com/gone-io/goner/g v1.3.5
-	github.com/gone-io/goner/otel v1.3.5 // indirect
-	github.com/gone-io/goner/otel/log v1.3.5
+	github.com/gone-io/goner/g v1.3.6
+	github.com/gone-io/goner/otel v1.3.6 // indirect
+	github.com/gone-io/goner/otel/log v1.3.6
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.14.0
 	go.opentelemetry.io/otel/sdk/log v0.14.0
 	google.golang.org/grpc v1.75.0
